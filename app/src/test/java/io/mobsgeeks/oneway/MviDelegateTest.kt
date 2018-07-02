@@ -12,6 +12,7 @@ class MviDelegateTest {
   private val publisher = PublishSubject.create<String>()
   private val source: (Observable<Binding>, Observable<String>) -> Observable<String> = { _, _ -> publisher }
   private val testObserver = TestObserver<String>()
+  private val bindingsTestObserver = TestObserver<Binding>()
   private val sink: (Observable<String>) -> Disposable = { it -> it.subscribeWith(testObserver) }
 
   private val persister: Persister<String, ByteArray> = object : Persister<String, ByteArray> {
@@ -41,10 +42,7 @@ class MviDelegateTest {
     }
   }
 
-  @Test fun `it signals a new binding when the subscription happens for the first time`() {
-    // given
-    val bindingsTestObserver = TestObserver<Binding>()
-
+  @Test fun `it signals a CREATED binding event when the subscription happens for the first time`() {
     // when
     mviDelegate.bindings.subscribe(bindingsTestObserver)
     mviDelegate.setup(source, sink)
@@ -57,10 +55,7 @@ class MviDelegateTest {
     }
   }
 
-  @Test fun `it signals a destroyed binding on teardown()`() {
-    // given
-    val bindingsTestObserver = TestObserver<Binding>()
-
+  @Test fun `it signals a DESTROYED binding event on teardown()`() {
     // when
     mviDelegate.bindings.subscribe(bindingsTestObserver)
     mviDelegate.setup(source, sink)
@@ -149,10 +144,9 @@ class MviDelegateTest {
         .isEqualTo(persistentState)
   }
 
-  @Test fun `it signals a restored binding when state is restored`() {
+  @Test fun `it signals a RESTORED binding event when state is restored`() {
     // given
     val persistentState = "Arrow".toByteArray()
-    val bindingsTestObserver = TestObserver<Binding>()
 
     // when
     mviDelegate.bindings.subscribe(bindingsTestObserver)
@@ -215,7 +209,6 @@ class MviDelegateTest {
 
   @Test fun `it does not blow up if teardown() is called before setup`() {
     // given
-    val bindingsTestObserver = TestObserver<Binding>()
     mviDelegate.bindings.subscribe(bindingsTestObserver)
 
     // when
