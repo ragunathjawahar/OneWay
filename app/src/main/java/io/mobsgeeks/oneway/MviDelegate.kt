@@ -22,7 +22,7 @@ class MviDelegate<S, P>(private val persister: Persister<S, P>) {
     timelineSubject.toFlowable(LATEST).toObservable().share()
   }
 
-  fun setup(
+  fun bind(
       source: (Observable<Binding>, Observable<S>) -> Observable<S>, // TODO(rj) Extract these to SAMIs
       sink: (Observable<S>) -> Disposable
   ) {
@@ -48,7 +48,7 @@ class MviDelegate<S, P>(private val persister: Persister<S, P>) {
     return state?.let { persister.serialize(state) }
   }
 
-  fun teardown() {
+  fun unbind() {
     if (compositeDisposable.size() > 0) {
       compositeDisposable.clear()
       bindingsSubject.onNext(DESTROYED)

@@ -25,7 +25,7 @@ class MviDelegateTest {
 
   private val mviDelegate = MviDelegate(persister)
 
-  @Test fun `it creates a subscription on setup`() {
+  @Test fun `it creates a subscription on bind`() {
     // given
     val theValue = "One Way!"
     val source: (Observable<Binding>, Observable<String>) -> Observable<String> = { _, _ ->
@@ -33,7 +33,7 @@ class MviDelegateTest {
     }
 
     // when
-    mviDelegate.setup(source, sink)
+    mviDelegate.bind(source, sink)
 
     // then
     with(testObserver) {
@@ -45,7 +45,7 @@ class MviDelegateTest {
   @Test fun `it signals a CREATED binding event when the subscription happens for the first time`() {
     // when
     mviDelegate.bindings.subscribe(bindingsTestObserver)
-    mviDelegate.setup(source, sink)
+    mviDelegate.bind(source, sink)
 
     // then
     with(bindingsTestObserver) {
@@ -55,11 +55,11 @@ class MviDelegateTest {
     }
   }
 
-  @Test fun `it signals a DESTROYED binding event on teardown()`() {
+  @Test fun `it signals a DESTROYED binding event on unbind`() {
     // when
     mviDelegate.bindings.subscribe(bindingsTestObserver)
-    mviDelegate.setup(source, sink)
-    mviDelegate.teardown()
+    mviDelegate.bind(source, sink)
+    mviDelegate.unbind()
 
     // then
     with(bindingsTestObserver) {
@@ -76,7 +76,7 @@ class MviDelegateTest {
 
     // when
     mviDelegate.timeline.subscribe(timelineTestObserver)
-    mviDelegate.setup(source, sink)
+    mviDelegate.bind(source, sink)
     events.forEach { publisher.onNext(it) }
 
     // then
@@ -95,7 +95,7 @@ class MviDelegateTest {
 
   @Test fun `it returns null if a last known state is unavailable`() {
     // given
-    mviDelegate.setup(source, sink)
+    mviDelegate.bind(source, sink)
 
     // when
     val lastKnownState = mviDelegate.saveState()
@@ -109,7 +109,7 @@ class MviDelegateTest {
     // given
     val arrow = "Arrow"
     val persistableArrow = arrow.toByteArray()
-    mviDelegate.setup(source, sink)
+    mviDelegate.bind(source, sink)
 
     // when
     publisher.onNext(arrow)
@@ -165,7 +165,7 @@ class MviDelegateTest {
     mviDelegate.bindings.subscribe(bindingsTestObserver)
 
     // when
-    mviDelegate.setup(source, sink)
+    mviDelegate.bind(source, sink)
     mviDelegate.restoreState(null)
 
     // then
@@ -176,15 +176,15 @@ class MviDelegateTest {
     }
   }
 
-  @Test fun `it disposes the subscription on teardown`() {
+  @Test fun `it disposes the subscription on unbind`() {
     // given
-    mviDelegate.setup(source, sink)
+    mviDelegate.bind(source, sink)
 
     // when
     val firstMessage = "Hello"
     publisher.onNext(firstMessage)
 
-    mviDelegate.teardown()
+    mviDelegate.unbind()
     publisher.onNext("Unreachable")
 
     // then
@@ -194,25 +194,25 @@ class MviDelegateTest {
     }
   }
 
-  @Test fun `it does not blow up if teardown() is called multiple times`() {
+  @Test fun `it does not blow up if unbind is called multiple times`() {
     // given
-    mviDelegate.setup(source, sink)
+    mviDelegate.bind(source, sink)
 
     // when
     with(mviDelegate) {
-      teardown()
-      teardown()
-      teardown()
-      teardown()
+      unbind()
+      unbind()
+      unbind()
+      unbind()
     }
   }
 
-  @Test fun `it does not blow up if teardown() is called before setup`() {
+  @Test fun `it does not blow up if unbind is called before bind`() {
     // given
     mviDelegate.bindings.subscribe(bindingsTestObserver)
 
     // when
-    mviDelegate.teardown()
+    mviDelegate.unbind()
 
     // then
     with(bindingsTestObserver) {
