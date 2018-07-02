@@ -1,7 +1,6 @@
 package io.mobsgeeks.oneway
 
-import io.mobsgeeks.oneway.Binding.CREATED
-import io.mobsgeeks.oneway.Binding.DESTROYED
+import io.mobsgeeks.oneway.Binding.*
 import io.reactivex.BackpressureStrategy.LATEST
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -24,7 +23,7 @@ class MviDelegate<S, P>(private val persister: Persister<S, P>) {
   }
 
   fun setup(
-      source: (Observable<Binding>, Observable<S>) -> Observable<S>,
+      source: (Observable<Binding>, Observable<S>) -> Observable<S>, // TODO(rj) Extract these to SAMIs
       sink: (Observable<S>) -> Disposable
   ) {
     val sharedStates = source(bindings, timeline).share()
@@ -35,15 +34,16 @@ class MviDelegate<S, P>(private val persister: Persister<S, P>) {
     bindingsSubject.onNext(CREATED)
   }
 
-  fun saveState(): P? {
-    val state = timelineSubject.value
-    return state?.let { persister.serialize(state) }
-  }
-
   fun restoreState(persistentState: P?) {
     persistentState?.let {
       timelineSubject.onNext(persister.deserialize(persistentState))
+      bindingsSubject.onNext(RESTORED)
     }
+  }
+
+  fun saveState(): P? {
+    val state = timelineSubject.value
+    return state?.let { persister.serialize(state) }
   }
 
   fun teardown() {

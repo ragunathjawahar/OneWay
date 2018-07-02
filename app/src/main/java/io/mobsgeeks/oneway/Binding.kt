@@ -9,6 +9,12 @@ enum class Binding {
   CREATED,
 
   /**
+   * The subscription is being restored, it also denotes that a saved state
+   * is available.
+   */
+  RESTORED,
+
+  /**
    * The subscription has been disposed. This event is never delivered to the bindings
    * stream when the subscription is active. This event is helpful only in cases where
    * the model's lifecycle has to work with an external entity.

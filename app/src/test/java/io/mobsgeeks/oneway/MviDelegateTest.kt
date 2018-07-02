@@ -1,8 +1,7 @@
 package io.mobsgeeks.oneway
 
 import com.google.common.truth.Truth.assertThat
-import io.mobsgeeks.oneway.Binding.CREATED
-import io.mobsgeeks.oneway.Binding.DESTROYED
+import io.mobsgeeks.oneway.Binding.*
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.observers.TestObserver
@@ -131,12 +130,12 @@ class MviDelegateTest {
   @Test fun `it can restore state when a last known state is available`() {
     // given
     val arrow = "Arrow"
-    val lastKnownState = arrow.toByteArray()
+    val persistentState = arrow.toByteArray()
     val timelineTestObserver = TestObserver<String>()
 
     // when
     mviDelegate.timeline.subscribe(timelineTestObserver)
-    mviDelegate.restoreState(lastKnownState)
+    mviDelegate.restoreState(persistentState)
     val restoredState = mviDelegate.saveState()
 
     // then
@@ -147,7 +146,24 @@ class MviDelegateTest {
     }
 
     assertThat(restoredState)
-        .isEqualTo(lastKnownState)
+        .isEqualTo(persistentState)
+  }
+
+  @Test fun `it signals a restored binding when state is restored`() {
+    // given
+    val persistentState = "Arrow".toByteArray()
+    val bindingsTestObserver = TestObserver<Binding>()
+
+    // when
+    mviDelegate.bindings.subscribe(bindingsTestObserver)
+    mviDelegate.restoreState(persistentState)
+
+    // then
+    with(bindingsTestObserver) {
+      assertNoErrors()
+      assertValue(RESTORED)
+      assertNotTerminated()
+    }
   }
 
   @Test fun `it disposes the subscription on teardown`() {
