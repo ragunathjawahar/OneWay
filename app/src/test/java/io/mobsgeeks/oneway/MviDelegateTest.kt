@@ -9,9 +9,9 @@ import org.junit.Test
 
 class MviDelegateTest {
   private val publisher = PublishSubject.create<String>()
-  private val sourceFunction = { publisher }
+  private val source = { publisher }
   private val testObserver = TestObserver<String>()
-  private val sinkFunction: (Observable<String>) -> Disposable = { it -> it.subscribeWith(testObserver) }
+  private val sink: (Observable<String>) -> Disposable = { it -> it.subscribeWith(testObserver) }
   private val mviDelegate = MviDelegate<String>()
 
   @Test fun `it creates a subscription on setup`() {
@@ -20,7 +20,7 @@ class MviDelegateTest {
     val sourceFunction = { Observable.merge(Observable.just(theValue), Observable.never()) }
 
     // when
-    val disposable = mviDelegate.setup(sourceFunction, sinkFunction)
+    val disposable = mviDelegate.setup(sourceFunction, sink)
 
     // then
     testObserver.assertNoErrors()
@@ -32,7 +32,7 @@ class MviDelegateTest {
 
   @Test fun `it disposes the subscription on teardown`() {
     // given
-    val disposable = mviDelegate.setup(sourceFunction, sinkFunction)
+    val disposable = mviDelegate.setup(source, sink)
 
     // when
     val firstMessage = "Hello"
@@ -51,7 +51,7 @@ class MviDelegateTest {
 
   @Test fun `it does not blow up if teardown() is called multiple times`() {
     // given
-    val disposable = mviDelegate.setup(sourceFunction, sinkFunction)
+    val disposable = mviDelegate.setup(source, sink)
 
     // when
     mviDelegate.teardown()
@@ -66,7 +66,7 @@ class MviDelegateTest {
 
   @Test fun `it returns a disposable that is read-only`() {
     // given
-    val disposable = mviDelegate.setup(sourceFunction, sinkFunction)
+    val disposable = mviDelegate.setup(source, sink)
 
     // when
     try {

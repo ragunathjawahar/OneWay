@@ -7,10 +7,10 @@ class MviDelegate<T> {
   private lateinit var disposable: Disposable
 
   fun setup(
-      sourceFunction: () -> Observable<T>,
-      sinkFunction: (Observable<T>) -> Disposable
+      source: () -> Observable<T>,
+      sink: (Observable<T>) -> Disposable
   ): Disposable { // TODO(rj) 2/Jul/18 - Ensure this disposable can't be unsubscribed.
-    disposable = sinkFunction(sourceFunction())
+    disposable = sink(source())
     return ReadOnlyDisposable(disposable)
   }
 
