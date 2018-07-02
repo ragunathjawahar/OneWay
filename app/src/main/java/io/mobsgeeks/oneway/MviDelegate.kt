@@ -9,7 +9,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import kotlin.LazyThreadSafetyMode.NONE
 
-class MviDelegate<S> {
+class MviDelegate<S, P> {
   private val compositeDisposable = CompositeDisposable()
   private val bindingsSubject = PublishSubject.create<Binding>()
   private val timelineSubject = PublishSubject.create<S>()
@@ -39,5 +39,9 @@ class MviDelegate<S> {
       compositeDisposable.clear()
       bindingsSubject.onNext(DESTROYED)
     }
+  }
+
+  fun saveState(): P? {
+    return null
   }
 }

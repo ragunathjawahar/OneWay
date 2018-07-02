@@ -1,5 +1,6 @@
 package io.mobsgeeks.oneway
 
+import com.google.common.truth.Truth.assertThat
 import io.mobsgeeks.oneway.Binding.CREATED
 import io.mobsgeeks.oneway.Binding.DESTROYED
 import io.reactivex.Observable
@@ -13,7 +14,7 @@ class MviDelegateTest {
   private val source: (Observable<Binding>, Observable<String>) -> Observable<String> = { _, _ -> publisher }
   private val testObserver = TestObserver<String>()
   private val sink: (Observable<String>) -> Disposable = { it -> it.subscribeWith(testObserver) }
-  private val mviDelegate = MviDelegate<String>()
+  private val mviDelegate = MviDelegate<String, Array<Byte>>()
 
   @Test fun `it creates a subscription on setup`() {
     // given
@@ -87,6 +88,18 @@ class MviDelegateTest {
       assertValues(*events)
       assertNotTerminated()
     }
+  }
+
+  @Test fun `it returns null if a last known state is unavailable`() {
+    // given
+    mviDelegate.setup(source, sink)
+
+    // when
+    val lastKnownState = mviDelegate.saveState()
+
+    // then
+    assertThat(lastKnownState)
+        .isNull()
   }
 
   @Test fun `it disposes the subscription on teardown`() {
