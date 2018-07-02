@@ -58,4 +58,20 @@ class MviDelegateTest {
     assertThat(disposable.isDisposed)
         .isTrue()
   }
+
+  @Test fun `it returns a disposable that is read-only`() {
+    // given
+    val disposable = mviDelegate.setup(sourceFunction, sinkFunction)
+
+    // when
+    try {
+      disposable.dispose()
+    } catch (e: IllegalStateException) {
+      // swallow... abuk abuk
+    }
+
+    // then
+    assertThat(disposable.isDisposed)
+        .isFalse()
+  }
 }

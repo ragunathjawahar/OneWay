@@ -11,7 +11,7 @@ class MviDelegate<T> {
       sinkFunction: (Observable<T>) -> Disposable
   ): Disposable { // TODO(rj) 2/Jul/18 - Ensure this disposable can't be unsubscribed.
     disposable = sinkFunction(sourceFunction())
-    return disposable
+    return ReadOnlyDisposable(disposable)
   }
 
   fun teardown() {
