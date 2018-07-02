@@ -68,24 +68,23 @@ class MviDelegateTest {
   @Test fun `it has a timeline that provides access to the latest state`() {
     // given
     val timelineTestObserver = TestObserver<String>()
+    val events = arrayOf("ஒன்று", "இரண்டு", "மூன்று")
 
     // when
     mviDelegate.timeline.subscribe(timelineTestObserver)
     mviDelegate.setup(source, sink)
-    publisher.onNext("ஒன்று")
-    publisher.onNext("இரண்டு")
-    publisher.onNext("மூன்று")
+    events.forEach { publisher.onNext(it) }
 
     // then
     with(timelineTestObserver) {
       assertNoErrors()
-      assertValues("ஒன்று", "இரண்டு", "மூன்று")
+      assertValues(*events)
       assertNotTerminated()
     }
 
     with(testObserver) {
       assertNoErrors()
-      assertValues("ஒன்று", "இரண்டு", "மூன்று")
+      assertValues(*events)
       assertNotTerminated()
     }
   }
