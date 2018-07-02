@@ -11,16 +11,23 @@ import kotlin.LazyThreadSafetyMode.NONE
 class MviDelegate<T> {
   private lateinit var disposable: Disposable
   private val bindingsSubject = PublishSubject.create<Binding>()
+  private val timelineSubject = PublishSubject.create<T>()
 
   val bindings: Observable<Binding> by lazy(NONE) {
     bindingsSubject.toFlowable(LATEST).toObservable()
+  }
+
+  internal val timeline: Observable<T> by lazy(NONE) {
+    timelineSubject.toFlowable(LATEST).toObservable().share()
   }
 
   fun setup(
       source: (Observable<Binding>) -> Observable<T>,
       sink: (Observable<T>) -> Disposable
   ): Disposable {
-    disposable = sink(source(bindings))
+    val sharedStates = source(bindings).share()
+    disposable = sink(sharedStates)
+    val timelineDisposable = sharedStates.subscribeWith(timelineSubject)
     bindingsSubject.onNext(CREATED)
     return ReadOnlyDisposable(disposable)
   }

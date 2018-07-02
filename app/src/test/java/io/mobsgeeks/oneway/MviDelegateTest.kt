@@ -69,6 +69,31 @@ class MviDelegateTest {
     }
   }
 
+  @Test fun `it has a timeline that always has access to the latest state`() {
+    // given
+    val timelineTestObserver = TestObserver<String>()
+
+    // when
+    mviDelegate.timeline.subscribe(timelineTestObserver)
+    mviDelegate.setup(source, sink)
+    publisher.onNext("ஒன்று")
+    publisher.onNext("இரண்டு")
+    publisher.onNext("மூன்று")
+
+    // then
+    with(timelineTestObserver) {
+      assertNoErrors()
+      assertValues("ஒன்று", "இரண்டு", "மூன்று")
+      assertNotTerminated()
+    }
+
+    with(testObserver) {
+      assertNoErrors()
+      assertValues("ஒன்று", "இரண்டு", "மூன்று")
+      assertNotTerminated()
+    }
+  }
+
   @Test fun `it disposes the subscription on teardown`() {
     // given
     val disposable = mviDelegate.setup(source, sink)
@@ -138,4 +163,10 @@ class MviDelegateTest {
     assertThat(disposable.isDisposed)
         .isFalse()
   }
+
+  // 1. Bindings -> RESTORED
+  // 2. Ensure that a state is constantly fed into the relay.
+  // 3. Save and restore state (use a persist)
+  // 4. Timeline MVI Delegate
+  // 5. Lift the UI and replay states when building UI.
 }
