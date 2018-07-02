@@ -26,7 +26,7 @@ class MviDelegate<T> {
   }
 
   fun teardown() {
-    if (!disposable.isDisposed) {
+    if (::disposable.isInitialized && !disposable.isDisposed) {
       disposable.dispose()
       bindingsSubject.onNext(DESTROYED)
     }

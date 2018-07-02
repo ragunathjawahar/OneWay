@@ -107,6 +107,22 @@ class MviDelegateTest {
         .isTrue()
   }
 
+  @Test fun `it does not blow up if teardown() is called before setup`() {
+    // given
+    val bindingsTestObserver = TestObserver<Binding>()
+    mviDelegate.bindings.subscribe(bindingsTestObserver)
+
+    // when
+    mviDelegate.teardown()
+
+    // then
+    with(bindingsTestObserver) {
+      assertNoErrors()
+      assertNoValues()
+      assertNotTerminated()
+    }
+  }
+
   @Test fun `it returns a disposable that is read-only`() {
     // given
     val disposable = mviDelegate.setup(source, sink)
