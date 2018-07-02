@@ -15,6 +15,8 @@ class MviDelegate<T> {
   }
 
   fun teardown() {
-    disposable.dispose()
+    if (!disposable.isDisposed) {
+      disposable.dispose()
+    }
   }
 }

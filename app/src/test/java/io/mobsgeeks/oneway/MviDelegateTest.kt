@@ -49,4 +49,24 @@ class MviDelegateTest {
     assertThat(disposable.isDisposed)
         .isTrue()
   }
+
+  @Test fun `it does not blow up if teardown() is called multiple times`() {
+    // given
+    val publisher = PublishSubject.create<String>()
+    val sourceFunction = { publisher }
+    val testObserver = TestObserver<String>()
+    val sinkFunction : (Observable<String>) -> Disposable = { it -> it.subscribeWith(testObserver) }
+    val mviDelegate = MviDelegate<String>()
+
+    // when
+    val disposable = mviDelegate.setup(sourceFunction, sinkFunction)
+    mviDelegate.teardown()
+    mviDelegate.teardown()
+    mviDelegate.teardown()
+    mviDelegate.teardown()
+
+    // then
+    assertThat(disposable.isDisposed)
+        .isTrue()
+  }
 }
