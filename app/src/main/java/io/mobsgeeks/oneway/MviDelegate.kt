@@ -6,13 +6,14 @@ import io.reactivex.BackpressureStrategy.LATEST
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlin.LazyThreadSafetyMode.NONE
 
-class MviDelegate<S, P> {
+class MviDelegate<S, P>(private val persister: Persister<S, P>) {
   private val compositeDisposable = CompositeDisposable()
   private val bindingsSubject = PublishSubject.create<Binding>()
-  private val timelineSubject = PublishSubject.create<S>()
+  private val timelineSubject = BehaviorSubject.create<S>()
 
   val bindings: Observable<Binding> by lazy(NONE) {
     bindingsSubject.toFlowable(LATEST).toObservable()
@@ -34,14 +35,15 @@ class MviDelegate<S, P> {
     bindingsSubject.onNext(CREATED)
   }
 
+  fun saveState(): P? {
+    val state = timelineSubject.value
+    return state?.let { persister.serialize(state) }
+  }
+
   fun teardown() {
     if (compositeDisposable.size() > 0) {
       compositeDisposable.clear()
       bindingsSubject.onNext(DESTROYED)
     }
-  }
-
-  fun saveState(): P? {
-    return null
   }
 }

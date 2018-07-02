@@ -14,7 +14,13 @@ class MviDelegateTest {
   private val source: (Observable<Binding>, Observable<String>) -> Observable<String> = { _, _ -> publisher }
   private val testObserver = TestObserver<String>()
   private val sink: (Observable<String>) -> Disposable = { it -> it.subscribeWith(testObserver) }
-  private val mviDelegate = MviDelegate<String, Array<Byte>>()
+
+  private val persister: Persister<String, ByteArray> = object : Persister<String, ByteArray> {
+    override fun serialize(state: String): ByteArray =
+        state.toByteArray()
+  }
+
+  private val mviDelegate = MviDelegate(persister)
 
   @Test fun `it creates a subscription on setup`() {
     // given
@@ -100,6 +106,23 @@ class MviDelegateTest {
     // then
     assertThat(lastKnownState)
         .isNull()
+  }
+
+  @Test fun `it returns the last known state in desired format when available`() {
+    // given
+    val arrow = "Arrow"
+    val persistableArrow = arrow.toByteArray()
+    mviDelegate.setup(source, sink)
+
+    // when
+    publisher.onNext(arrow)
+    val lastKnownState = mviDelegate.saveState()
+
+    // then
+    assertThat(lastKnownState)
+        .isNotNull()
+    assertThat(lastKnownState)
+        .isEqualTo(persistableArrow)
   }
 
   @Test fun `it disposes the subscription on teardown`() {
