@@ -23,10 +23,10 @@ class MviDelegate<T> {
   }
 
   fun setup(
-      source: (Observable<Binding>) -> Observable<T>,
+      source: (Observable<Binding>, Observable<T>) -> Observable<T>,
       sink: (Observable<T>) -> Disposable
   ) {
-    val sharedStates = source(bindings).share()
+    val sharedStates = source(bindings, timeline).share()
     compositeDisposable.addAll(
         sink(sharedStates),
         sharedStates.subscribe { timelineSubject.onNext(it) }
