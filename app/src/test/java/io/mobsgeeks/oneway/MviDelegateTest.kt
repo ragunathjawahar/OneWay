@@ -18,6 +18,9 @@ class MviDelegateTest {
   private val persister: Persister<String, ByteArray> = object : Persister<String, ByteArray> {
     override fun serialize(state: String): ByteArray =
         state.toByteArray()
+
+    override fun deserialize(persistentState: ByteArray): String =
+        String(persistentState)
   }
 
   private val mviDelegate = MviDelegate(persister)
@@ -123,6 +126,28 @@ class MviDelegateTest {
         .isNotNull()
     assertThat(lastKnownState)
         .isEqualTo(persistableArrow)
+  }
+
+  @Test fun `it can restore state when a last known state is available`() {
+    // given
+    val arrow = "Arrow"
+    val lastKnownState = arrow.toByteArray()
+    val timelineTestObserver = TestObserver<String>()
+
+    // when
+    mviDelegate.timeline.subscribe(timelineTestObserver)
+    mviDelegate.restoreState(lastKnownState)
+    val restoredState = mviDelegate.saveState()
+
+    // then
+    with(timelineTestObserver) {
+      assertNoErrors()
+      assertValue(arrow)
+      assertNotTerminated()
+    }
+
+    assertThat(restoredState)
+        .isEqualTo(lastKnownState)
   }
 
   @Test fun `it disposes the subscription on teardown`() {

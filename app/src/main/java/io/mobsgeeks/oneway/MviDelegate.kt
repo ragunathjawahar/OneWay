@@ -40,6 +40,12 @@ class MviDelegate<S, P>(private val persister: Persister<S, P>) {
     return state?.let { persister.serialize(state) }
   }
 
+  fun restoreState(persistentState: P?) {
+    persistentState?.let {
+      timelineSubject.onNext(persister.deserialize(persistentState))
+    }
+  }
+
   fun teardown() {
     if (compositeDisposable.size() > 0) {
       compositeDisposable.clear()
