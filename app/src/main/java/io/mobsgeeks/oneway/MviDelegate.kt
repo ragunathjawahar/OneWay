@@ -9,22 +9,22 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import kotlin.LazyThreadSafetyMode.NONE
 
-class MviDelegate<T> {
+class MviDelegate<S> {
   private val compositeDisposable = CompositeDisposable()
   private val bindingsSubject = PublishSubject.create<Binding>()
-  private val timelineSubject = PublishSubject.create<T>()
+  private val timelineSubject = PublishSubject.create<S>()
 
   val bindings: Observable<Binding> by lazy(NONE) {
     bindingsSubject.toFlowable(LATEST).toObservable()
   }
 
-  internal val timeline: Observable<T> by lazy(NONE) {
+  internal val timeline: Observable<S> by lazy(NONE) {
     timelineSubject.toFlowable(LATEST).toObservable().share()
   }
 
   fun setup(
-      source: (Observable<Binding>, Observable<T>) -> Observable<T>,
-      sink: (Observable<T>) -> Disposable
+      source: (Observable<Binding>, Observable<S>) -> Observable<S>,
+      sink: (Observable<S>) -> Disposable
   ) {
     val sharedStates = source(bindings, timeline).share()
     compositeDisposable.addAll(
