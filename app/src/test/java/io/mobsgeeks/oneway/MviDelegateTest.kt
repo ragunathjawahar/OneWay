@@ -2,6 +2,7 @@ package io.mobsgeeks.oneway
 
 import com.google.common.truth.Truth.assertThat
 import io.mobsgeeks.oneway.Binding.CREATED
+import io.mobsgeeks.oneway.Binding.DESTROYED
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.observers.TestObserver
@@ -38,18 +39,32 @@ class MviDelegateTest {
   @Test fun `it signals a new binding when the subscription happens for the first time`() {
     // given
     val bindingsTestObserver = TestObserver<Binding>()
-    val source: (Observable<Binding>) -> Observable<String> = { bindings ->
-      bindings.subscribe(bindingsTestObserver)
-      Observable.never<String>()
-    }
 
     // when
+    mviDelegate.bindings.subscribe(bindingsTestObserver)
     mviDelegate.setup(source, sink)
 
     // then
     with(bindingsTestObserver) {
       assertNoErrors()
       assertValue(CREATED)
+      assertNotTerminated()
+    }
+  }
+
+  @Test fun `it signals a destroyed binding when the subscription is torn down`() {
+    // given
+    val bindingsTestObserver = TestObserver<Binding>()
+
+    // when
+    mviDelegate.bindings.subscribe(bindingsTestObserver)
+    mviDelegate.setup(source, sink)
+    mviDelegate.teardown()
+
+    // then
+    with(bindingsTestObserver) {
+      assertNoErrors()
+      assertValues(CREATED, DESTROYED)
       assertNotTerminated()
     }
   }

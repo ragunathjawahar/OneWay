@@ -1,6 +1,7 @@
 package io.mobsgeeks.oneway
 
 import io.mobsgeeks.oneway.Binding.CREATED
+import io.mobsgeeks.oneway.Binding.DESTROYED
 import io.reactivex.BackpressureStrategy.LATEST
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
@@ -11,7 +12,7 @@ class MviDelegate<T> {
   private lateinit var disposable: Disposable
   private val bindingsSubject = PublishSubject.create<Binding>()
 
-  private val bindings by lazy(NONE) {
+  val bindings: Observable<Binding> by lazy(NONE) {
     bindingsSubject.toFlowable(LATEST).toObservable()
   }
 
@@ -27,6 +28,7 @@ class MviDelegate<T> {
   fun teardown() {
     if (!disposable.isDisposed) {
       disposable.dispose()
+      bindingsSubject.onNext(DESTROYED)
     }
   }
 }
