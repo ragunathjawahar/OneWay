@@ -31,10 +31,13 @@ class MviDelegateTest {
   }
 
   @Test fun `it disposes the subscription on teardown`() {
-    // when
+    // given
     val disposable = mviDelegate.setup(sourceFunction, sinkFunction)
+
+    // when
     val firstMessage = "Hello"
     publisher.onNext(firstMessage)
+
     mviDelegate.teardown()
     publisher.onNext("Unreachable")
 
@@ -47,8 +50,10 @@ class MviDelegateTest {
   }
 
   @Test fun `it does not blow up if teardown() is called multiple times`() {
-    // when
+    // given
     val disposable = mviDelegate.setup(sourceFunction, sinkFunction)
+
+    // when
     mviDelegate.teardown()
     mviDelegate.teardown()
     mviDelegate.teardown()
