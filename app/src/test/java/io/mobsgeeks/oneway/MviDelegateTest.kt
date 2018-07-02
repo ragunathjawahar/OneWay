@@ -1,6 +1,5 @@
 package io.mobsgeeks.oneway
 
-import com.google.common.truth.Truth.assertThat
 import io.mobsgeeks.oneway.Binding.CREATED
 import io.mobsgeeks.oneway.Binding.DESTROYED
 import io.reactivex.Observable
@@ -24,16 +23,13 @@ class MviDelegateTest {
     }
 
     // when
-    val disposable = mviDelegate.setup(source, sink)
+    mviDelegate.setup(source, sink)
 
     // then
     with(testObserver) {
       assertNoErrors()
       assertValue(theValue)
     }
-
-    assertThat(disposable.isDisposed)
-        .isFalse()
   }
 
   @Test fun `it signals a new binding when the subscription happens for the first time`() {
@@ -52,7 +48,7 @@ class MviDelegateTest {
     }
   }
 
-  @Test fun `it signals a destroyed binding when the subscription is torn down`() {
+  @Test fun `it signals a destroyed binding on teardown()`() {
     // given
     val bindingsTestObserver = TestObserver<Binding>()
 
@@ -69,7 +65,7 @@ class MviDelegateTest {
     }
   }
 
-  @Test fun `it has a timeline that always has access to the latest state`() {
+  @Test fun `it has a timeline that provides access to the latest state`() {
     // given
     val timelineTestObserver = TestObserver<String>()
 
@@ -96,7 +92,7 @@ class MviDelegateTest {
 
   @Test fun `it disposes the subscription on teardown`() {
     // given
-    val disposable = mviDelegate.setup(source, sink)
+    mviDelegate.setup(source, sink)
 
     // when
     val firstMessage = "Hello"
@@ -110,14 +106,11 @@ class MviDelegateTest {
       assertNoErrors()
       assertValue(firstMessage)
     }
-
-    assertThat(disposable.isDisposed)
-        .isTrue()
   }
 
   @Test fun `it does not blow up if teardown() is called multiple times`() {
     // given
-    val disposable = mviDelegate.setup(source, sink)
+    mviDelegate.setup(source, sink)
 
     // when
     with(mviDelegate) {
@@ -126,10 +119,6 @@ class MviDelegateTest {
       teardown()
       teardown()
     }
-
-    // then
-    assertThat(disposable.isDisposed)
-        .isTrue()
   }
 
   @Test fun `it does not blow up if teardown() is called before setup`() {
@@ -147,26 +136,4 @@ class MviDelegateTest {
       assertNotTerminated()
     }
   }
-
-  @Test fun `it returns a disposable that is read-only`() {
-    // given
-    val disposable = mviDelegate.setup(source, sink)
-
-    // when
-    try {
-      disposable.dispose()
-    } catch (e: IllegalStateException) {
-      // swallow... abuk abuk
-    }
-
-    // then
-    assertThat(disposable.isDisposed)
-        .isFalse()
-  }
-
-  // 1. Bindings -> RESTORED
-  // 2. Ensure that a state is constantly fed into the relay.
-  // 3. Save and restore state (use a persist)
-  // 4. Timeline MVI Delegate
-  // 5. Lift the UI and replay states when building UI.
 }
