@@ -1,10 +1,12 @@
 package io.mobsgeeks.oneway
 
-import org.junit.Assert.assertEquals
+import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class CanaryUnitTest {
   @Test fun `test environment is setup`() {
-    assertEquals(4, 2 + 2)
+    val sum = 2 + 2
+    assertThat(sum)
+        .isEqualTo(4)
   }
 }
