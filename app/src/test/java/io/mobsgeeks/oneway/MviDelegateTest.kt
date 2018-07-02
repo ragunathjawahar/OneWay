@@ -1,6 +1,7 @@
 package io.mobsgeeks.oneway
 
 import com.google.common.truth.Truth.assertThat
+import io.mobsgeeks.oneway.Binding.CREATED
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.observers.TestObserver
@@ -9,7 +10,7 @@ import org.junit.Test
 
 class MviDelegateTest {
   private val publisher = PublishSubject.create<String>()
-  private val source = { publisher }
+  private val source: (Observable<Binding>) -> Observable<String> = { _ -> publisher }
   private val testObserver = TestObserver<String>()
   private val sink: (Observable<String>) -> Disposable = { it -> it.subscribeWith(testObserver) }
   private val mviDelegate = MviDelegate<String>()
@@ -17,10 +18,12 @@ class MviDelegateTest {
   @Test fun `it creates a subscription on setup`() {
     // given
     val theValue = "One Way!"
-    val sourceFunction = { Observable.merge(Observable.just(theValue), Observable.never()) }
+    val source: (Observable<Binding>) -> Observable<String> = { _ ->
+      Observable.merge(Observable.just(theValue), Observable.never())
+    }
 
     // when
-    val disposable = mviDelegate.setup(sourceFunction, sink)
+    val disposable = mviDelegate.setup(source, sink)
 
     // then
     testObserver.assertNoErrors()
@@ -28,6 +31,23 @@ class MviDelegateTest {
 
     assertThat(disposable.isDisposed)
         .isFalse()
+  }
+
+  @Test fun `it signals a new binding when the subscription happens for the first time`() {
+    // given
+    val bindingsTestObserver = TestObserver<Binding>()
+    val source: (Observable<Binding>) -> Observable<String> = { bindings ->
+      bindings.subscribe(bindingsTestObserver)
+      Observable.never<String>()
+    }
+
+    // when
+    mviDelegate.setup(source, sink)
+
+    // then
+    bindingsTestObserver.assertNoErrors()
+    bindingsTestObserver.assertValue(CREATED)
+    bindingsTestObserver.assertNotTerminated()
   }
 
   @Test fun `it disposes the subscription on teardown`() {
