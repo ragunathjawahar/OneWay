@@ -26,8 +26,10 @@ class MviDelegateTest {
     val disposable = mviDelegate.setup(source, sink)
 
     // then
-    testObserver.assertNoErrors()
-    testObserver.assertValue(theValue)
+    with(testObserver) {
+      assertNoErrors()
+      assertValue(theValue)
+    }
 
     assertThat(disposable.isDisposed)
         .isFalse()
@@ -45,9 +47,11 @@ class MviDelegateTest {
     mviDelegate.setup(source, sink)
 
     // then
-    bindingsTestObserver.assertNoErrors()
-    bindingsTestObserver.assertValue(CREATED)
-    bindingsTestObserver.assertNotTerminated()
+    with(bindingsTestObserver) {
+      assertNoErrors()
+      assertValue(CREATED)
+      assertNotTerminated()
+    }
   }
 
   @Test fun `it disposes the subscription on teardown`() {
@@ -62,8 +66,10 @@ class MviDelegateTest {
     publisher.onNext("Unreachable")
 
     // then
-    testObserver.assertNoErrors()
-    testObserver.assertValue(firstMessage)
+    with(testObserver) {
+      assertNoErrors()
+      assertValue(firstMessage)
+    }
 
     assertThat(disposable.isDisposed)
         .isTrue()
@@ -74,10 +80,12 @@ class MviDelegateTest {
     val disposable = mviDelegate.setup(source, sink)
 
     // when
-    mviDelegate.teardown()
-    mviDelegate.teardown()
-    mviDelegate.teardown()
-    mviDelegate.teardown()
+    with(mviDelegate) {
+      teardown()
+      teardown()
+      teardown()
+      teardown()
+    }
 
     // then
     assertThat(disposable.isDisposed)
