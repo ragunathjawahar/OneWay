@@ -35,7 +35,9 @@ class MviDelegate<S, P>(private val persister: Persister<S, P>) {
   }
 
   fun restoreState(persistentState: P?) {
-    persistentState?.let {
+    if (persistentState == null) {
+      bindingsSubject.onNext(CREATED)
+    } else {
       timelineSubject.onNext(persister.deserialize(persistentState))
       bindingsSubject.onNext(RESTORED)
     }

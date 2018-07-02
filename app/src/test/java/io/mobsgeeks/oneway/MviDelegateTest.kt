@@ -166,6 +166,22 @@ class MviDelegateTest {
     }
   }
 
+  @Test fun `it signals a CREATED binding event if the restored state is null`() {
+    // given
+    mviDelegate.bindings.subscribe(bindingsTestObserver)
+
+    // when
+    mviDelegate.setup(source, sink)
+    mviDelegate.restoreState(null)
+
+    // then
+    with(bindingsTestObserver) {
+      assertNoErrors()
+      assertValues(CREATED, CREATED)
+      assertNotTerminated()
+    }
+  }
+
   @Test fun `it disposes the subscription on teardown`() {
     // given
     mviDelegate.setup(source, sink)
