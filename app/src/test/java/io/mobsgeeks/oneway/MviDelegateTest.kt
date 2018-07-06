@@ -10,7 +10,15 @@ import org.junit.Test
 
 class MviDelegateTest {
   private val publisher = PublishSubject.create<String>()
-  private val source: (Observable<Binding>, Observable<String>) -> Observable<String> = { _, _ -> publisher }
+
+  private val source = object : Source<String> {
+    override fun produce(
+        bindings: Observable<Binding>,
+        states: Observable<String>
+    ): Observable<String> =
+        publisher
+  }
+
   private val testObserver = TestObserver<String>()
   private val bindingsTestObserver = TestObserver<Binding>()
   private val sink: (Observable<String>) -> Disposable = { it -> it.subscribeWith(testObserver) }
@@ -28,8 +36,12 @@ class MviDelegateTest {
   @Test fun `it creates a subscription on bind`() {
     // given
     val theValue = "One Way!"
-    val source: (Observable<Binding>, Observable<String>) -> Observable<String> = { _, _ ->
-      Observable.merge(Observable.just(theValue), Observable.never())
+    val source = object : Source<String> {
+      override fun produce(
+          bindings: Observable<Binding>,
+          states: Observable<String>
+      ): Observable<String> =
+          Observable.merge(Observable.just(theValue), Observable.never())
     }
 
     // when
