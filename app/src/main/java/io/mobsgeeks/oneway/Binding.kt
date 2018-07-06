@@ -15,9 +15,8 @@ enum class Binding {
   RESTORED,
 
   /**
-   * The subscription has been disposed. This event is never delivered to the bindings
-   * stream when the subscription is active. This event is helpful only in cases where
-   * the model's lifecycle has to work with an external entity.
+   * The subscription is about to be disposed. This event is emitted just
+   * before the stream is disposed.
    */
   DESTROYED
 }

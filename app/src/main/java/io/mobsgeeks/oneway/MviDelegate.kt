@@ -23,7 +23,7 @@ class MviDelegate<S, P>(private val persister: Persister<S, P>) {
   }
 
   fun bind(
-      source: (Observable<Binding>, Observable<S>) -> Observable<S>, // TODO(rj) Extract these to SAMIs
+      source: (Observable<Binding>, Observable<S>) -> Observable<S>,
       sink: (Observable<S>) -> Disposable
   ) {
     val sharedStates = source(bindings, timeline).share()
@@ -50,8 +50,8 @@ class MviDelegate<S, P>(private val persister: Persister<S, P>) {
 
   fun unbind() {
     if (compositeDisposable.size() > 0) {
-      compositeDisposable.clear()
       bindingsSubject.onNext(DESTROYED)
+      compositeDisposable.clear()
     }
   }
 }
