@@ -1,0 +1,13 @@
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+
+dependencies {
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+  implementation 'io.reactivex.rxjava2:rxjava:2.1.16'
+
+  testImplementation 'junit:junit:4.12'
+  testImplementation 'com.google.truth:truth:0.41'
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
