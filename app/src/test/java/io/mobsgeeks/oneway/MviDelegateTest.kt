@@ -14,14 +14,18 @@ class MviDelegateTest {
   private val source = object : Source<String> {
     override fun produce(
         bindings: Observable<Binding>,
-        states: Observable<String>
+        timeline: Observable<String>
     ): Observable<String> =
         publisher
   }
 
   private val testObserver = TestObserver<String>()
   private val bindingsTestObserver = TestObserver<Binding>()
-  private val sink: (Observable<String>) -> Disposable = { it -> it.subscribeWith(testObserver) }
+
+  private val sink = object : Sink<String> {
+    override fun consume(source: Observable<String>): Disposable =
+        source.subscribeWith(testObserver)
+  }
 
   private val persister: Persister<String, ByteArray> = object : Persister<String, ByteArray> {
     override fun serialize(state: String): ByteArray =
@@ -39,7 +43,7 @@ class MviDelegateTest {
     val source = object : Source<String> {
       override fun produce(
           bindings: Observable<Binding>,
-          states: Observable<String>
+          timeline: Observable<String>
       ): Observable<String> =
           Observable.merge(Observable.just(theValue), Observable.never())
     }

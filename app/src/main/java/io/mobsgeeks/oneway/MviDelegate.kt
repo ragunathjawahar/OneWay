@@ -4,7 +4,6 @@ import io.mobsgeeks.oneway.Binding.*
 import io.reactivex.BackpressureStrategy.LATEST
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlin.LazyThreadSafetyMode.NONE
@@ -24,11 +23,11 @@ class MviDelegate<S, P>(private val persister: Persister<S, P>) {
 
   fun bind(
       source: Source<S>,
-      sink: (Observable<S>) -> Disposable
+      sink: Sink<S>
   ) {
     val sharedStates = source.produce(bindings, timeline).share()
     compositeDisposable.addAll(
-        sink(sharedStates),
+        sink.consume(sharedStates),
         sharedStates.subscribe { timelineSubject.onNext(it) }
     )
     bindingsSubject.onNext(CREATED)
