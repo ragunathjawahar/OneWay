@@ -72,8 +72,10 @@ class MviDelegateTest {
   }
 
   @Test fun `it signals a DESTROYED binding event on unbind`() {
-    // when
+    // given
     mviDelegate.bindings.subscribe(bindingsTestObserver)
+
+    // when
     mviDelegate.bind(source, sink)
     mviDelegate.unbind()
 
@@ -167,6 +169,7 @@ class MviDelegateTest {
     // when
     mviDelegate.bindings.subscribe(bindingsTestObserver)
     mviDelegate.restoreState(persistentState)
+    mviDelegate.bind(source, sink)
 
     // then
     with(bindingsTestObserver) {
@@ -182,12 +185,14 @@ class MviDelegateTest {
 
     // when
     mviDelegate.bind(source, sink)
+    mviDelegate.unbind()
     mviDelegate.restoreState(null)
+    mviDelegate.bind(source, sink)
 
     // then
     with(bindingsTestObserver) {
       assertNoErrors()
-      assertValues(CREATED, CREATED)
+      assertValues(CREATED, DESTROYED, CREATED)
       assertNotTerminated()
     }
   }

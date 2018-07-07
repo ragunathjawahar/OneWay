@@ -31,16 +31,12 @@ class MviDelegate<S, P>(private val persister: Persister<S, P>) {
         sharedStates.subscribe { timelineSubject.onNext(it) },
         sharedStates.connect()
     )
-    bindingsSubject.onNext(CREATED)
+    val binding = if (timelineSubject.value == null) CREATED else RESTORED
+    bindingsSubject.onNext(binding)
   }
 
   fun restoreState(persistentState: P?) {
-    if (persistentState == null) {
-      bindingsSubject.onNext(CREATED)
-    } else {
-      timelineSubject.onNext(persister.deserialize(persistentState))
-      bindingsSubject.onNext(RESTORED)
-    }
+    persistentState?.let { timelineSubject.onNext(persister.deserialize(it)) }
   }
 
   fun saveState(): P? {
