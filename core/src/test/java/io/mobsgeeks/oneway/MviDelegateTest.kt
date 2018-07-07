@@ -69,6 +69,9 @@ class MviDelegateTest {
       assertValue(CREATED)
       assertNotTerminated()
     }
+
+    assertThat(bindingsTestObserver.hasSubscription())
+        .isTrue()
   }
 
   @Test fun `it signals a DESTROYED binding event on unbind`() {
@@ -213,6 +216,9 @@ class MviDelegateTest {
       assertNoErrors()
       assertValue(firstMessage)
     }
+
+    assertThat(testObserver.isDisposed)
+        .isTrue()
   }
 
   @Test fun `it does not blow up if unbind is called multiple times`() {
