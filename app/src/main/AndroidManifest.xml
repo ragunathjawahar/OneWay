@@ -1,11 +1,28 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="io.mobsgeeks.oneway">
+<?xml version="1.0" encoding="utf-8"?>
+<manifest
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  package="io.mobsgeeks.oneway.catalogue"
+  >
 
   <application
-    android:allowBackup="true"
-    android:icon="@mipmap/ic_launcher"
     android:label="@string/app_name"
+    android:icon="@mipmap/ic_launcher"
     android:roundIcon="@mipmap/ic_launcher_round"
-    android:supportsRtl="true"
-    android:theme="@style/AppTheme" />
+    android:name=".CatalogueApplication"
+    android:allowBackup="false"
+    android:supportsRtl="false"
+    android:theme="@style/AppTheme"
+    >
+
+    <activity
+      android:name=".counter.CounterActivity"
+      >
+
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
+  </application>
 </manifest>

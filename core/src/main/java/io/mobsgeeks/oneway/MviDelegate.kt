@@ -17,7 +17,7 @@ class MviDelegate<S, P>(private val stateSerializer: StateSerializer<S, P>) {
     bindingsSubject.toFlowable(LATEST).toObservable()
   }
 
-  internal val timeline: Observable<S> by lazy(NONE) {
+  val timeline: Observable<S> by lazy(NONE) {
     timelineSubject.toFlowable(LATEST).toObservable().share()
   }
 

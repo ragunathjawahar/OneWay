@@ -1,3 +1,5 @@
 <resources>
-  <string name="app_name">one-way</string>
+  <string name="app_name">Catalogue</string>
+  <string name="increment">Increment</string>
+  <string name="decrement">Decrement</string>
 </resources>
