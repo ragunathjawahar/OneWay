@@ -8,7 +8,7 @@ import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlin.LazyThreadSafetyMode.NONE
 
-class MviDelegate<S, P>(private val persister: Persister<S, P>) {
+class MviDelegate<S, P>(private val stateSerializer: StateSerializer<S, P>) {
   private val compositeDisposable = CompositeDisposable()
   private val bindingsSubject = PublishSubject.create<Binding>()
   private val timelineSubject = BehaviorSubject.create<S>()
@@ -36,12 +36,12 @@ class MviDelegate<S, P>(private val persister: Persister<S, P>) {
   }
 
   fun restoreState(persistentState: P?) {
-    persistentState?.let { timelineSubject.onNext(persister.deserialize(it)) }
+    persistentState?.let { timelineSubject.onNext(stateSerializer.deserialize(it)) }
   }
 
   fun saveState(): P? {
     val state = timelineSubject.value
-    return state?.let { persister.serialize(state) }
+    return state?.let { stateSerializer.serialize(state) }
   }
 
   fun unbind() {

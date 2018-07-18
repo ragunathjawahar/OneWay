@@ -27,7 +27,7 @@ class MviDelegateTest {
         source.subscribeWith(testObserver)
   }
 
-  private val persister: Persister<String, ByteArray> = object : Persister<String, ByteArray> {
+  private val stateSerializer: StateSerializer<String, ByteArray> = object : StateSerializer<String, ByteArray> {
     override fun serialize(state: String): ByteArray =
         state.toByteArray()
 
@@ -35,7 +35,7 @@ class MviDelegateTest {
         String(persistentState)
   }
 
-  private val mviDelegate = MviDelegate(persister)
+  private val mviDelegate = MviDelegate(stateSerializer)
 
   @Test fun `it creates a subscription on bind`() {
     // given
