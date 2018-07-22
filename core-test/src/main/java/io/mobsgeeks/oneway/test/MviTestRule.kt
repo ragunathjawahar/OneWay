@@ -4,6 +4,7 @@ import io.mobsgeeks.oneway.Binding
 import io.mobsgeeks.oneway.Binding.*
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 
@@ -18,8 +19,16 @@ class MviTestRule<S>(bindingFunction: (Observable<Binding>, Observable<S>) -> Ob
       .toFlowable(BackpressureStrategy.LATEST)
       .toObservable()
 
-  val testObserver: TestObserver<S> by lazy {
-    bindingFunction(bindings, timeline).test()
+  val testObserver = TestObserver<S>()
+
+  private val compositeDisposable = CompositeDisposable()
+
+  init {
+    val sharedStates = bindingFunction(bindings, timeline).share()
+    compositeDisposable.addAll(
+        sharedStates.subscribe { timelineSubject.onNext(it) },
+        sharedStates.subscribeWith(testObserver)
+    )
   }
 
   fun screenIsCreated() {

@@ -111,6 +111,23 @@ class MviTestRuleTest {
         .isTrue()
   }
 
+  @Test fun `it can setup subscription with the timeline`() {
+    // given
+    val stateA = SomeState("A")
+    val stateB = SomeState("B")
+    val bindingFunction = { bindings: Observable<Binding>, _: Observable<SomeState> ->
+      bindings.flatMap { Observable.just(stateA, stateB) }
+    }
+    val mviTestRule = MviTestRule(bindingFunction)
+    val testObserver = mviTestRule.timeline.test()
+
+    // when
+    mviTestRule.screenIsCreated()
+
+    // then
+    testObserver.assertValues(stateA, stateB)
+  }
+
   // TODO(rj) It should dispose subscription on screenIsDestroyed()
 }
 
