@@ -2,6 +2,8 @@ apply plugin: 'java-library'
 apply plugin: 'kotlin'
 
 dependencies {
+  implementation project(':core')
+
   implementation srcDependencies.kotlin
   implementation srcDependencies.rxJava
   implementation testDependencies.jUnit
