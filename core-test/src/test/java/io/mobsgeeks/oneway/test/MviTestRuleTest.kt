@@ -1,10 +1,7 @@
 package io.mobsgeeks.oneway.test
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.verifyNoMoreInteractions
+import com.nhaarman.mockito_kotlin.*
 import io.mobsgeeks.oneway.Binding
 import io.mobsgeeks.oneway.Binding.*
 import io.reactivex.Observable
@@ -96,14 +93,25 @@ class MviTestRuleTest {
   @Test fun `it can invoke a binding function to setup subscription`() {
     // given
     val bindingFunction = mock<(Observable<Binding>, Observable<SomeState>) -> Observable<SomeState>>()
+    whenever(bindingFunction(any(), any()))
+        .thenReturn(Observable.never())
 
     // when
-    MviTestRule(bindingFunction)
+    MviTestRule(bindingFunction).testObserver.hasSubscription()
 
     // then
     verify(bindingFunction).invoke(any(), any())
     verifyNoMoreInteractions(bindingFunction)
   }
+
+  @Test fun `it can setup subscription with a test observer`() {
+    // then
+    val activeSubscription = testRule.testObserver.hasSubscription()
+    assertThat(activeSubscription)
+        .isTrue()
+  }
+
+  // TODO(rj) It should dispose subscription on screenIsDestroyed()
 }
 
 data class SomeState(val message: String)
