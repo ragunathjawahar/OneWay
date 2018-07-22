@@ -8,8 +8,7 @@ import org.junit.Test
 class MviTestRuleTest {
   private val testRule = MviTestRule<Intention, State>()
 
-  @Test
-  fun `it exposes an intentions subject`() {
+  @Test fun `it exposes an intentions subject`() {
     // given
     val testObserver = testRule.intentions.test()
 
@@ -24,14 +23,12 @@ class MviTestRuleTest {
     }
   }
 
-  @Test
-  fun `it exposes a bindings observable`() {
+  @Test fun `it exposes a bindings observable`() {
     assertThat(testRule.bindings)
         .isInstanceOf(Observable::class.java)
   }
 
-  @Test
-  fun `it emits CREATED when the screen is created`() {
+  @Test fun `it emits CREATED when the screen is created`() {
     // given
     val testObserver = testRule.bindings.test()
 
@@ -46,8 +43,7 @@ class MviTestRuleTest {
     }
   }
 
-  @Test
-  fun `it emits RESTORED when the screen is restored`() {
+  @Test fun `it emits RESTORED when the screen is restored`() {
     // given
     val testObserver = testRule.bindings.test()
 
@@ -62,8 +58,7 @@ class MviTestRuleTest {
     }
   }
 
-  @Test
-  fun `it emits DESTROYED when the screen is destroyed`() {
+  @Test fun `it emits DESTROYED when the screen is destroyed`() {
     // given
     val testObserver = testRule.bindings.test()
 
