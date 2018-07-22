@@ -8,19 +8,19 @@ import io.reactivex.Observable
 import org.junit.Test
 
 class MviTestRuleTest {
-  private val testRule = MviTestRule<Intention, State>()
+  private val testRule = MviTestRule<SomeIntention, SomeState>()
 
   @Test fun `it exposes an intentions subject`() {
     // given
     val testObserver = testRule.intentions.test()
 
     // when
-    testRule.intentions.onNext(Intention)
+    testRule.intentions.onNext(SomeIntention)
 
     // then
     with(testObserver) {
       assertNoErrors()
-      assertValues(Intention)
+      assertValues(SomeIntention)
       assertNotTerminated()
     }
   }
@@ -82,7 +82,7 @@ class MviTestRuleTest {
 
   @Test fun `it can setup a start state`() {
     // given
-    val startState = State("Start")
+    val startState = SomeState("Start")
     val testObserver = testRule.timeline.test()
 
     // when
@@ -94,7 +94,7 @@ class MviTestRuleTest {
 
   @Test fun `it can invoke a block after setting up a start state`() {
     // given
-    val startState = State("Start")
+    val startState = SomeState("Start")
     val block = mock<() -> Unit>{}
 
     // when
@@ -105,5 +105,5 @@ class MviTestRuleTest {
   }
 }
 
-object Intention
-data class State(val message: String)
+object SomeIntention
+data class SomeState(val message: String)
