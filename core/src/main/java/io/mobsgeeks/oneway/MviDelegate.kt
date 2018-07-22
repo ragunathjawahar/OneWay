@@ -21,6 +21,7 @@ class MviDelegate<S, P>(
     bindingsSubject.toFlowable(LATEST).toObservable()
   }
 
+  // TODO(rj) 22/Jul/18 - Mention that this should NEVER be a primary stream in the KDoc, because that would cause an infinite loop.
   val timeline: Observable<S> by lazy(NONE) {
     timelineSubject.toFlowable(LATEST).toObservable().share()
   }
