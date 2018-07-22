@@ -1,6 +1,8 @@
 package io.mobsgeeks.oneway.catalogue.counter
 
 import io.mobsgeeks.oneway.Binding
+import io.mobsgeeks.oneway.Binding.CREATED
+import io.mobsgeeks.oneway.Binding.RESTORED
 import io.mobsgeeks.oneway.catalogue.counter.CounterState.Companion.ZERO
 import io.mobsgeeks.oneway.catalogue.counter.usecases.*
 import io.reactivex.disposables.CompositeDisposable
@@ -14,6 +16,8 @@ class CounterModelTest {
   private val intentions = PublishSubject.create<CounterIntention>()
   private val bindings = PublishSubject.create<Binding>()
   private val timeline = PublishSubject.create<CounterState>()
+  private val testObserver = TestObserver<CounterState>()
+  private val disposable: CompositeDisposable = CompositeDisposable()
 
   private val useCases = CounterUseCases(
       CreatedUseCase(),
@@ -21,10 +25,6 @@ class CounterModelTest {
       IncrementUseCase(timeline),
       DecrementUseCase(timeline)
   )
-
-  private val testObserver = TestObserver<CounterState>()
-
-  private val disposable: CompositeDisposable = CompositeDisposable()
 
   @Before fun setup() {
     val sharedStates = CounterModel
@@ -40,52 +40,66 @@ class CounterModelTest {
     disposable.dispose()
   }
 
-  @Test fun `start with a ZERO state`() {
+  @Test fun `creating the screen starts with a ZERO state`() {
     // when
-    bindings.onNext(Binding.CREATED)
+    screenIsCreated()
 
     // then
     assertStates(testObserver, ZERO)
   }
 
   @Test fun `tapping on + increments the counter by 1`() {
-    // given
-    bindings.onNext(Binding.CREATED)
-
     // when
-    intentions.onNext(Increment)
+    startWith(ZERO) {
+      increment()
+    }
 
     // then
     val one = ZERO.add(1)
-    assertStates(testObserver, ZERO, one)
+    assertStates(testObserver, one)
   }
 
   @Test fun `tapping on - decrements the counter by 1`() {
-    // given
-    bindings.onNext(Binding.CREATED)
-
     // when
-    intentions.onNext(Decrement)
+    startWith(ZERO) {
+      decrement()
+    }
 
     // then
     val minusOne = ZERO.add(-1)
-    assertStates(testObserver, ZERO, minusOne)
+    assertStates(testObserver, minusOne)
   }
 
-  @Test fun `restoring the screen preserves last known state`() {
+  @Test fun `restoring the screen preserves the previous state`() {
     // given
-    bindings.onNext(Binding.CREATED)
-    intentions.onNext(Increment)
+    val three = CounterState(3)
 
     // when
-    bindings.onNext(Binding.RESTORED)
+    startWith(three) {
+      screenIsRestored()
+    }
 
     // then
-    val one = ZERO.add(1)
     with(testObserver) {
       assertNoErrors()
-      assertValues(ZERO, one, one)
+      assertValues(three)
     }
+  }
+
+  private fun screenIsCreated() {
+    bindings.onNext(CREATED)
+  }
+
+  private fun increment() {
+    intentions.onNext(Increment)
+  }
+
+  private fun decrement() {
+    intentions.onNext(Decrement)
+  }
+
+  private fun screenIsRestored() {
+    bindings.onNext(RESTORED)
   }
 
   private fun assertStates(
@@ -97,5 +111,13 @@ class CounterModelTest {
       assertValues(*states)
       assertNotTerminated()
     }
+  }
+
+  private fun startWith(
+      startState: CounterState,
+      block: () -> Unit
+  ) {
+    timeline.onNext(startState)
+    block()
   }
 }
