@@ -47,4 +47,12 @@ class MviTestRule<S>(bindingFunction: (Observable<Binding>, Observable<S>) -> Ob
     timelineSubject.onNext(startState)
     block()
   }
+
+  fun assertStates(vararg states: S) {
+    with(testObserver) {
+      assertNoErrors()
+      assertValues(*states)
+      assertNotTerminated()
+    }
+  }
 }

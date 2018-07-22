@@ -111,6 +111,22 @@ class MviTestRuleTest {
         .isTrue()
   }
 
+  @Test fun `it can assert states`() {
+    // given
+    val stateA = SomeState("A")
+    val stateB = SomeState("B")
+    val bindingFunction = { bindings: Observable<Binding>, _: Observable<SomeState> ->
+      bindings.flatMap { Observable.just(stateA, stateB) }
+    }
+    val mviTestRule = MviTestRule(bindingFunction)
+
+    // when
+    mviTestRule.screenIsCreated()
+
+    // then
+    mviTestRule.assertStates(stateA, stateB)
+  }
+
   @Test fun `it can setup subscription with the timeline`() {
     // given
     val stateA = SomeState("A")
