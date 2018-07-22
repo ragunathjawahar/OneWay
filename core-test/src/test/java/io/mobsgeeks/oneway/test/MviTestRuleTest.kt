@@ -155,6 +155,20 @@ class MviTestRuleTest {
         .isTrue()
   }
 
+  @Test fun `it restores subscriptions when the screen is restored`() {
+    // given
+    testRule.screenIsDestroyed()
+
+    // when
+    testRule.screenIsRestored()
+
+    // then
+    assertThat(testRule.testObserver.hasSubscription())
+        .isTrue()
+    assertThat(testRule.testObserver.isDisposed)
+        .isFalse()
+  }
+
   // TODO(rj) Convert this into a test rule
 }
 

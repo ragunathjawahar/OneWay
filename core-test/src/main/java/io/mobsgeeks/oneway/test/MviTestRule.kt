@@ -8,7 +8,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 
-class MviTestRule<S>(bindingFunction: (Observable<Binding>, Observable<S>) -> Observable<S>) {
+class MviTestRule<S>(private val bindingFunction: (Observable<Binding>, Observable<S>) -> Observable<S>) {
   private val bindingsSubject = PublishSubject.create<Binding>()
   val bindings: Observable<Binding> = bindingsSubject
       .toFlowable(BackpressureStrategy.LATEST)
@@ -19,16 +19,14 @@ class MviTestRule<S>(bindingFunction: (Observable<Binding>, Observable<S>) -> Ob
       .toFlowable(BackpressureStrategy.LATEST)
       .toObservable() // TODO(rj) Do not expose timeline.
 
-  val testObserver = TestObserver<S>()
+  private var internalTestObserver = TestObserver<S>()
+  val testObserver: TestObserver<S>
+    get() = internalTestObserver
 
   private val compositeDisposable = CompositeDisposable()
 
   init {
-    val sharedStates = bindingFunction(bindings, timeline).share()
-    compositeDisposable.addAll(
-        sharedStates.subscribe { timelineSubject.onNext(it) },
-        sharedStates.subscribeWith(testObserver)
-    )
+    createBinding(bindingFunction)
   }
 
   fun screenIsCreated() {
@@ -36,6 +34,9 @@ class MviTestRule<S>(bindingFunction: (Observable<Binding>, Observable<S>) -> Ob
   }
 
   fun screenIsRestored() {
+    if (internalTestObserver.isDisposed) {
+      createBinding(bindingFunction)
+    }
     bindingsSubject.onNext(RESTORED)
   }
 
@@ -55,5 +56,15 @@ class MviTestRule<S>(bindingFunction: (Observable<Binding>, Observable<S>) -> Ob
       assertValues(*states)
       assertNotTerminated()
     }
+  }
+
+  private fun createBinding(bindingFunction: (Observable<Binding>, Observable<S>) -> Observable<S>) {
+    internalTestObserver = TestObserver()
+
+    val sharedStates = bindingFunction(bindings, timeline).share()
+    compositeDisposable.addAll(
+        sharedStates.subscribe { timelineSubject.onNext(it) },
+        sharedStates.subscribeWith(internalTestObserver)
+    )
   }
 }
