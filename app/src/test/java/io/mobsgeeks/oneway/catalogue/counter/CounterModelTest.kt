@@ -26,8 +26,7 @@ class CounterModelTest {
 
   private val disposable: CompositeDisposable = CompositeDisposable()
 
-  @Before
-  fun setup() {
+  @Before fun setup() {
     val sharedStates = CounterModel
         .bind(intentions, bindings, useCases)
         .share()
@@ -37,8 +36,7 @@ class CounterModelTest {
     )
   }
 
-  @After
-  fun teardown() {
+  @After fun teardown() {
     disposable.dispose()
   }
 

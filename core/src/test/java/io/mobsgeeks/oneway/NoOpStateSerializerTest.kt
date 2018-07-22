@@ -7,8 +7,7 @@ class NoOpStateSerializerTest {
   private val noOpStateSerializer = NoOpStateSerializer<Cat>()
   private val cat = Cat()
 
-  @Test
-  fun `it returns the same object after serialization`() {
+  @Test fun `it returns the same object after serialization`() {
     // when
     val serializedCat = noOpStateSerializer.serialize(cat)
 
@@ -17,8 +16,7 @@ class NoOpStateSerializerTest {
         .isSameAs(cat)
   }
 
-  @Test
-  fun `it returns the same object after deserialization`() {
+  @Test fun `it returns the same object after deserialization`() {
     // when
     val deserializedCat = noOpStateSerializer.deserialize(cat)
 
