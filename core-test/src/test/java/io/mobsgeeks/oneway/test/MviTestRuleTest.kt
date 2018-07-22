@@ -6,7 +6,7 @@ import io.reactivex.Observable
 import org.junit.Test
 
 class MviTestRuleTest {
-  private val testRule = MviTestRule<Intention>()
+  private val testRule = MviTestRule<Intention, State>()
 
   @Test
   fun `it exposes an intentions subject`() {
@@ -77,6 +77,12 @@ class MviTestRuleTest {
       assertNotTerminated()
     }
   }
+
+  @Test fun `it exposes a timeline observable`() {
+    assertThat(testRule.timeline)
+        .isInstanceOf(Observable::class.java)
+  }
 }
 
 object Intention
+object State

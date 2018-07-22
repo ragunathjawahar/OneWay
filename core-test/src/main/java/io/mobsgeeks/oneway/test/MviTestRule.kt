@@ -6,11 +6,16 @@ import io.reactivex.BackpressureStrategy
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 
-class MviTestRule<I> {
-  private val bindingsSubject = PublishSubject.create<Binding>()
-
+class MviTestRule<I, S> {
   val intentions = PublishSubject.create<I>()
+
+  private val bindingsSubject = PublishSubject.create<Binding>()
   val bindings: Observable<Binding> = bindingsSubject
+      .toFlowable(BackpressureStrategy.LATEST)
+      .toObservable()
+
+  private val timelineSubject  = PublishSubject.create<S>()
+  val timeline: Observable<S> = timelineSubject
       .toFlowable(BackpressureStrategy.LATEST)
       .toObservable()
 
