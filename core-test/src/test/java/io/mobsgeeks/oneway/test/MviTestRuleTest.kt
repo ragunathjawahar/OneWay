@@ -1,29 +1,17 @@
 package io.mobsgeeks.oneway.test
 
 import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.verifyNoMoreInteractions
+import io.mobsgeeks.oneway.Binding
 import io.mobsgeeks.oneway.Binding.*
 import io.reactivex.Observable
 import org.junit.Test
 
 class MviTestRuleTest {
-  private val testRule = MviTestRule<SomeIntention, SomeState>()
-
-  @Test fun `it exposes an intentions subject`() {
-    // given
-    val testObserver = testRule.intentions.test()
-
-    // when
-    testRule.intentions.onNext(SomeIntention)
-
-    // then
-    with(testObserver) {
-      assertNoErrors()
-      assertValues(SomeIntention)
-      assertNotTerminated()
-    }
-  }
+  private val testRule = MviTestRule<SomeState> { _, _ -> Observable.never() }
 
   @Test fun `it exposes a bindings observable`() {
     assertThat(testRule.bindings)
@@ -102,8 +90,20 @@ class MviTestRuleTest {
 
     // then
     verify(block).invoke()
+    verifyNoMoreInteractions(block)
+  }
+
+  @Test fun `it can invoke a binding function to setup subscription`() {
+    // given
+    val bindingFunction = mock<(Observable<Binding>, Observable<SomeState>) -> Observable<SomeState>>()
+
+    // when
+    MviTestRule(bindingFunction)
+
+    // then
+    verify(bindingFunction).invoke(any(), any())
+    verifyNoMoreInteractions(bindingFunction)
   }
 }
 
-object SomeIntention
 data class SomeState(val message: String)
