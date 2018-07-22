@@ -19,7 +19,7 @@ class MviTestRule<S>(private val bindingFunction: (Observable<Binding>, Observab
       .toFlowable(BackpressureStrategy.LATEST)
       .toObservable() // TODO(rj) Do not expose timeline.
 
-  private var internalTestObserver = TestObserver<S>()
+  private lateinit var internalTestObserver: TestObserver<S>
   val testObserver: TestObserver<S>
     get() = internalTestObserver
 
@@ -30,6 +30,7 @@ class MviTestRule<S>(private val bindingFunction: (Observable<Binding>, Observab
   }
 
   fun screenIsCreated() {
+    createBinding(bindingFunction)
     bindingsSubject.onNext(CREATED)
   }
 
@@ -59,8 +60,13 @@ class MviTestRule<S>(private val bindingFunction: (Observable<Binding>, Observab
   }
 
   private fun createBinding(bindingFunction: (Observable<Binding>, Observable<S>) -> Observable<S>) {
-    internalTestObserver = TestObserver()
+    val subscriptionExists = ::internalTestObserver.isInitialized
+        && !internalTestObserver.isDisposed
+    if (subscriptionExists) {
+      return
+    }
 
+    internalTestObserver = TestObserver()
     val sharedStates = bindingFunction(bindings, timeline).share()
     compositeDisposable.addAll(
         sharedStates.subscribe { timelineSubject.onNext(it) },

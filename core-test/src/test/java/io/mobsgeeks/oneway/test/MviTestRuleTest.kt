@@ -169,7 +169,22 @@ class MviTestRuleTest {
         .isFalse()
   }
 
-  // TODO(rj) Convert this into a test rule
+  @Test fun `it restores subscriptions when the screen is created`() {
+    // given
+    testRule.screenIsDestroyed()
+
+    // when
+    testRule.screenIsCreated()
+
+    // then
+    assertThat(testRule.testObserver.hasSubscription())
+        .isTrue()
+    assertThat(testRule.testObserver.isDisposed)
+        .isFalse()
+  }
+
+  // TODO(rj) State is restored when the state is restored.
+  // TODO(rj) Convert this into a test rule.
 }
 
 data class SomeState(val message: String)
