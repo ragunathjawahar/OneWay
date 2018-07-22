@@ -109,6 +109,8 @@ class MviTestRuleTest {
     val activeSubscription = testRule.testObserver.hasSubscription()
     assertThat(activeSubscription)
         .isTrue()
+    assertThat(testRule.testObserver.isDisposed)
+        .isFalse()
   }
 
   @Test fun `it can assert states`() {
@@ -144,7 +146,16 @@ class MviTestRuleTest {
     testObserver.assertValues(stateA, stateB)
   }
 
-  // TODO(rj) It should dispose subscription on screenIsDestroyed()
+  @Test fun `it disposes subscriptions when the screen is destroyed`() {
+    // when
+    testRule.screenIsDestroyed()
+
+    // then
+    assertThat(testRule.testObserver.isDisposed)
+        .isTrue()
+  }
+
+  // TODO(rj) Convert this into a test rule
 }
 
 data class SomeState(val message: String)

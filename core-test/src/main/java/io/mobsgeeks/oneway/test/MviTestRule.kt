@@ -12,12 +12,12 @@ class MviTestRule<S>(bindingFunction: (Observable<Binding>, Observable<S>) -> Ob
   private val bindingsSubject = PublishSubject.create<Binding>()
   val bindings: Observable<Binding> = bindingsSubject
       .toFlowable(BackpressureStrategy.LATEST)
-      .toObservable()
+      .toObservable() // TODO(rj) Do not expose bindings.
 
   private val timelineSubject  = PublishSubject.create<S>()
   val timeline: Observable<S> = timelineSubject
       .toFlowable(BackpressureStrategy.LATEST)
-      .toObservable()
+      .toObservable() // TODO(rj) Do not expose timeline.
 
   val testObserver = TestObserver<S>()
 
@@ -41,6 +41,7 @@ class MviTestRule<S>(bindingFunction: (Observable<Binding>, Observable<S>) -> Ob
 
   fun screenIsDestroyed() {
     bindingsSubject.onNext(DESTROYED)
+    compositeDisposable.clear()
   }
 
   fun startWith(startState: S, block: () -> Unit) {
