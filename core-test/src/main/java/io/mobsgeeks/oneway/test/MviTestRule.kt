@@ -30,4 +30,9 @@ class MviTestRule<I, S> {
   fun screenIsDestroyed() {
     bindingsSubject.onNext(DESTROYED)
   }
+
+  fun startWith(startState: S, block: () -> Unit) {
+    timelineSubject.onNext(startState)
+    block()
+  }
 }

@@ -1,6 +1,8 @@
 package io.mobsgeeks.oneway.test
 
 import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verify
 import io.mobsgeeks.oneway.Binding.*
 import io.reactivex.Observable
 import org.junit.Test
@@ -77,7 +79,31 @@ class MviTestRuleTest {
     assertThat(testRule.timeline)
         .isInstanceOf(Observable::class.java)
   }
+
+  @Test fun `it can setup a start state`() {
+    // given
+    val startState = State("Start")
+    val testObserver = testRule.timeline.test()
+
+    // when
+    testRule.startWith(startState) {}
+
+    // then
+    testObserver.assertValue(startState)
+  }
+
+  @Test fun `it can invoke a block after setting up a start state`() {
+    // given
+    val startState = State("Start")
+    val block = mock<() -> Unit>{}
+
+    // when
+    testRule.startWith(startState, block)
+
+    // then
+    verify(block).invoke()
+  }
 }
 
 object Intention
-object State
+data class State(val message: String)

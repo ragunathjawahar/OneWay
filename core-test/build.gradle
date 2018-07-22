@@ -9,6 +9,7 @@ dependencies {
   implementation testDependencies.jUnit
 
   testImplementation testDependencies.jUnit
+  testImplementation testDependencies.mockitoKotlin
   testImplementation testDependencies.truth
 }
 
