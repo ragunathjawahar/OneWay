@@ -3,7 +3,10 @@ package io.mobsgeeks.oneway.catalogue.counter
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.jakewharton.rxbinding2.view.clicks
-import io.mobsgeeks.oneway.*
+import io.mobsgeeks.oneway.Binding
+import io.mobsgeeks.oneway.MviDelegate
+import io.mobsgeeks.oneway.Sink
+import io.mobsgeeks.oneway.Source
 import io.mobsgeeks.oneway.catalogue.R
 import io.mobsgeeks.oneway.catalogue.counter.drivers.CounterViewDriver
 import io.mobsgeeks.oneway.catalogue.counter.usecases.*
@@ -14,13 +17,7 @@ import kotlinx.android.synthetic.main.counter_fragment.*
 private const val KEY_STATE = "state"
 
 class CounterActivity : AppCompatActivity(), CounterView {
-  private val stateSerializer = object : StateSerializer<CounterState, CounterState> {
-    override fun serialize(state: CounterState): CounterState = state
-    override fun deserialize(persistentState: CounterState): CounterState = persistentState
-  }
-
-  private val mviDelegate: MviDelegate<CounterState, CounterState> =
-      MviDelegate(stateSerializer)
+  private val mviDelegate: MviDelegate<CounterState, CounterState> = MviDelegate()
 
   private val intentions: CounterIntentions
     get() = CounterIntentions(incrementButton.clicks(), decrementButton.clicks())

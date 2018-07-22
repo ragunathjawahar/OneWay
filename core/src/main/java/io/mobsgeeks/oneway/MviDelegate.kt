@@ -8,7 +8,11 @@ import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlin.LazyThreadSafetyMode.NONE
 
-class MviDelegate<S, P>(private val stateSerializer: StateSerializer<S, P>) {
+class MviDelegate<S, P>(
+    private val stateSerializer: StateSerializer<S, P>
+) {
+  constructor() : this(NoOpStateSerializer<S>() as StateSerializer<S, P>)
+
   private val compositeDisposable = CompositeDisposable()
   private val bindingsSubject = PublishSubject.create<Binding>()
   private val timelineSubject = BehaviorSubject.create<S>()
