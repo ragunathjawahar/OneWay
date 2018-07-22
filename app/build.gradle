@@ -43,6 +43,8 @@ dependencies {
   implementation srcDependencies.constraintLayout
 
   // Test
+  testImplementation project(':core-test')
+
   testImplementation testDependencies.jUnit
   testImplementation testDependencies.mockitoKotlin
   testImplementation testDependencies.truth
