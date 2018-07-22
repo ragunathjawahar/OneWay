@@ -1,0 +1,14 @@
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+
+dependencies {
+  implementation srcDependencies.kotlin
+  implementation srcDependencies.rxJava
+  implementation testDependencies.jUnit
+
+  testImplementation testDependencies.jUnit
+  testImplementation testDependencies.truth
+}
+
+sourceCompatibility = '1.7'
+targetCompatibility = '1.7'
