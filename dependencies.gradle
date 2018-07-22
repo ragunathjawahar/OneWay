@@ -1,0 +1,46 @@
+ext {
+  versions = [
+      // Rx
+      rxBinding: '2.1.1',
+      rxJava: '2.1.16',
+      rxKotlin: '2.2.0',
+
+      // Support
+      appCompat: '27.1.1',
+      constraintLayout: '1.1.2',
+
+      // Android Test
+      androidTestRunner: '1.0.2',
+      espresso: '3.0.2',
+
+      // Test
+      jUnit: '4.12',
+      truth: '0.41',
+      mockitoKotlin: '1.6.0'
+  ]
+
+  srcDependencies = [
+      // Rx
+      rxBindingKotlin: "com.jakewharton.rxbinding2:rxbinding-kotlin:${versions.rxBinding}",
+      rxJava: "io.reactivex.rxjava2:rxjava:${versions.rxJava}",
+      rxKotlin: "io.reactivex.rxjava2:rxkotlin:${versions.rxKotlin}",
+
+      // Support
+      appCompat: "com.android.support:appcompat-v7:${versions.appCompat}",
+      constraintLayout: "com.android.support.constraint:constraint-layout:${versions.constraintLayout}",
+
+      // Kotlin version is specified in root 'build.gradle'
+      kotlin: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion",
+  ]
+
+  testDependencies = [
+      // Android Test
+      androidTestRunner: "com.android.support.test:runner:${versions.androidTestRunner}",
+      espresso: "com.android.support.test.espresso:espresso-core:${versions.espresso}",
+
+      // Test
+      jUnit: "junit:junit:${versions.jUnit}",
+      mockitoKotlin: "com.nhaarman:mockito-kotlin:${versions.mockitoKotlin}",
+      truth: "com.google.truth:truth:${versions.truth}"
+  ]
+}

@@ -1,5 +1,5 @@
 buildscript {
-  ext.kotlinVersion = '1.2.50'
+  ext.kotlinVersion = '1.2.51'
 
   repositories {
     google()
@@ -11,6 +11,8 @@ buildscript {
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
   }
 }
+
+apply from: 'dependencies.gradle'
 
 allprojects {
   repositories {

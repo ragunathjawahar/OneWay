@@ -31,22 +31,24 @@ dependencies {
   implementation project(':core')
 
   // Kotlin
-  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+  implementation srcDependencies.kotlin
 
   // Rx
-  implementation 'io.reactivex.rxjava2:rxkotlin:2.2.0'
-  implementation 'io.reactivex.rxjava2:rxjava:2.1.16'
-  implementation 'com.jakewharton.rxbinding2:rxbinding-kotlin:2.1.1'
+  implementation srcDependencies.rxBindingKotlin
+  implementation srcDependencies.rxJava
+  implementation srcDependencies.rxKotlin
 
   // Support libraries
-  implementation 'com.android.support:appcompat-v7:27.1.1'
-  implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+  implementation srcDependencies.appCompat
+  implementation srcDependencies.constraintLayout
 
-  testImplementation 'junit:junit:4.12'
-  testImplementation 'com.google.truth:truth:0.41'
-  testImplementation 'com.nhaarman:mockito-kotlin:1.6.0'
+  // Test
+  testImplementation testDependencies.jUnit
+  testImplementation testDependencies.mockitoKotlin
+  testImplementation testDependencies.truth
 
-  androidTestImplementation 'com.android.support.test:runner:1.0.2'
-  androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-  androidTestImplementation 'com.google.truth:truth:0.41'
+  // Android Test
+  androidTestImplementation testDependencies.androidTestRunner
+  androidTestImplementation testDependencies.espresso
+  androidTestImplementation testDependencies.truth
 }
