@@ -93,16 +93,16 @@ class MviTestRuleTest {
 
   @Test fun `it can invoke a binding function to setup subscription`() {
     // given
-    val bindingFunction = mock<(Observable<Binding>, Observable<SomeState>) -> Observable<SomeState>>()
-    whenever(bindingFunction(any(), any()))
+    val sourceFunction = mock<(Observable<Binding>, Observable<SomeState>) -> Observable<SomeState>>()
+    whenever(sourceFunction(any(), any()))
         .thenReturn(Observable.never())
 
     // when
-    MviTestRule(bindingFunction).testObserver.hasSubscription()
+    MviTestRule(sourceFunction).testObserver.hasSubscription()
 
     // then
-    verify(bindingFunction).invoke(any(), any())
-    verifyNoMoreInteractions(bindingFunction)
+    verify(sourceFunction).invoke(any(), any())
+    verifyNoMoreInteractions(sourceFunction)
   }
 
   @Test fun `it can setup subscription with a test observer`() {
@@ -118,10 +118,10 @@ class MviTestRuleTest {
     // given
     val stateA = SomeState("A")
     val stateB = SomeState("B")
-    val bindingFunction = { bindings: Observable<Binding>, _: Observable<SomeState> ->
+    val sourceFunction = { bindings: Observable<Binding>, _: Observable<SomeState> ->
       bindings.flatMap { Observable.just(stateA, stateB) }
     }
-    val mviTestRule = MviTestRule(bindingFunction)
+    val mviTestRule = MviTestRule(sourceFunction)
 
     // when
     mviTestRule.screenIsCreated()
@@ -134,10 +134,10 @@ class MviTestRuleTest {
     // given
     val stateA = SomeState("A")
     val stateB = SomeState("B")
-    val bindingFunction = { bindings: Observable<Binding>, _: Observable<SomeState> ->
+    val sourceFunction = { bindings: Observable<Binding>, _: Observable<SomeState> ->
       bindings.flatMap { Observable.just(stateA, stateB) }
     }
-    val mviTestRule = MviTestRule(bindingFunction)
+    val mviTestRule = MviTestRule(sourceFunction)
     val testObserver = mviTestRule.timeline.test()
 
     // when
@@ -187,7 +187,7 @@ class MviTestRuleTest {
   @Test fun `it has access to last known state after the screen is restored`() {
     // given
     val oneState = SomeState("ONE")
-    val bindingFunction = { bindings: Observable<Binding>, timeline: Observable<SomeState> ->
+    val sourceFunction = { bindings: Observable<Binding>, timeline: Observable<SomeState> ->
       val bindingCreatedStates = bindings
           .filter { it == CREATED }
           .map { oneState }
@@ -199,7 +199,7 @@ class MviTestRuleTest {
 
       Observable.merge(bindingCreatedStates, bindingRestoredStates)
     }
-    val mviTestRule = MviTestRule(bindingFunction)
+    val mviTestRule = MviTestRule(sourceFunction)
     mviTestRule.screenIsCreated()
     mviTestRule.screenIsDestroyed()
     mviTestRule.assertStates(oneState)

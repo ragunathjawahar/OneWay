@@ -9,7 +9,7 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 
-class MviTestRule<S>(private val bindingFunction: (Observable<Binding>, Observable<S>) -> Observable<S>) {
+class MviTestRule<S>(private val sourceFunction: (Observable<Binding>, Observable<S>) -> Observable<S>) {
   private val bindingsSubject = PublishSubject.create<Binding>()
   val bindings: Observable<Binding> = bindingsSubject
       .toFlowable(BackpressureStrategy.LATEST)
@@ -27,16 +27,16 @@ class MviTestRule<S>(private val bindingFunction: (Observable<Binding>, Observab
   private val compositeDisposable = CompositeDisposable()
 
   init {
-    createBinding(bindingFunction)
+    createSource(sourceFunction)
   }
 
   fun screenIsCreated() {
-    createBinding(bindingFunction)
+    createSource(sourceFunction)
     bindingsSubject.onNext(CREATED)
   }
 
   fun screenIsRestored() {
-    createBinding(bindingFunction)
+    createSource(sourceFunction)
     bindingsSubject.onNext(RESTORED)
   }
 
@@ -58,7 +58,7 @@ class MviTestRule<S>(private val bindingFunction: (Observable<Binding>, Observab
     }
   }
 
-  private fun createBinding(bindingFunction: (Observable<Binding>, Observable<S>) -> Observable<S>) {
+  private fun createSource(sourceFunction: (Observable<Binding>, Observable<S>) -> Observable<S>) {
     val subscriptionExists = ::internalTestObserver.isInitialized
         && !internalTestObserver.isDisposed
     if (subscriptionExists) {
@@ -66,7 +66,7 @@ class MviTestRule<S>(private val bindingFunction: (Observable<Binding>, Observab
     }
 
     internalTestObserver = TestObserver()
-    val sharedStates = bindingFunction(bindings, timeline).share()
+    val sharedStates = sourceFunction(bindings, timeline).share()
     compositeDisposable.addAll(
         sharedStates.subscribe { timelineSubject.onNext(it) },
         sharedStates.subscribeWith(internalTestObserver)
