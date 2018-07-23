@@ -5,6 +5,7 @@ import com.nhaarman.mockito_kotlin.*
 import io.mobsgeeks.oneway.Binding
 import io.mobsgeeks.oneway.Binding.*
 import io.reactivex.Observable
+import io.reactivex.functions.BiFunction
 import org.junit.Test
 
 class MviTestRuleTest {
@@ -183,8 +184,32 @@ class MviTestRuleTest {
         .isFalse()
   }
 
-  // TODO(rj) State is restored when the state is restored.
-  // TODO(rj) Convert this into a test rule.
+  @Test fun `it has access to last known state after the screen is restored`() {
+    // given
+    val oneState = SomeState("ONE")
+    val bindingFunction = { bindings: Observable<Binding>, timeline: Observable<SomeState> ->
+      val bindingCreatedStates = bindings
+          .filter { it == CREATED }
+          .map { oneState }
+
+      val combiner = BiFunction<Binding, SomeState, SomeState> { _, state -> state }
+      val bindingRestoredStates = bindings
+          .filter { it == RESTORED }
+          .withLatestFrom(timeline, combiner)
+
+      Observable.merge(bindingCreatedStates, bindingRestoredStates)
+    }
+    val mviTestRule = MviTestRule(bindingFunction)
+    mviTestRule.screenIsCreated()
+    mviTestRule.screenIsDestroyed()
+    mviTestRule.assertStates(oneState)
+
+    // when
+    mviTestRule.screenIsRestored()
+
+    // then
+    mviTestRule.assertStates(oneState)
+  }
 }
 
 data class SomeState(val message: String)

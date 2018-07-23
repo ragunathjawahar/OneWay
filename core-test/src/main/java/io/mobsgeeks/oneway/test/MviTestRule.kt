@@ -6,18 +6,19 @@ import io.reactivex.BackpressureStrategy
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.TestObserver
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 
 class MviTestRule<S>(private val bindingFunction: (Observable<Binding>, Observable<S>) -> Observable<S>) {
   private val bindingsSubject = PublishSubject.create<Binding>()
   val bindings: Observable<Binding> = bindingsSubject
       .toFlowable(BackpressureStrategy.LATEST)
-      .toObservable() // TODO(rj) Do not expose bindings.
+      .toObservable()
 
-  private val timelineSubject  = PublishSubject.create<S>()
+  private val timelineSubject  = BehaviorSubject.create<S>()
   val timeline: Observable<S> = timelineSubject
       .toFlowable(BackpressureStrategy.LATEST)
-      .toObservable() // TODO(rj) Do not expose timeline.
+      .toObservable()
 
   private lateinit var internalTestObserver: TestObserver<S>
   val testObserver: TestObserver<S>
@@ -35,9 +36,7 @@ class MviTestRule<S>(private val bindingFunction: (Observable<Binding>, Observab
   }
 
   fun screenIsRestored() {
-    if (internalTestObserver.isDisposed) {
-      createBinding(bindingFunction)
-    }
+    createBinding(bindingFunction)
     bindingsSubject.onNext(RESTORED)
   }
 
