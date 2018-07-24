@@ -197,27 +197,32 @@ class MviTestRuleTest {
     // given
     val oneState = SomeState("ONE")
     val sourceFunction = { bindings: Observable<Binding>, timeline: Observable<SomeState> ->
-      val bindingCreatedStates = bindings
+      val bindingCreatedUseCaseStates = bindings
           .filter { it == CREATED }
           .map { oneState }
 
       val combiner = BiFunction<Binding, SomeState, SomeState> { _, state -> state }
-      val bindingRestoredStates = bindings
+      val bindingRestoredUseCaseStates = bindings
           .filter { it == RESTORED }
           .withLatestFrom(timeline, combiner)
 
-      Observable.merge(bindingCreatedStates, bindingRestoredStates)
+      Observable.merge(bindingCreatedUseCaseStates, bindingRestoredUseCaseStates)
     }
     val mviTestRule = MviTestRule(sourceFunction)
-    mviTestRule.screenIsCreated()
-    mviTestRule.screenIsDestroyed()
-    mviTestRule.assertStates(oneState)
 
     // when
+    mviTestRule.screenIsCreated()
+    mviTestRule.assertStates(oneState)
+    val testObserverAfterCreated = mviTestRule.testObserver
+
+    mviTestRule.screenIsDestroyed()
     mviTestRule.screenIsRestored()
+    val testObserverAfterRestored = mviTestRule.testObserver
 
     // then
     mviTestRule.assertStates(oneState)
+    assertThat(testObserverAfterRestored)
+        .isNotSameAs(testObserverAfterCreated)
   }
 }
 
