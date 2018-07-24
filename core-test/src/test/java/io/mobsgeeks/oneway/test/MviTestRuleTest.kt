@@ -5,7 +5,9 @@ import com.nhaarman.mockito_kotlin.*
 import io.mobsgeeks.oneway.Binding
 import io.mobsgeeks.oneway.Binding.*
 import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
+import io.reactivex.observers.TestObserver
 import org.junit.Test
 
 class MviTestRuleTest {
@@ -61,21 +63,27 @@ class MviTestRuleTest {
     }
   }
 
-  @Test fun `it exposes a timeline observable`() {
-    assertThat(testRule.timeline)
-        .isInstanceOf(Observable::class.java)
-  }
-
   @Test fun `it can setup a start state`() {
     // given
     val startState = SomeState("Start")
-    val testObserver = testRule.timeline.test()
+    val timelineTestObserver = TestObserver<SomeState>()
+    var timelineDisposable: Disposable? = null
+
+    val testRule = MviTestRule { _: Observable<Binding>, timeline: Observable<SomeState> ->
+      timelineDisposable = timeline.subscribeWith(timelineTestObserver)
+      return@MviTestRule Observable.never()
+    }
 
     // when
-    testRule.startWith(startState) {}
+    testRule.startWith(startState) { /* this block is intentionally left blank */ }
 
     // then
-    testObserver.assertValue(startState)
+    with(timelineTestObserver) {
+      assertNoErrors()
+      assertValue(startState)
+      assertNotTerminated()
+    }
+    timelineDisposable?.dispose()
   }
 
   @Test fun `it can invoke a block after setting up a start state`() {
@@ -91,7 +99,7 @@ class MviTestRuleTest {
     verifyNoMoreInteractions(block)
   }
 
-  @Test fun `it can invoke a binding function to setup subscription`() {
+  @Test fun `it can invoke a source function to setup subscription`() {
     // given
     val sourceFunction = mock<(Observable<Binding>, Observable<SomeState>) -> Observable<SomeState>>()
     whenever(sourceFunction(any(), any()))
@@ -130,23 +138,7 @@ class MviTestRuleTest {
     mviTestRule.assertStates(stateA, stateB)
   }
 
-  @Test fun `it can setup subscription with the timeline`() {
-    // given
-    val stateA = SomeState("A")
-    val stateB = SomeState("B")
-    val sourceFunction = { bindings: Observable<Binding>, _: Observable<SomeState> ->
-      bindings.flatMap { Observable.just(stateA, stateB) }
-    }
-    val mviTestRule = MviTestRule(sourceFunction)
-    val testObserver = mviTestRule.timeline.test()
-
-    // when
-    mviTestRule.screenIsCreated()
-
-    // then
-    testObserver.assertValues(stateA, stateB)
-  }
-
+  // TODO(rj) 24/Jun/18 - Ensure no state emission happens after the subscription is disposed.
   @Test fun `it disposes subscriptions when the screen is destroyed`() {
     // when
     testRule.screenIsDestroyed()
@@ -184,7 +176,7 @@ class MviTestRuleTest {
         .isFalse()
   }
 
-  @Test fun `it has access to last known state after the screen is restored`() {
+  @Test fun `it has access to the last known state after the screen is restored`() {
     // given
     val oneState = SomeState("ONE")
     val sourceFunction = { bindings: Observable<Binding>, timeline: Observable<SomeState> ->

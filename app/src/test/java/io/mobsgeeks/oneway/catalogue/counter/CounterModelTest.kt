@@ -50,7 +50,7 @@ class CounterModelTest {
     mviTestRule.assertStates(minusOne)
   }
 
-  @Test fun `restoring the screen preserves the previous state`() {
+  @Test fun `restoring the screen restores the previous state`() {
     // given
     val three = CounterState(3)
 

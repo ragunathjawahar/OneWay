@@ -16,7 +16,7 @@ class MviTestRule<S>(private val sourceFunction: (Observable<Binding>, Observabl
       .toObservable()
 
   private val timelineSubject  = BehaviorSubject.create<S>()
-  val timeline: Observable<S> = timelineSubject
+  private val timeline: Observable<S> = timelineSubject
       .toFlowable(BackpressureStrategy.LATEST)
       .toObservable()
 
