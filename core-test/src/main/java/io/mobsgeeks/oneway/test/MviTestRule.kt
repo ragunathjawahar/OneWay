@@ -11,7 +11,7 @@ import io.reactivex.subjects.PublishSubject
 
 class MviTestRule<S>(private val sourceFunction: (Observable<Binding>, Observable<S>) -> Observable<S>) {
   private val bindingsSubject = PublishSubject.create<Binding>()
-  val bindings: Observable<Binding> = bindingsSubject
+  private val bindings: Observable<Binding> = bindingsSubject
       .toFlowable(BackpressureStrategy.LATEST)
       .toObservable()
 

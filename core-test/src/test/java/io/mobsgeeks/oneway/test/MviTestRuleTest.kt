@@ -13,54 +13,71 @@ import org.junit.Test
 class MviTestRuleTest {
   private val testRule = MviTestRule<SomeState> { _, _ -> Observable.never() }
 
-  @Test fun `it exposes a bindings observable`() {
-    assertThat(testRule.bindings)
-        .isInstanceOf(Observable::class.java)
-  }
-
   @Test fun `it emits CREATED when the screen is created`() {
     // given
-    val testObserver = testRule.bindings.test()
+    val bindingsTestObserver = TestObserver<Binding>()
+    var bindingsDisposable: Disposable? = null
+
+    val testRule = MviTestRule { bindings: Observable<Binding>, _: Observable<SomeState> ->
+      bindingsDisposable = bindings.subscribeWith(bindingsTestObserver)
+      return@MviTestRule Observable.never()
+    }
 
     // when
     testRule.screenIsCreated()
 
     // then
-    with(testObserver) {
+    with(bindingsTestObserver) {
       assertNoErrors()
       assertValues(CREATED)
       assertNotTerminated()
     }
+
+    bindingsDisposable?.dispose()
   }
 
   @Test fun `it emits RESTORED when the screen is restored`() {
-    // given
-    val testObserver = testRule.bindings.test()
+    val bindingsTestObserver = TestObserver<Binding>()
+    var bindingsDisposable: Disposable? = null
+
+    val testRule = MviTestRule { bindings: Observable<Binding>, _: Observable<SomeState> ->
+      bindingsDisposable = bindings.subscribeWith(bindingsTestObserver)
+      return@MviTestRule Observable.never()
+    }
 
     // when
     testRule.screenIsRestored()
 
     // then
-    with(testObserver) {
+    with(bindingsTestObserver) {
       assertNoErrors()
       assertValues(RESTORED)
       assertNotTerminated()
     }
+
+    bindingsDisposable?.dispose()
   }
 
   @Test fun `it emits DESTROYED when the screen is destroyed`() {
-    // given
-    val testObserver = testRule.bindings.test()
+    val bindingsTestObserver = TestObserver<Binding>()
+    var bindingsDisposable: Disposable? = null
+
+    val testRule = MviTestRule { bindings: Observable<Binding>, _: Observable<SomeState> ->
+      bindingsDisposable = bindings.subscribeWith(bindingsTestObserver)
+      return@MviTestRule Observable.never()
+    }
 
     // when
     testRule.screenIsDestroyed()
 
     // then
-    with(testObserver) {
+    with(bindingsTestObserver) {
       assertNoErrors()
       assertValues(DESTROYED)
       assertNotTerminated()
     }
+
+    bindingsDisposable?.dispose()
   }
 
   @Test fun `it can setup a start state`() {
