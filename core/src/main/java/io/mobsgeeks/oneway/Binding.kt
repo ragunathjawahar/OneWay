@@ -1,7 +1,7 @@
 package io.mobsgeeks.oneway
 
 /** An enum that denotes the nature of the subscription. */
-enum class Binding {
+enum class Binding { // TODO(rj) 26/Jul/18 - Consider renaming this to SourceEvent?
   /**
    * The subscription happened for the first time, it also denotes that a
    * previous state is non-existent.
