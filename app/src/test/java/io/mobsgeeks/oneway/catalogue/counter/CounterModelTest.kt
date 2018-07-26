@@ -1,8 +1,12 @@
 package io.mobsgeeks.oneway.catalogue.counter
 
 import io.mobsgeeks.oneway.catalogue.counter.CounterState.Companion.ZERO
-import io.mobsgeeks.oneway.catalogue.counter.usecases.*
+import io.mobsgeeks.oneway.catalogue.counter.usecases.CounterUseCases
+import io.mobsgeeks.oneway.catalogue.counter.usecases.DecrementUseCase
+import io.mobsgeeks.oneway.catalogue.counter.usecases.IncrementUseCase
 import io.mobsgeeks.oneway.test.MviTestRule
+import io.mobsgeeks.oneway.usecases.DefaultBindingCreatedUseCase
+import io.mobsgeeks.oneway.usecases.DefaultBindingRestoredUseCase
 import io.reactivex.subjects.PublishSubject
 import org.junit.Test
 
@@ -11,8 +15,8 @@ class CounterModelTest {
 
   private val mviTestRule = MviTestRule<CounterState> { bindings, timeline ->
     val useCases = CounterUseCases(
-        CreatedUseCase(),
-        RestoredUseCase(timeline),
+        DefaultBindingCreatedUseCase(CounterState.ZERO),
+        DefaultBindingRestoredUseCase(timeline),
         IncrementUseCase(timeline),
         DecrementUseCase(timeline)
     )

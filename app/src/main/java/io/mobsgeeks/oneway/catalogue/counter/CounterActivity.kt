@@ -9,7 +9,11 @@ import io.mobsgeeks.oneway.Sink
 import io.mobsgeeks.oneway.Source
 import io.mobsgeeks.oneway.catalogue.R
 import io.mobsgeeks.oneway.catalogue.counter.drivers.CounterViewDriver
-import io.mobsgeeks.oneway.catalogue.counter.usecases.*
+import io.mobsgeeks.oneway.catalogue.counter.usecases.CounterUseCases
+import io.mobsgeeks.oneway.catalogue.counter.usecases.DecrementUseCase
+import io.mobsgeeks.oneway.catalogue.counter.usecases.IncrementUseCase
+import io.mobsgeeks.oneway.usecases.DefaultBindingCreatedUseCase
+import io.mobsgeeks.oneway.usecases.DefaultBindingRestoredUseCase
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.counter_fragment.*
@@ -22,11 +26,11 @@ class CounterActivity : AppCompatActivity(), CounterView {
   private val intentions: CounterIntentions
     get() = CounterIntentions(incrementButton.clicks(), decrementButton.clicks())
 
-  private val createdUseCase: CreatedUseCase
-    get() = CreatedUseCase()
+  private val createdUseCase: DefaultBindingCreatedUseCase<CounterState>
+    get() = DefaultBindingCreatedUseCase(CounterState.ZERO)
 
-  private val restoredUseCase: RestoredUseCase
-    get() = RestoredUseCase(mviDelegate.timeline)
+  private val restoredUseCase: DefaultBindingRestoredUseCase<CounterState>
+    get() = DefaultBindingRestoredUseCase(mviDelegate.timeline)
 
   private val incrementUseCase: IncrementUseCase
     get() = IncrementUseCase(mviDelegate.timeline)
