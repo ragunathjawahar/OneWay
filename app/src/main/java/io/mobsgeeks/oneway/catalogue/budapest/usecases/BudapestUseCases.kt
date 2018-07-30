@@ -6,5 +6,6 @@ import io.mobsgeeks.oneway.usecases.DefaultBindingRestoredUseCase
 
 class BudapestUseCases(
     val createdUseCase: DefaultBindingCreatedUseCase<BudapestState>,
-    val restoredUseCase: DefaultBindingRestoredUseCase<BudapestState>
+    val restoredUseCase: DefaultBindingRestoredUseCase<BudapestState>,
+    val nameChangeUseCase: NameChangeUseCase
 )

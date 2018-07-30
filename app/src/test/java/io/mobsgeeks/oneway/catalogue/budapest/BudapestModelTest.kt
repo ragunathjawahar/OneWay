@@ -2,19 +2,24 @@ package io.mobsgeeks.oneway.catalogue.budapest
 
 import io.mobsgeeks.oneway.Binding
 import io.mobsgeeks.oneway.catalogue.budapest.usecases.BudapestUseCases
+import io.mobsgeeks.oneway.catalogue.budapest.usecases.NameChangeUseCase
 import io.mobsgeeks.oneway.test.MviTestRule
 import io.mobsgeeks.oneway.usecases.DefaultBindingCreatedUseCase
 import io.mobsgeeks.oneway.usecases.DefaultBindingRestoredUseCase
 import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import org.junit.Test
 
 class BudapestModelTest {
+  private val intentions = PublishSubject.create<BudapestIntention>()
+
   private val sourceFunction = { bindings: Observable<Binding>, timeline: Observable<BudapestState> ->
     val useCases = BudapestUseCases(
         DefaultBindingCreatedUseCase(BudapestState.STRANGER),
-        DefaultBindingRestoredUseCase(timeline)
+        DefaultBindingRestoredUseCase(timeline),
+        NameChangeUseCase()
     )
-    BudapestModel.bind(bindings, useCases)
+    BudapestModel.bind(intentions, bindings, useCases)
   }
 
   private val testRule = MviTestRule(sourceFunction)
@@ -36,5 +41,18 @@ class BudapestModelTest {
 
     // then
     testRule.assertStates(spiderManState)
+  }
+
+  @Test fun `entering a name emits a greeter state`() {
+    // given
+    val name = "Goundamani"
+
+    // when
+    testRule.startWith(BudapestState.STRANGER) {
+      intentions.onNext(NameChangeIntention(name))
+    }
+
+    // then
+    testRule.assertStates(BudapestState(name))
   }
 }
