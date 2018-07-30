@@ -6,23 +6,38 @@ import com.nhaarman.mockito_kotlin.verifyNoMoreInteractions
 import io.mobsgeeks.oneway.catalogue.budapest.BudapestState
 import io.mobsgeeks.oneway.catalogue.budapest.BudapestView
 import io.reactivex.subjects.PublishSubject
+import org.junit.After
 import org.junit.Test
 
 class BudapestViewDriverTest {
   private val statesSubject = PublishSubject.create<BudapestState>()
+  private val view = mock<BudapestView>()
+  private val viewDriver = BudapestViewDriver(view)
+  private val disposable = viewDriver.render(statesSubject)
+
+  @After fun teardown() {
+    disposable.dispose()
+  }
 
   @Test fun `it renders stranger state`() {
-    // given
-    val view = mock<BudapestView>()
-    val viewDriver = BudapestViewDriver(view)
-    val disposable = viewDriver.render(statesSubject)
-
     // when
     statesSubject.onNext(BudapestState.STRANGER)
 
     // then
     verify(view).greetStranger()
     verifyNoMoreInteractions(view)
-    disposable.dispose()
+  }
+
+  @Test fun `it renders greeter state`() {
+    // given
+    val hulk = "Hulk"
+    val greeterState = BudapestState(hulk)
+
+    // when
+    statesSubject.onNext(greeterState)
+
+    // then
+    verify(view).greet(hulk)
+    verifyNoMoreInteractions(view)
   }
 }
