@@ -1,5 +1,8 @@
 ext {
   versions = [
+      // Leak Canary
+      leakCanary: '1.6.1',
+
       // Rx
       rxBinding: '2.1.1',
       rxJava: '2.1.16',
@@ -20,6 +23,11 @@ ext {
   ]
 
   srcDependencies = [
+      // Leak Canary
+      leakCanary: "com.squareup.leakcanary:leakcanary-android:${versions.leakCanary}",
+      leakCanaryNoOp: "com.squareup.leakcanary:leakcanary-android-no-op:${versions.leakCanary}",
+      // TODO(rj) 30/Jul/18 - Add support fragment leak canary dependency after switching to support fragment.
+
       // Rx
       rxBindingKotlin: "com.jakewharton.rxbinding2:rxbinding-kotlin:${versions.rxBinding}",
       rxJava: "io.reactivex.rxjava2:rxjava:${versions.rxJava}",

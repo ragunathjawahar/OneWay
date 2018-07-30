@@ -33,6 +33,10 @@ dependencies {
   // Kotlin
   implementation srcDependencies.kotlin
 
+  // Leak Canary
+  debugImplementation srcDependencies.leakCanary
+  releaseImplementation srcDependencies.leakCanaryNoOp
+
   // Rx
   implementation srcDependencies.rxBindingKotlin
   implementation srcDependencies.rxJava
