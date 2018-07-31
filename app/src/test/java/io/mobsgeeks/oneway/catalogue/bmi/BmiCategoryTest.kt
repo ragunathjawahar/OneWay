@@ -1,10 +1,10 @@
 package io.mobsgeeks.oneway.catalogue.bmi
 
 import com.google.common.truth.Truth.assertThat
-import io.mobsgeeks.oneway.catalogue.bmi.BmiCategory.SEVERELY_UNDERWEIGHT
-import io.mobsgeeks.oneway.catalogue.bmi.BmiCategory.VERY_SEVERELY_UNDERWEIGHT
+import io.mobsgeeks.oneway.catalogue.bmi.BmiCategory.*
 import org.junit.Test
 
+/** BMI values for tests were derived from - [Google's BMI Calculator](https://www.google.co.in/search?q=bmi+calculator). */
 class BmiCategoryTest {
   @Test fun `BMI 0 is very severely underweight`() {
     // when
@@ -31,5 +31,23 @@ class BmiCategoryTest {
     // then
     assertThat(bmiState.category)
         .isEqualTo(SEVERELY_UNDERWEIGHT)
+  }
+
+  @Test fun `BMI 16 is severely underweight`() {
+    // when
+    val bmiState = BmiState(51.7, 180.0)
+
+    // then
+    assertThat(bmiState.category)
+        .isEqualTo(SEVERELY_UNDERWEIGHT)
+  }
+
+  @Test fun `BMI 60 and above is obese class VI`() {
+    // when
+    val bmiState = BmiState(300.0, 180.0)
+
+    // then
+    assertThat(bmiState.category)
+        .isEqualTo(OBESE_CLASS_6)
   }
 }

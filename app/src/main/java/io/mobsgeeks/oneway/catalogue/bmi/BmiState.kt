@@ -1,7 +1,6 @@
 package io.mobsgeeks.oneway.catalogue.bmi
 
-import io.mobsgeeks.oneway.catalogue.bmi.BmiCategory.SEVERELY_UNDERWEIGHT
-import io.mobsgeeks.oneway.catalogue.bmi.BmiCategory.VERY_SEVERELY_UNDERWEIGHT
+import io.mobsgeeks.oneway.catalogue.bmi.BmiCategory.*
 
 data class BmiState(
     private val weightInKg: Double,
@@ -24,6 +23,14 @@ data class BmiState(
     get() = when(bmi) {
       in 0.0  .. 15.0 -> VERY_SEVERELY_UNDERWEIGHT
       in 15.1 .. 16.0 -> SEVERELY_UNDERWEIGHT
-      else -> throw IllegalStateException()
+      in 16.1 .. 18.5 -> UNDERWEIGHT
+      in 18.6 .. 25.0 -> NORMAL
+      in 25.1 .. 30.0 -> OVERWEIGHT
+      in 30.1 .. 35.0 -> OBESE_CLASS_1
+      in 35.1 .. 40.0 -> OBESE_CLASS_2
+      in 40.1 .. 45.0 -> OBESE_CLASS_3
+      in 45.1 .. 50.0 -> OBESE_CLASS_4
+      in 50.1 .. 60.0 -> OBESE_CLASS_5
+      else -> OBESE_CLASS_6
     }
 }
