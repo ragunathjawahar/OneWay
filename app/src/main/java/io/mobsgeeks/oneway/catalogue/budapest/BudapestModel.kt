@@ -4,6 +4,10 @@ import io.mobsgeeks.oneway.Binding
 import io.mobsgeeks.oneway.catalogue.budapest.usecases.BudapestUseCases
 import io.reactivex.Observable
 
+/**
+ * This example emits a new state for every incoming intention and does not
+ * require state reduction.
+ */
 object BudapestModel {
   fun bind(
       intentions: Observable<BudapestIntention>,

@@ -1,6 +1,9 @@
 package io.mobsgeeks.oneway.catalogue.budapest
 
-data class BudapestState(val name: String) {
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize data class BudapestState(val name: String) : Parcelable {
   companion object {
     val STRANGER = BudapestState("")
   }

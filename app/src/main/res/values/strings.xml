@@ -1,5 +1,12 @@
 <resources>
   <string name="app_name">Catalogue</string>
+
+  <!-- Budapest -->
+  <string name="name">Name</string>
+  <string name="hello_stranger">Hello, stranger!</string>
+  <string name="template_greeting">Hello, %s!</string>
+
+  <!-- Counter -->
   <string name="increment">Increment</string>
   <string name="decrement">Decrement</string>
 </resources>
