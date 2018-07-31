@@ -4,7 +4,7 @@ import com.google.common.collect.Range
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
-class BmiStateTest {
+class BmiTest {
   @Test fun `when weight is 0, then BMI is 0`() {
     // when
     val bmiState = BmiState(0.0, 170.0)
