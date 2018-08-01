@@ -29,6 +29,9 @@ data class BmiState(
     BmiCalculator.calculate(weightInKg, heightInCm)
   }
 
+  fun updateWeight(weightInKg: Double): BmiState =
+      copy(weightInKg = weightInKg)
+
   private fun toPounds(weightInKg: Double): Double =
       weightInKg * 2.2046226218
 
