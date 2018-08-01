@@ -14,7 +14,10 @@ object BmiModel {
             .compose(useCases.changeWeightUseCase),
         intentions
             .ofType(ChangeHeightIntention::class.java)
-            .compose(useCases.changeHeightUseCase)
+            .compose(useCases.changeHeightUseCase),
+        intentions
+            .ofType(ChangeMeasurementSystemIntention::class.java)
+            .compose(useCases.changeMeasurementSystemUseCase)
     )
   }
 }

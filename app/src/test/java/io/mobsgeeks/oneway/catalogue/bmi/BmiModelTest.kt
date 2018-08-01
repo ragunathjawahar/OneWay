@@ -1,9 +1,11 @@
 package io.mobsgeeks.oneway.catalogue.bmi
 
 import io.mobsgeeks.oneway.Binding
+import io.mobsgeeks.oneway.catalogue.bmi.MeasurementSystem.IMPERIAL
 import io.mobsgeeks.oneway.catalogue.bmi.MeasurementSystem.SI
 import io.mobsgeeks.oneway.catalogue.bmi.usecases.BmiUseCases
 import io.mobsgeeks.oneway.catalogue.bmi.usecases.ChangeHeightUseCase
+import io.mobsgeeks.oneway.catalogue.bmi.usecases.ChangeMeasurementSystemUseCase
 import io.mobsgeeks.oneway.catalogue.bmi.usecases.ChangeWeightUseCase
 import io.mobsgeeks.oneway.test.MviTestRule
 import io.reactivex.Observable
@@ -15,7 +17,8 @@ class BmiModelTest {
   private val testRule = MviTestRule { _: Observable<Binding>, timeline: Observable<BmiState> ->
     val useCases = BmiUseCases(
         ChangeWeightUseCase(timeline),
-        ChangeHeightUseCase(timeline)
+        ChangeHeightUseCase(timeline),
+        ChangeMeasurementSystemUseCase(timeline)
     )
     BmiModel.bind(intentions, useCases)
   }
@@ -48,5 +51,20 @@ class BmiModelTest {
     // then
     val updatedHeightState = startState.updateHeight(updatedHeightInCm)
     testRule.assertStates(updatedHeightState)
+  }
+
+  @Test fun `when user updates measurement system, then update measurement system`() {
+    // given
+    val startState = BmiState(70.0, 170.0, SI)
+    val updatedMeasurementSystem = IMPERIAL
+
+    // when
+    testRule.startWith(startState) {
+      intentions.onNext(ChangeMeasurementSystemIntention(updatedMeasurementSystem))
+    }
+
+    // then
+    val updatedMeasurementSystemState = startState.updateMeasurementSystem(updatedMeasurementSystem)
+    testRule.assertStates(updatedMeasurementSystemState)
   }
 }
