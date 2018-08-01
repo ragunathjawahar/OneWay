@@ -1,5 +1,7 @@
 package io.mobsgeeks.oneway.catalogue.bmi
 
+import io.mobsgeeks.oneway.catalogue.bmi.MeasurementSystem.IMPERIAL
+import io.mobsgeeks.oneway.catalogue.bmi.MeasurementSystem.SI
 import io.reactivex.Observable
 
 class BmiIntentions(
@@ -23,6 +25,6 @@ class BmiIntentions(
 
   private fun changeMeasurementSystem(): Observable<ChangeMeasurementSystemIntention> =
       measurementSystemCheckedChanges
-          .map { if (it) MeasurementSystem.IMPERIAL else MeasurementSystem.SI }
+          .map { checked -> if (checked) IMPERIAL else SI }
           .map { ChangeMeasurementSystemIntention(it) }
 }

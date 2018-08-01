@@ -9,10 +9,9 @@ import io.reactivex.subjects.PublishSubject
 import org.junit.Test
 
 class CounterViewDriverTest {
-  private val statesSubject = PublishSubject.create<CounterState>()
-
   @Test fun `it renders counter value`() {
     // given
+    val statesSubject = PublishSubject.create<CounterState>()
     val view = mock<CounterView>()
     val viewDriver = CounterViewDriver(view)
     val disposable = viewDriver.render(statesSubject)
