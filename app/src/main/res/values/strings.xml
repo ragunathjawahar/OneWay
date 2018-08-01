@@ -9,4 +9,10 @@
   <!-- Counter -->
   <string name="increment">Increment</string>
   <string name="decrement">Decrement</string>
+
+  <!-- BMI -->
+  <string name="weight">Weight</string>
+  <string name="height">Height</string>
+  <string name="si_units">SI Units</string>
+  <string name="imperial_units">Imperial Units</string>
 </resources>
