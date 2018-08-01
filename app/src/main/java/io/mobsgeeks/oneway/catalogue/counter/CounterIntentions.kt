@@ -7,11 +7,14 @@ class CounterIntentions(
     private val decrementClicks: Observable<Unit>
 ) {
   fun stream(): Observable<CounterIntention> =
-      Observable.merge(increment(), decrement())
+      Observable.merge(
+          increment().share(),
+          decrement().share()
+      )
 
   private fun increment(): Observable<Increment> =
-      incrementClicks.map { Increment }.share()
+      incrementClicks.map { Increment }
 
   private fun decrement(): Observable<Decrement> =
-      decrementClicks.map { Decrement }.share()
+      decrementClicks.map { Decrement }
 }

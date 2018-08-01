@@ -15,7 +15,7 @@
     >
 
     <activity
-      android:name=".budapest.BudapestActivity"
+      android:name=".bmi.BmiActivity"
       >
 
       <intent-filter>

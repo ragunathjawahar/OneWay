@@ -1,13 +1,15 @@
 package io.mobsgeeks.oneway.catalogue.bmi
 
+import android.os.Parcelable
 import io.mobsgeeks.oneway.catalogue.bmi.MeasurementSystem.IMPERIAL
 import io.mobsgeeks.oneway.catalogue.bmi.MeasurementSystem.SI
+import kotlinx.android.parcel.Parcelize
 
-data class BmiState(
+@Parcelize data class BmiState(
     private val weightInKg: Double,
     private val heightInCm: Double,
     val measurementSystem: MeasurementSystem
-) {
+) : Parcelable {
   companion object {
     val INITIAL = BmiState(48.0, 160.0, SI)
   }
