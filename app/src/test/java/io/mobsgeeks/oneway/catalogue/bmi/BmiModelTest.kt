@@ -8,19 +8,35 @@ import io.mobsgeeks.oneway.catalogue.bmi.usecases.ChangeHeightUseCase
 import io.mobsgeeks.oneway.catalogue.bmi.usecases.ChangeMeasurementSystemUseCase
 import io.mobsgeeks.oneway.catalogue.bmi.usecases.ChangeWeightUseCase
 import io.mobsgeeks.oneway.test.MviTestRule
+import io.mobsgeeks.oneway.usecases.DefaultBindingRestoredUseCase
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import org.junit.Test
 
 class BmiModelTest {
   private val intentions = PublishSubject.create<BmiIntention>()
-  private val testRule = MviTestRule { _: Observable<Binding>, timeline: Observable<BmiState> ->
+  private val testRule = MviTestRule { bindings: Observable<Binding>, timeline: Observable<BmiState> ->
     val useCases = BmiUseCases(
+        DefaultBindingRestoredUseCase(timeline),
         ChangeWeightUseCase(timeline),
         ChangeHeightUseCase(timeline),
         ChangeMeasurementSystemUseCase(timeline)
     )
-    BmiModel.bind(intentions, useCases)
+    BmiModel.bind(intentions, bindings, useCases)
+  }
+
+  @Test fun `when screen is restored, then emit last known state`() {
+    // given
+    val lastKnownState = BmiState(70.0, 170.0, SI)
+
+    // when
+    testRule.startWith(lastKnownState) {
+      testRule.screenIsDestroyed()
+      testRule.screenIsRestored()
+    }
+
+    // then
+    testRule.assertStates(lastKnownState)
   }
 
   @Test fun `when user changes weight, then update weight`() {
