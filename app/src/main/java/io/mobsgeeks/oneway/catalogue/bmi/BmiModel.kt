@@ -8,8 +8,13 @@ object BmiModel {
       intentions: Observable<BmiIntention>,
       useCases: BmiUseCases
   ): Observable<BmiState> {
-    return intentions
-        .ofType(ChangeWeightIntention::class.java)
-        .compose(useCases.changeWeightUseCase)
+    return Observable.mergeArray(
+        intentions
+            .ofType(ChangeWeightIntention::class.java)
+            .compose(useCases.changeWeightUseCase),
+        intentions
+            .ofType(ChangeHeightIntention::class.java)
+            .compose(useCases.changeHeightUseCase)
+    )
   }
 }

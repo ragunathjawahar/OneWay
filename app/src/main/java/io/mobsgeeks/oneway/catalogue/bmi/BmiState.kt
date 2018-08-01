@@ -32,6 +32,9 @@ data class BmiState(
   fun updateWeight(weightInKg: Double): BmiState =
       copy(weightInKg = weightInKg)
 
+  fun updateHeight(heightInCm: Double): BmiState =
+      copy(heightInCm = heightInCm)
+
   private fun toPounds(weightInKg: Double): Double =
       weightInKg * 2.2046226218
 
