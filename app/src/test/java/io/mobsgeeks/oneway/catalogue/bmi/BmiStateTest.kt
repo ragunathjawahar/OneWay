@@ -1,6 +1,9 @@
 package io.mobsgeeks.oneway.catalogue.bmi
 
+import com.google.common.collect.Range
 import com.google.common.truth.Truth.assertThat
+import io.mobsgeeks.oneway.catalogue.bmi.MeasurementSystem.IMPERIAL
+import io.mobsgeeks.oneway.catalogue.bmi.MeasurementSystem.SI
 import org.junit.Test
 
 class BmiStateTest {
@@ -10,7 +13,7 @@ class BmiStateTest {
     val heightInCm = 180.0
 
     // when
-    val bmiState = BmiState(weightInKg, heightInCm)
+    val bmiState = BmiState(weightInKg, heightInCm, SI)
 
     // then
     val calculatedBmiResult = BmiCalculator.calculate(weightInKg, heightInCm)
@@ -19,5 +22,35 @@ class BmiStateTest {
 
     assertThat(bmiState.category)
         .isEqualTo(calculatedBmiResult.category)
+  }
+
+  @Test fun `it can provide weight and height in metric system`() {
+    // when
+    val weightInKg = 100.0
+    val heightInCm = 180.0
+    val bmiState = BmiState(weightInKg, heightInCm, SI)
+
+    // then
+    assertThat(bmiState.weight)
+        .isEqualTo(weightInKg)
+
+    assertThat(bmiState.height)
+        .isEqualTo(heightInCm)
+  }
+
+  @Test fun `it can provide weight and height in imperial system`() {
+    // given
+    val weightInKg = 100.0
+    val heightInCm = 180.0
+
+    // when
+    val bmiState = BmiState(weightInKg, heightInCm, IMPERIAL)
+
+    // then
+    assertThat(bmiState.weight)
+        .isIn(Range.closed(220.4, 220.5))
+
+    assertThat(bmiState.height)
+        .isIn(Range.closed(5.9, 6.0))
   }
 }

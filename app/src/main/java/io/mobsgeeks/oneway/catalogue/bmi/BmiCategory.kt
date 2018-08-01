@@ -1,9 +1,9 @@
-package io.mobsgeeks.oneway.catalogue.bmi;
+package io.mobsgeeks.oneway.catalogue.bmi
 
 /**
- * Categories extracted from <a href="https://en.wikipedia.org/wiki/Body_mass_index#Categories">BMI Categories</a>.
+ * Categories extracted from [BMI Categories](https://en.wikipedia.org/wiki/Body_mass_index#Categories).
  */
-public enum BmiCategory {
+enum class BmiCategory {
   VERY_SEVERELY_UNDERWEIGHT,
   SEVERELY_UNDERWEIGHT,
   UNDERWEIGHT,
