@@ -1,12 +1,17 @@
 package io.mobsgeeks.oneway.catalogue.bmi
 
 import io.mobsgeeks.oneway.catalogue.bmi.MeasurementSystem.IMPERIAL
+import io.mobsgeeks.oneway.catalogue.bmi.MeasurementSystem.SI
 
 data class BmiState(
     private val weightInKg: Double,
     private val heightInCm: Double,
     val measurementSystem: MeasurementSystem
 ) {
+  companion object {
+    val INITIAL = BmiState(48.0, 160.0, SI)
+  }
+
   val weight: Double
     get() = if (measurementSystem == IMPERIAL)
       toPounds(weightInKg)
