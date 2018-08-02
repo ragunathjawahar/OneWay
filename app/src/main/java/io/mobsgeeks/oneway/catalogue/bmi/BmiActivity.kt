@@ -26,7 +26,8 @@ class BmiActivity : MviActivity<BmiState>(), BmiView {
     get() = BmiIntentions(
         weightSeekBar.changes().skipInitialValue(),
         heightSeekBar.changes().skipInitialValue(),
-        measurementSystemSwitch.checkedChanges().skipInitialValue()
+        measurementSystemSwitch.checkedChanges().skipInitialValue(),
+        BmiOffset(0.0, 0.0) // TODO(rj) 2/Aug/18 - Read from resources.
     )
 
   private val useCases
