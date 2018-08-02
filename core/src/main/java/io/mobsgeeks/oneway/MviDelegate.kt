@@ -1,7 +1,6 @@
 package io.mobsgeeks.oneway
 
 import io.mobsgeeks.oneway.Binding.*
-import io.reactivex.BackpressureStrategy.LATEST
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
@@ -18,12 +17,12 @@ class MviDelegate<S, P>(
   private val timelineSubject = BehaviorSubject.create<S>()
 
   val bindings: Observable<Binding> by lazy(NONE) {
-    bindingsSubject.toFlowable(LATEST).toObservable()
+    bindingsSubject.hide()
   }
 
   // TODO(rj) 22/Jul/18 - Mention that this should NEVER be a primary stream in the KDoc, because that would cause an infinite loop.
   val timeline: Observable<S> by lazy(NONE) {
-    timelineSubject.toFlowable(LATEST).toObservable().share()
+    timelineSubject.hide().share()
   }
 
   fun bind(
