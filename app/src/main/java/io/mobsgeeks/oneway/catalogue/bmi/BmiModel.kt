@@ -5,7 +5,7 @@ import io.mobsgeeks.oneway.catalogue.bmi.usecases.BmiUseCases
 import io.reactivex.Observable
 
 object BmiModel {
-  fun bind(
+  fun createSource(
       intentions: Observable<BmiIntention>,
       sourceEvents: Observable<SourceEvent>,
       useCases: BmiUseCases

@@ -19,7 +19,7 @@ class BudapestModelTest {
         DefaultSourceRestoredUseCase(timeline),
         NameChangeUseCase()
     )
-    BudapestModel.bind(intentions, sourceEvents, useCases)
+    BudapestModel.createSource(intentions, sourceEvents, useCases)
   }
 
   private val testRule = MviTestRule(sourceFunction)

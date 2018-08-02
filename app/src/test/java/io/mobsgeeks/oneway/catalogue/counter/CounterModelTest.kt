@@ -21,7 +21,7 @@ class CounterModelTest {
         DecrementUseCase(timeline)
     )
 
-    return@MviTestRule CounterModel.bind(intentions, sourceEvents, useCases)
+    return@MviTestRule CounterModel.createSource(intentions, sourceEvents, useCases)
   }
 
   @Test fun `creating the screen starts with a ZERO state`() {

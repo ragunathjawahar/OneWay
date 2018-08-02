@@ -39,7 +39,7 @@ class BudapestActivity : MviActivity<BudapestState>(), BudapestView {
       sourceEvents: Observable<SourceEvent>,
       timeline: Observable<BudapestState>
   ): Observable<BudapestState> =
-      BudapestModel.bind(intentions, sourceEvents, useCases)
+      BudapestModel.createSource(intentions, sourceEvents, useCases)
 
   override fun sink(source: Observable<BudapestState>): Disposable =
       viewDriver.render(source)

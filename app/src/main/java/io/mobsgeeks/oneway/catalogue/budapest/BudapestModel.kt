@@ -9,7 +9,7 @@ import io.reactivex.Observable
  * require state reduction.
  */
 object BudapestModel {
-  fun bind(
+  fun createSource(
       intentions: Observable<BudapestIntention>,
       sourceEvents: Observable<SourceEvent>,
       useCases: BudapestUseCases

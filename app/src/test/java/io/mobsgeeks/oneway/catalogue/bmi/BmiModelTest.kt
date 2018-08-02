@@ -25,7 +25,7 @@ class BmiModelTest {
         ChangeHeightUseCase(timeline),
         ChangeMeasurementSystemUseCase(timeline)
     )
-    BmiModel.bind(intentions, sourceEvents, useCases)
+    BmiModel.createSource(intentions, sourceEvents, useCases)
   }
 
   @Test fun `when screen is created, then emit default state`() {

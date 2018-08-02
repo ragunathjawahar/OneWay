@@ -55,7 +55,7 @@ class CounterActivity : MviActivity<CounterState>(), CounterView {
       sourceEvents: Observable<SourceEvent>,
       timeline: Observable<CounterState>
   ): Observable<CounterState> =
-      CounterModel.bind(intentions.stream(), sourceEvents, useCases)
+      CounterModel.createSource(intentions.stream(), sourceEvents, useCases)
 
   override fun sink(source: Observable<CounterState>): Disposable =
       viewDriver.render(source)

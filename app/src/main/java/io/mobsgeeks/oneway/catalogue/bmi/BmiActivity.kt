@@ -65,7 +65,7 @@ class BmiActivity : MviActivity<BmiState>(), BmiView {
       sourceEvents: Observable<SourceEvent>,
       timeline: Observable<BmiState>
   ): Observable<BmiState> =
-    BmiModel.bind(intentions.stream(), sourceEvents, useCases)
+    BmiModel.createSource(intentions.stream(), sourceEvents, useCases)
 
   override fun sink(source: Observable<BmiState>): Disposable =
       viewDriver.render(source)

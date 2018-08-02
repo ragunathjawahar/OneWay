@@ -5,7 +5,7 @@ import io.mobsgeeks.oneway.catalogue.counter.usecases.CounterUseCases
 import io.reactivex.Observable
 
 object CounterModel {
-  fun bind(
+  fun createSource(
       intentions: Observable<CounterIntention>,
       sourceEvents: Observable<SourceEvent>,
       useCases: CounterUseCases
