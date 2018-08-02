@@ -6,6 +6,7 @@ import com.jakewharton.rxbinding2.widget.changes
 import com.jakewharton.rxbinding2.widget.checkedChanges
 import io.mobsgeeks.oneway.Binding
 import io.mobsgeeks.oneway.catalogue.R
+import io.mobsgeeks.oneway.catalogue.bmi.BmiCategory.*
 import io.mobsgeeks.oneway.catalogue.bmi.MeasurementSystem.IMPERIAL
 import io.mobsgeeks.oneway.catalogue.bmi.MeasurementSystem.SI
 import io.mobsgeeks.oneway.catalogue.bmi.drivers.BmiViewDriver
@@ -59,7 +60,24 @@ class BmiActivity : MviActivity<BmiState>(), BmiView {
   }
 
   override fun showCategory(category: BmiCategory) {
-    bmiCategoryTextView.text = category.toString()
+    bmiCategoryTextView.text = getHumanizedCategoryText(category)
+  }
+
+  private fun getHumanizedCategoryText(category: BmiCategory): String {
+    val categoryTextRes = when(category) {
+      VERY_SEVERELY_UNDERWEIGHT -> R.string.very_severely_underweight
+      SEVERELY_UNDERWEIGHT -> R.string.severely_underweight
+      UNDERWEIGHT -> R.string.underweight
+      NORMAL -> R.string.normal
+      OVERWEIGHT -> R.string.overweight
+      OBESE_CLASS_1 -> R.string.obese_class_1
+      OBESE_CLASS_2 -> R.string.obese_class_2
+      OBESE_CLASS_3 -> R.string.obese_class_3
+      OBESE_CLASS_4 -> R.string.obese_class_4
+      OBESE_CLASS_5 -> R.string.obese_class_5
+      OBESE_CLASS_6 -> R.string.obese_class_6
+    }
+    return getString(categoryTextRes)
   }
 
   override fun showWeight(weight: Double, measurementSystem: MeasurementSystem) {

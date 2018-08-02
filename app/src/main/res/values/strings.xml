@@ -13,6 +13,17 @@
   <!-- BMI -->
   <string name="weight">Weight</string>
   <string name="height">Height</string>
+  <string name="very_severely_underweight">Very Severely Underweight</string>
+  <string name="severely_underweight">Severely Underweight</string>
+  <string name="underweight">Underweight</string>
+  <string name="normal">Normal</string>
+  <string name="overweight">Overweight</string>
+  <string name="obese_class_1">Obese Class I</string>
+  <string name="obese_class_2">Obese Class II</string>
+  <string name="obese_class_3">Obese Class III</string>
+  <string name="obese_class_4">Obese Class IV</string>
+  <string name="obese_class_5">Obese Class V</string>
+  <string name="obese_class_6">Obese Class VI</string>
   <string name="template_bmi">%.1f</string>
   <string name="template_weight_si">%.1f kg</string>
   <string name="template_weight_imperial">%.1f lb</string>
