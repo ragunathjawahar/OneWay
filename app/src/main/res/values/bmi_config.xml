@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- Weight -->
+  <integer name="min_weight_kg">30</integer>
+  <integer name="default_weight_kg">48</integer>
+  <integer name="default_weight_progress">18</integer> <!-- (default - min) -->
+
+  <!-- Height -->
+  <integer name="min_height_cm">120</integer>
+  <integer name="default_height_cm">160</integer>
+  <integer name="default_height_progress">40</integer> <!-- (default - min) -->
+  <!-- FIXME(rj) 2/Aug/18 - All default progress values should be automatically computed before being set on the UI. -->
+</resources>

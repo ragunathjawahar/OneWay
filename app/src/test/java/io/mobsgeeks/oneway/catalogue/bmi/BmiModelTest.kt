@@ -15,10 +15,11 @@ import io.reactivex.subjects.PublishSubject
 import org.junit.Test
 
 class BmiModelTest {
+  private val initialState = BmiState(48.0, 160.0, SI)
   private val intentions = PublishSubject.create<BmiIntention>()
   private val testRule = MviTestRule { bindings: Observable<Binding>, timeline: Observable<BmiState> ->
     val useCases = BmiUseCases(
-        DefaultBindingCreatedUseCase(BmiState.INITIAL),
+        DefaultBindingCreatedUseCase(initialState),
         DefaultBindingRestoredUseCase(timeline),
         ChangeWeightUseCase(timeline),
         ChangeHeightUseCase(timeline),
@@ -28,9 +29,6 @@ class BmiModelTest {
   }
 
   @Test fun `when screen is created, then emit default state`() {
-    // given
-    val initialState = BmiState.INITIAL
-
     // when
     testRule.screenIsCreated()
 

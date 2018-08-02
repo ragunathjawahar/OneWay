@@ -22,17 +22,31 @@ import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.bmi_fragment.*
 
 class BmiActivity : MviActivity<BmiState>(), BmiView {
+  private val bmiOffset
+    get() = BmiOffset(
+        resources.getInteger(R.integer.min_weight_kg).toDouble(),
+        resources.getInteger(R.integer.min_height_cm).toDouble()
+    )
+
   private val intentions
     get() = BmiIntentions(
         weightSeekBar.changes().skipInitialValue(),
         heightSeekBar.changes().skipInitialValue(),
         measurementSystemSwitch.checkedChanges().skipInitialValue(),
-        BmiOffset(0.0, 0.0) // TODO(rj) 2/Aug/18 - Read from resources.
+        bmiOffset
     )
+
+  private val initialState
+    get() =
+      BmiState(
+          resources.getInteger(R.integer.default_weight_kg).toDouble(),
+          resources.getInteger(R.integer.default_height_cm).toDouble(),
+          SI
+      )
 
   private val useCases
     get() = BmiUseCases(
-        DefaultBindingCreatedUseCase(BmiState.INITIAL),
+        DefaultBindingCreatedUseCase(initialState),
         DefaultBindingRestoredUseCase(timeline),
         ChangeWeightUseCase(timeline),
         ChangeHeightUseCase(timeline),
