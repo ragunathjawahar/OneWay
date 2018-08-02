@@ -17,6 +17,8 @@
     android:layout_marginRight="8dp"
     android:layout_marginStart="8dp"
     android:layout_marginTop="8dp"
+    android:singleLine="true"
+    android:ellipsize="marquee"
     android:textAppearance="@style/TextAppearance.AppCompat.Display4"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
@@ -36,10 +38,13 @@
     android:layout_marginStart="16dp"
     android:gravity="center"
     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+    android:singleLine="true"
+    android:ellipsize="marquee"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/bmiTextView"
-    tools:text="Normal" />
+    tools:text="Normal"
+    />
 
   <SeekBar
     android:id="@+id/weightSeekBar"
@@ -48,7 +53,8 @@
     android:layout_marginTop="48dp"
     app:layout_constraintEnd_toEndOf="@+id/bmiCategoryTextView"
     app:layout_constraintStart_toStartOf="@+id/bmiCategoryTextView"
-    app:layout_constraintTop_toBottomOf="@+id/bmiCategoryTextView" />
+    app:layout_constraintTop_toBottomOf="@+id/bmiCategoryTextView"
+    />
 
   <TextView
     android:id="@+id/weightLabelTextView"
