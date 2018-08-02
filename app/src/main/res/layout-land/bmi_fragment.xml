@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  >
+
+  <LinearLayout
+    android:id="@+id/bmiCategoryLayout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="32dp"
+    android:layout_marginStart="32dp"
+    android:orientation="vertical"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <TextView
+      android:id="@+id/bmiTextView"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:ellipsize="marquee"
+      android:singleLine="true"
+      android:textAppearance="@style/TextAppearance.AppCompat.Display4"
+      tools:text="200.0" />
+
+    <TextView
+      android:id="@+id/bmiCategoryTextView"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:ellipsize="marquee"
+      android:gravity="center"
+      android:singleLine="true"
+      android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/bmiTextView"
+      tools:text="Normal" />
+  </LinearLayout>
+
+  <SeekBar
+    android:id="@+id/weightSeekBar"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="32dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="32dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="16dp"
+    android:progress="@integer/default_weight_progress"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toEndOf="@+id/bmiCategoryLayout"
+    app:layout_constraintTop_toTopOf="@+id/bmiCategoryLayout" />
+
+  <TextView
+    android:id="@+id/weightLabelTextView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:text="@string/weight"
+    app:layout_constraintStart_toStartOf="@+id/weightSeekBar"
+    app:layout_constraintTop_toBottomOf="@+id/weightSeekBar"
+    />
+
+  <TextView
+    android:id="@+id/weightTextView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintEnd_toEndOf="@+id/weightSeekBar"
+    app:layout_constraintTop_toTopOf="@+id/weightLabelTextView"
+    tools:text="80 kg"
+    />
+
+
+  <SeekBar
+    android:id="@+id/heightSeekBar"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="32dp"
+    android:progress="@integer/default_height_progress"
+    app:layout_constraintEnd_toEndOf="@+id/weightSeekBar"
+    app:layout_constraintStart_toStartOf="@+id/weightSeekBar"
+    app:layout_constraintTop_toBottomOf="@+id/weightLabelTextView"
+    />
+
+  <TextView
+    android:id="@+id/heightLabelTextView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:text="@string/height"
+    app:layout_constraintStart_toStartOf="@+id/heightSeekBar"
+    app:layout_constraintTop_toBottomOf="@+id/heightSeekBar"
+    />
+
+  <TextView
+    android:id="@+id/heightTextView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    app:layout_constraintEnd_toEndOf="@+id/heightSeekBar"
+    app:layout_constraintTop_toTopOf="@+id/heightLabelTextView"
+    tools:text="170 cm"
+    />
+
+  <Switch
+    android:id="@+id/measurementSystemSwitch"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="32dp"
+    android:text="@string/si_units"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="@+id/heightSeekBar"
+    app:layout_constraintStart_toStartOf="@+id/heightLabelTextView" />
+
+</android.support.constraint.ConstraintLayout>
