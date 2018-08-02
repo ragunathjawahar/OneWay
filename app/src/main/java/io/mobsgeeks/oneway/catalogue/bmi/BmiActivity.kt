@@ -28,8 +28,8 @@ class BmiActivity : MviActivity<BmiState>(), BmiView {
         resources.getInteger(R.integer.min_height_cm).toDouble()
     )
 
-  private val intentions
-    get() = BmiIntentions(
+  private val intentionsGroup
+    get() = BmiIntentionsGroup(
         weightSeekBar.changes().skipInitialValue(),
         heightSeekBar.changes().skipInitialValue(),
         measurementSystemSwitch.checkedChanges().skipInitialValue(),
@@ -65,7 +65,7 @@ class BmiActivity : MviActivity<BmiState>(), BmiView {
       sourceEvents: Observable<SourceEvent>,
       timeline: Observable<BmiState>
   ): Observable<BmiState> =
-    BmiModel.createSource(intentions.stream(), sourceEvents, useCases)
+    BmiModel.createSource(intentionsGroup.intentions(), sourceEvents, useCases)
 
   override fun sink(source: Observable<BmiState>): Disposable =
       viewDriver.render(source)

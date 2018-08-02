@@ -16,8 +16,8 @@ import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.counter_fragment.*
 
 class CounterActivity : MviActivity<CounterState>(), CounterView {
-  private val intentions: CounterIntentions
-    get() = CounterIntentions(incrementButton.clicks(), decrementButton.clicks())
+  private val intentionsGroup: CounterIntentionsGroup
+    get() = CounterIntentionsGroup(incrementButton.clicks(), decrementButton.clicks())
 
   private val createdUseCase: DefaultSourceCreatedUseCase<CounterState>
     get() = DefaultSourceCreatedUseCase(CounterState.ZERO)
@@ -55,7 +55,7 @@ class CounterActivity : MviActivity<CounterState>(), CounterView {
       sourceEvents: Observable<SourceEvent>,
       timeline: Observable<CounterState>
   ): Observable<CounterState> =
-      CounterModel.createSource(intentions.stream(), sourceEvents, useCases)
+      CounterModel.createSource(intentionsGroup.intentions(), sourceEvents, useCases)
 
   override fun sink(source: Observable<CounterState>): Disposable =
       viewDriver.render(source)

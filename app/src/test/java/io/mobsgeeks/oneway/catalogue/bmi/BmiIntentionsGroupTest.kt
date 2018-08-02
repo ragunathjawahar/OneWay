@@ -4,17 +4,18 @@ import com.nhaarman.mockito_kotlin.mock
 import io.reactivex.subjects.PublishSubject
 import org.junit.Test
 
-class BmiIntentionsTest {
+class BmiIntentionsGroupTest {
   private val weightChangesSubject = PublishSubject.create<Int>()
   private val heightChangesSubject = PublishSubject.create<Int>()
   private val bmiOffset = BmiOffset(30.0, 120.0)
-  private val intentions = BmiIntentions(
+  private val intentionsGroup = BmiIntentionsGroup(
       weightChangesSubject,
       heightChangesSubject,
       mock(),
       bmiOffset
   )
-  private val testObserver = intentions.stream().test()
+
+  private val testObserver = intentionsGroup.intentions().test()
 
   @Test fun `height changes are offset by min height`() {
     // when
