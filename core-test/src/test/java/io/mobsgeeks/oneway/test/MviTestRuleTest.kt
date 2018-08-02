@@ -2,8 +2,8 @@ package io.mobsgeeks.oneway.test
 
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockito_kotlin.*
-import io.mobsgeeks.oneway.Binding
-import io.mobsgeeks.oneway.Binding.*
+import io.mobsgeeks.oneway.SourceEvent
+import io.mobsgeeks.oneway.SourceEvent.*
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
@@ -15,11 +15,11 @@ class MviTestRuleTest {
 
   @Test fun `it emits CREATED when the screen is created`() {
     // given
-    val bindingsTestObserver = TestObserver<Binding>()
-    var bindingsDisposable: Disposable? = null
+    val sourceEventsTestObserver = TestObserver<SourceEvent>()
+    var sourceEventsDisposable: Disposable? = null
 
-    val testRule = MviTestRule { bindings: Observable<Binding>, _: Observable<SomeState> ->
-      bindingsDisposable = bindings.subscribeWith(bindingsTestObserver)
+    val testRule = MviTestRule { sourceEvents: Observable<SourceEvent>, _: Observable<SomeState> ->
+      sourceEventsDisposable = sourceEvents.subscribeWith(sourceEventsTestObserver)
       return@MviTestRule Observable.never()
     }
 
@@ -27,21 +27,21 @@ class MviTestRuleTest {
     testRule.screenIsCreated()
 
     // then
-    with(bindingsTestObserver) {
+    with(sourceEventsTestObserver) {
       assertNoErrors()
       assertValues(CREATED)
       assertNotTerminated()
     }
 
-    bindingsDisposable?.dispose()
+    sourceEventsDisposable?.dispose()
   }
 
   @Test fun `it emits RESTORED when the screen is restored`() {
-    val bindingsTestObserver = TestObserver<Binding>()
-    var bindingsDisposable: Disposable? = null
+    val sourceEventsTestObserver = TestObserver<SourceEvent>()
+    var sourceEventsDisposable: Disposable? = null
 
-    val testRule = MviTestRule { bindings: Observable<Binding>, _: Observable<SomeState> ->
-      bindingsDisposable = bindings.subscribeWith(bindingsTestObserver)
+    val testRule = MviTestRule { sourceEvents: Observable<SourceEvent>, _: Observable<SomeState> ->
+      sourceEventsDisposable = sourceEvents.subscribeWith(sourceEventsTestObserver)
       return@MviTestRule Observable.never()
     }
 
@@ -49,21 +49,21 @@ class MviTestRuleTest {
     testRule.screenIsRestored()
 
     // then
-    with(bindingsTestObserver) {
+    with(sourceEventsTestObserver) {
       assertNoErrors()
       assertValues(RESTORED)
       assertNotTerminated()
     }
 
-    bindingsDisposable?.dispose()
+    sourceEventsDisposable?.dispose()
   }
 
   @Test fun `it emits DESTROYED when the screen is destroyed`() {
-    val bindingsTestObserver = TestObserver<Binding>()
-    var bindingsDisposable: Disposable? = null
+    val sourceEventsTestObserver = TestObserver<SourceEvent>()
+    var sourceEventsDisposable: Disposable? = null
 
-    val testRule = MviTestRule { bindings: Observable<Binding>, _: Observable<SomeState> ->
-      bindingsDisposable = bindings.subscribeWith(bindingsTestObserver)
+    val testRule = MviTestRule { sourceEvents: Observable<SourceEvent>, _: Observable<SomeState> ->
+      sourceEventsDisposable = sourceEvents.subscribeWith(sourceEventsTestObserver)
       return@MviTestRule Observable.never()
     }
 
@@ -71,13 +71,13 @@ class MviTestRuleTest {
     testRule.screenIsDestroyed()
 
     // then
-    with(bindingsTestObserver) {
+    with(sourceEventsTestObserver) {
       assertNoErrors()
       assertValues(DESTROYED)
       assertNotTerminated()
     }
 
-    bindingsDisposable?.dispose()
+    sourceEventsDisposable?.dispose()
   }
 
   @Test fun `it can setup a start state`() {
@@ -86,7 +86,7 @@ class MviTestRuleTest {
     val timelineTestObserver = TestObserver<SomeState>()
     var timelineDisposable: Disposable? = null
 
-    val testRule = MviTestRule { _: Observable<Binding>, timeline: Observable<SomeState> ->
+    val testRule = MviTestRule { _: Observable<SourceEvent>, timeline: Observable<SomeState> ->
       timelineDisposable = timeline.subscribeWith(timelineTestObserver)
       return@MviTestRule Observable.never()
     }
@@ -118,7 +118,7 @@ class MviTestRuleTest {
 
   @Test fun `it can invoke a source function to setup subscription`() {
     // given
-    val sourceFunction = mock<(Observable<Binding>, Observable<SomeState>) -> Observable<SomeState>>()
+    val sourceFunction = mock<(Observable<SourceEvent>, Observable<SomeState>) -> Observable<SomeState>>()
     whenever(sourceFunction(any(), any()))
         .thenReturn(Observable.never())
 
@@ -143,8 +143,8 @@ class MviTestRuleTest {
     // given
     val stateA = SomeState("A")
     val stateB = SomeState("B")
-    val sourceFunction = { bindings: Observable<Binding>, _: Observable<SomeState> ->
-      bindings.flatMap { Observable.just(stateA, stateB) }
+    val sourceFunction = { sourceEvents: Observable<SourceEvent>, _: Observable<SomeState> ->
+      sourceEvents.flatMap { Observable.just(stateA, stateB) }
     }
     val mviTestRule = MviTestRule(sourceFunction)
 
@@ -196,17 +196,17 @@ class MviTestRuleTest {
   @Test fun `it has access to the last known state after the screen is restored`() {
     // given
     val oneState = SomeState("ONE")
-    val sourceFunction = { bindings: Observable<Binding>, timeline: Observable<SomeState> ->
-      val bindingCreatedUseCaseStates = bindings
+    val sourceFunction = { sourceEvents: Observable<SourceEvent>, timeline: Observable<SomeState> ->
+      val sourceCreatedUseCaseStates = sourceEvents
           .filter { it == CREATED }
           .map { oneState }
 
-      val combiner = BiFunction<Binding, SomeState, SomeState> { _, state -> state }
-      val bindingRestoredUseCaseStates = bindings
+      val combiner = BiFunction<SourceEvent, SomeState, SomeState> { _, state -> state }
+      val sourceRestoredUseCaseStates = sourceEvents
           .filter { it == RESTORED }
           .withLatestFrom(timeline, combiner)
 
-      Observable.merge(bindingCreatedUseCaseStates, bindingRestoredUseCaseStates)
+      Observable.merge(sourceCreatedUseCaseStates, sourceRestoredUseCaseStates)
     }
     val mviTestRule = MviTestRule(sourceFunction)
 

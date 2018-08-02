@@ -1,20 +1,20 @@
 package io.mobsgeeks.oneway.usecases
 
-import io.mobsgeeks.oneway.Binding
-import io.mobsgeeks.oneway.Binding.*
+import io.mobsgeeks.oneway.SourceEvent
+import io.mobsgeeks.oneway.SourceEvent.*
 import io.reactivex.subjects.PublishSubject
 import org.junit.Test
 
-class DefaultBindingRestoredUseCaseTest {
-  private val bindings = PublishSubject.create<Binding>()
+class DefaultSourceRestoredUseCaseTest {
+  private val sourceEventsSubject = PublishSubject.create<SourceEvent>()
   private val timeline = PublishSubject.create<String>()
-  private val defaultBindingRestoredUseCase = DefaultBindingRestoredUseCase(timeline)
-  private val testObserver = bindings.compose(defaultBindingRestoredUseCase).test()
+  private val defaultSourceRestoredUseCase = DefaultSourceRestoredUseCase(timeline)
+  private val testObserver = sourceEventsSubject.compose(defaultSourceRestoredUseCase).test()
 
   @Test fun `it does nothing for CREATED and DESTROYED events`() {
     // when
-    bindings.onNext(CREATED)
-    bindings.onNext(DESTROYED)
+    sourceEventsSubject.onNext(CREATED)
+    sourceEventsSubject.onNext(DESTROYED)
 
     // then
     with(testObserver) {
@@ -29,7 +29,7 @@ class DefaultBindingRestoredUseCaseTest {
     timeline.onNext(lastKnownCat)
 
     // when
-    bindings.onNext(RESTORED)
+    sourceEventsSubject.onNext(RESTORED)
 
     // then
     with(testObserver) {

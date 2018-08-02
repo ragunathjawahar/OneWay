@@ -3,10 +3,10 @@ package io.mobsgeeks.oneway.catalogue.mvi
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v7.app.AppCompatActivity
-import io.mobsgeeks.oneway.Binding
 import io.mobsgeeks.oneway.MviDelegate
 import io.mobsgeeks.oneway.Sink
 import io.mobsgeeks.oneway.Source
+import io.mobsgeeks.oneway.SourceEvent
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 
@@ -30,10 +30,10 @@ abstract class MviActivity<S : Parcelable> : AppCompatActivity() {
     super.onStart()
     val source: Source<S> = object : Source<S> {
       override fun produce(
-          bindings: Observable<Binding>,
+          sourceEvents: Observable<SourceEvent>,
           timeline: Observable<S>
       ): Observable<S> =
-          source(bindings, timeline)
+          source(sourceEvents, timeline)
     }
 
     val sink: Sink<S> = object : Sink<S> {
@@ -56,7 +56,7 @@ abstract class MviActivity<S : Parcelable> : AppCompatActivity() {
   }
 
   protected abstract fun source(
-      bindings: Observable<Binding>,
+      sourceEvents: Observable<SourceEvent>,
       timeline: Observable<S>
   ): Observable<S>
 

@@ -1,11 +1,11 @@
 package io.mobsgeeks.oneway.catalogue.budapest
 
-import io.mobsgeeks.oneway.Binding
+import io.mobsgeeks.oneway.SourceEvent
 import io.mobsgeeks.oneway.catalogue.budapest.usecases.BudapestUseCases
 import io.mobsgeeks.oneway.catalogue.budapest.usecases.NameChangeUseCase
 import io.mobsgeeks.oneway.test.MviTestRule
-import io.mobsgeeks.oneway.usecases.DefaultBindingCreatedUseCase
-import io.mobsgeeks.oneway.usecases.DefaultBindingRestoredUseCase
+import io.mobsgeeks.oneway.usecases.DefaultSourceCreatedUseCase
+import io.mobsgeeks.oneway.usecases.DefaultSourceRestoredUseCase
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import org.junit.Test
@@ -13,13 +13,13 @@ import org.junit.Test
 class BudapestModelTest {
   private val intentions = PublishSubject.create<BudapestIntention>()
 
-  private val sourceFunction = { bindings: Observable<Binding>, timeline: Observable<BudapestState> ->
+  private val sourceFunction = { sourceEvents: Observable<SourceEvent>, timeline: Observable<BudapestState> ->
     val useCases = BudapestUseCases(
-        DefaultBindingCreatedUseCase(BudapestState.STRANGER),
-        DefaultBindingRestoredUseCase(timeline),
+        DefaultSourceCreatedUseCase(BudapestState.STRANGER),
+        DefaultSourceRestoredUseCase(timeline),
         NameChangeUseCase()
     )
-    BudapestModel.bind(intentions, bindings, useCases)
+    BudapestModel.bind(intentions, sourceEvents, useCases)
   }
 
   private val testRule = MviTestRule(sourceFunction)

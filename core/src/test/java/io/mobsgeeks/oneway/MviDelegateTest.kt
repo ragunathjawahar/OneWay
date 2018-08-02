@@ -1,7 +1,7 @@
 package io.mobsgeeks.oneway
 
 import com.google.common.truth.Truth.assertThat
-import io.mobsgeeks.oneway.Binding.*
+import io.mobsgeeks.oneway.SourceEvent.*
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.observers.TestObserver
@@ -13,14 +13,14 @@ class MviDelegateTest {
 
   private val source = object : Source<String> {
     override fun produce(
-        bindings: Observable<Binding>,
+        sourceEvents: Observable<SourceEvent>,
         timeline: Observable<String>
     ): Observable<String> =
         publisher
   }
 
   private val testObserver = TestObserver<String>()
-  private val bindingsTestObserver = TestObserver<Binding>()
+  private val sourceEventsTestObserver = TestObserver<SourceEvent>()
 
   private val sink = object : Sink<String> {
     override fun consume(source: Observable<String>): Disposable =
@@ -42,7 +42,7 @@ class MviDelegateTest {
     val theValue = "One Way!"
     val source = object : Source<String> {
       override fun produce(
-          bindings: Observable<Binding>,
+          sourceEvents: Observable<SourceEvent>,
           timeline: Observable<String>
       ): Observable<String> =
           Observable.merge(Observable.just(theValue), Observable.never())
@@ -58,32 +58,32 @@ class MviDelegateTest {
     }
   }
 
-  @Test fun `it signals a CREATED binding event when the subscription happens for the first time`() {
+  @Test fun `it signals a CREATED source event when the subscription happens for the first time`() {
     // when
-    mviDelegate.bindings.subscribe(bindingsTestObserver)
+    mviDelegate.sourceEvents.subscribe(sourceEventsTestObserver)
     mviDelegate.bind(source, sink)
 
     // then
-    with(bindingsTestObserver) {
+    with(sourceEventsTestObserver) {
       assertNoErrors()
       assertValue(CREATED)
       assertNotTerminated()
     }
 
-    assertThat(bindingsTestObserver.hasSubscription())
+    assertThat(sourceEventsTestObserver.hasSubscription())
         .isTrue()
   }
 
-  @Test fun `it signals a DESTROYED binding event on unbind`() {
+  @Test fun `it signals a DESTROYED source event on unbind`() {
     // given
-    mviDelegate.bindings.subscribe(bindingsTestObserver)
+    mviDelegate.sourceEvents.subscribe(sourceEventsTestObserver)
 
     // when
     mviDelegate.bind(source, sink)
     mviDelegate.unbind()
 
     // then
-    with(bindingsTestObserver) {
+    with(sourceEventsTestObserver) {
       assertNoErrors()
       assertValues(CREATED, DESTROYED)
       assertNotTerminated()
@@ -165,26 +165,26 @@ class MviDelegateTest {
         .isEqualTo(persistentState)
   }
 
-  @Test fun `it signals a RESTORED binding event when state is restored`() {
+  @Test fun `it signals a RESTORED source event when state is restored`() {
     // given
     val persistentState = "Arrow".toByteArray()
 
     // when
-    mviDelegate.bindings.subscribe(bindingsTestObserver)
+    mviDelegate.sourceEvents.subscribe(sourceEventsTestObserver)
     mviDelegate.restoreState(persistentState)
     mviDelegate.bind(source, sink)
 
     // then
-    with(bindingsTestObserver) {
+    with(sourceEventsTestObserver) {
       assertNoErrors()
       assertValue(RESTORED)
       assertNotTerminated()
     }
   }
 
-  @Test fun `it signals a CREATED binding event if the restored state is null`() {
+  @Test fun `it signals a CREATED source event if the restored state is null`() {
     // given
-    mviDelegate.bindings.subscribe(bindingsTestObserver)
+    mviDelegate.sourceEvents.subscribe(sourceEventsTestObserver)
 
     // when
     mviDelegate.bind(source, sink)
@@ -193,7 +193,7 @@ class MviDelegateTest {
     mviDelegate.bind(source, sink)
 
     // then
-    with(bindingsTestObserver) {
+    with(sourceEventsTestObserver) {
       assertNoErrors()
       assertValues(CREATED, DESTROYED, CREATED)
       assertNotTerminated()
@@ -236,13 +236,13 @@ class MviDelegateTest {
 
   @Test fun `it does not blow up if unbind is called before bind`() {
     // given
-    mviDelegate.bindings.subscribe(bindingsTestObserver)
+    mviDelegate.sourceEvents.subscribe(sourceEventsTestObserver)
 
     // when
     mviDelegate.unbind()
 
     // then
-    with(bindingsTestObserver) {
+    with(sourceEventsTestObserver) {
       assertNoErrors()
       assertNoValues()
       assertNotTerminated()

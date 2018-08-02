@@ -2,14 +2,14 @@ package io.mobsgeeks.oneway.catalogue.budapest
 
 import android.os.Bundle
 import com.jakewharton.rxbinding2.widget.textChanges
-import io.mobsgeeks.oneway.Binding
+import io.mobsgeeks.oneway.SourceEvent
 import io.mobsgeeks.oneway.catalogue.R
 import io.mobsgeeks.oneway.catalogue.budapest.drivers.BudapestViewDriver
 import io.mobsgeeks.oneway.catalogue.budapest.usecases.BudapestUseCases
 import io.mobsgeeks.oneway.catalogue.budapest.usecases.NameChangeUseCase
 import io.mobsgeeks.oneway.catalogue.mvi.MviActivity
-import io.mobsgeeks.oneway.usecases.DefaultBindingCreatedUseCase
-import io.mobsgeeks.oneway.usecases.DefaultBindingRestoredUseCase
+import io.mobsgeeks.oneway.usecases.DefaultSourceCreatedUseCase
+import io.mobsgeeks.oneway.usecases.DefaultSourceRestoredUseCase
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.budapest_fragment.*
@@ -22,8 +22,8 @@ class BudapestActivity : MviActivity<BudapestState>(), BudapestView {
 
   private val useCases: BudapestUseCases
     get() = BudapestUseCases(
-        DefaultBindingCreatedUseCase(BudapestState.STRANGER),
-        DefaultBindingRestoredUseCase(timeline),
+        DefaultSourceCreatedUseCase(BudapestState.STRANGER),
+        DefaultSourceRestoredUseCase(timeline),
         NameChangeUseCase()
     )
 
@@ -36,10 +36,10 @@ class BudapestActivity : MviActivity<BudapestState>(), BudapestView {
   }
 
   override fun source(
-      bindings: Observable<Binding>,
+      sourceEvents: Observable<SourceEvent>,
       timeline: Observable<BudapestState>
   ): Observable<BudapestState> =
-      BudapestModel.bind(intentions, bindings, useCases)
+      BudapestModel.bind(intentions, sourceEvents, useCases)
 
   override fun sink(source: Observable<BudapestState>): Disposable =
       viewDriver.render(source)

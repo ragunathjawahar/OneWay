@@ -2,15 +2,15 @@ package io.mobsgeeks.oneway.catalogue.counter
 
 import android.os.Bundle
 import com.jakewharton.rxbinding2.view.clicks
-import io.mobsgeeks.oneway.Binding
+import io.mobsgeeks.oneway.SourceEvent
 import io.mobsgeeks.oneway.catalogue.R
 import io.mobsgeeks.oneway.catalogue.counter.drivers.CounterViewDriver
 import io.mobsgeeks.oneway.catalogue.counter.usecases.CounterUseCases
 import io.mobsgeeks.oneway.catalogue.counter.usecases.DecrementUseCase
 import io.mobsgeeks.oneway.catalogue.counter.usecases.IncrementUseCase
 import io.mobsgeeks.oneway.catalogue.mvi.MviActivity
-import io.mobsgeeks.oneway.usecases.DefaultBindingCreatedUseCase
-import io.mobsgeeks.oneway.usecases.DefaultBindingRestoredUseCase
+import io.mobsgeeks.oneway.usecases.DefaultSourceCreatedUseCase
+import io.mobsgeeks.oneway.usecases.DefaultSourceRestoredUseCase
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.counter_fragment.*
@@ -19,11 +19,11 @@ class CounterActivity : MviActivity<CounterState>(), CounterView {
   private val intentions: CounterIntentions
     get() = CounterIntentions(incrementButton.clicks(), decrementButton.clicks())
 
-  private val createdUseCase: DefaultBindingCreatedUseCase<CounterState>
-    get() = DefaultBindingCreatedUseCase(CounterState.ZERO)
+  private val createdUseCase: DefaultSourceCreatedUseCase<CounterState>
+    get() = DefaultSourceCreatedUseCase(CounterState.ZERO)
 
-  private val restoredUseCase: DefaultBindingRestoredUseCase<CounterState>
-    get() = DefaultBindingRestoredUseCase(timeline)
+  private val restoredUseCase: DefaultSourceRestoredUseCase<CounterState>
+    get() = DefaultSourceRestoredUseCase(timeline)
 
   private val incrementUseCase: IncrementUseCase
     get() = IncrementUseCase(timeline)
@@ -52,10 +52,10 @@ class CounterActivity : MviActivity<CounterState>(), CounterView {
   }
 
   override fun source(
-      bindings: Observable<Binding>,
+      sourceEvents: Observable<SourceEvent>,
       timeline: Observable<CounterState>
   ): Observable<CounterState> =
-      CounterModel.bind(intentions.stream(), bindings, useCases)
+      CounterModel.bind(intentions.stream(), sourceEvents, useCases)
 
   override fun sink(source: Observable<CounterState>): Disposable =
       viewDriver.render(source)

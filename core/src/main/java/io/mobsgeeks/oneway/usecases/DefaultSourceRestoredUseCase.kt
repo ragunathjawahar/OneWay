@@ -1,16 +1,16 @@
 package io.mobsgeeks.oneway.usecases
 
-import io.mobsgeeks.oneway.Binding
-import io.mobsgeeks.oneway.Binding.RESTORED
+import io.mobsgeeks.oneway.SourceEvent
+import io.mobsgeeks.oneway.SourceEvent.RESTORED
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import io.reactivex.functions.BiFunction
 
-class DefaultBindingRestoredUseCase<T>(
+class DefaultSourceRestoredUseCase<T>(
     private val timeline: Observable<T>
-) : ObservableTransformer<Binding, T> {
-  override fun apply(bindings: Observable<Binding>): Observable<T> {
-    return bindings
+) : ObservableTransformer<SourceEvent, T> {
+  override fun apply(sourceEvents: Observable<SourceEvent>): Observable<T> {
+    return sourceEvents
         .filter { it == RESTORED }
         .withLatestFrom(timeline, BiFunction { _, state -> state })
   }

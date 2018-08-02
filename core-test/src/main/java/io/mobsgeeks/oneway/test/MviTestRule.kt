@@ -1,16 +1,16 @@
 package io.mobsgeeks.oneway.test
 
-import io.mobsgeeks.oneway.Binding
-import io.mobsgeeks.oneway.Binding.*
+import io.mobsgeeks.oneway.SourceEvent
+import io.mobsgeeks.oneway.SourceEvent.*
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 
-class MviTestRule<S>(private val sourceFunction: (Observable<Binding>, Observable<S>) -> Observable<S>) {
-  private val bindingsSubject = PublishSubject.create<Binding>()
-  private val bindings: Observable<Binding> = bindingsSubject.hide()
+class MviTestRule<S>(private val sourceFunction: (Observable<SourceEvent>, Observable<S>) -> Observable<S>) {
+  private val sourceEventsSubject = PublishSubject.create<SourceEvent>()
+  private val sourceEvents: Observable<SourceEvent> = sourceEventsSubject.hide()
 
   private val timelineSubject = BehaviorSubject.create<S>()
   private val timeline: Observable<S> = timelineSubject.hide()
@@ -27,16 +27,16 @@ class MviTestRule<S>(private val sourceFunction: (Observable<Binding>, Observabl
 
   fun screenIsCreated() {
     createSource(sourceFunction)
-    bindingsSubject.onNext(CREATED)
+    sourceEventsSubject.onNext(CREATED)
   }
 
   fun screenIsRestored() {
     createSource(sourceFunction)
-    bindingsSubject.onNext(RESTORED)
+    sourceEventsSubject.onNext(RESTORED)
   }
 
   fun screenIsDestroyed() {
-    bindingsSubject.onNext(DESTROYED)
+    sourceEventsSubject.onNext(DESTROYED)
     compositeDisposable.clear()
   }
 
@@ -53,7 +53,7 @@ class MviTestRule<S>(private val sourceFunction: (Observable<Binding>, Observabl
     }
   }
 
-  private fun createSource(sourceFunction: (Observable<Binding>, Observable<S>) -> Observable<S>) {
+  private fun createSource(sourceFunction: (Observable<SourceEvent>, Observable<S>) -> Observable<S>) {
     val subscriptionExists = ::internalTestObserver.isInitialized
         && !internalTestObserver.isDisposed
     if (subscriptionExists) {
@@ -61,7 +61,7 @@ class MviTestRule<S>(private val sourceFunction: (Observable<Binding>, Observabl
     }
 
     internalTestObserver = TestObserver()
-    val sharedStates = sourceFunction(bindings, timeline).share()
+    val sharedStates = sourceFunction(sourceEvents, timeline).share()
     compositeDisposable.addAll(
         sharedStates.subscribe { timelineSubject.onNext(it) },
         sharedStates.subscribeWith(internalTestObserver)

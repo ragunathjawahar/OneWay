@@ -1,6 +1,6 @@
 package io.mobsgeeks.oneway
 
-import io.mobsgeeks.oneway.Binding.*
+import io.mobsgeeks.oneway.SourceEvent.*
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
@@ -13,11 +13,11 @@ class MviDelegate<S, P>(
   constructor() : this(NoOpStateSerializer<S>() as StateSerializer<S, P>)
 
   private val compositeDisposable = CompositeDisposable()
-  private val bindingsSubject = PublishSubject.create<Binding>()
+  private val sourceEventsSubject = PublishSubject.create<SourceEvent>()
   private val timelineSubject = BehaviorSubject.create<S>()
 
-  val bindings: Observable<Binding> by lazy(NONE) {
-    bindingsSubject.hide()
+  val sourceEvents: Observable<SourceEvent> by lazy(NONE) {
+    sourceEventsSubject.hide()
   }
 
   // TODO(rj) 22/Jul/18 - Mention that this should NEVER be a primary stream in the KDoc, because that would cause an infinite loop.
@@ -29,14 +29,14 @@ class MviDelegate<S, P>(
       source: Source<S>,
       sink: Sink<S>
   ) {
-    val sharedStates = source.produce(bindings, timeline).publish()
+    val sharedStates = source.produce(sourceEvents, timeline).publish()
     compositeDisposable.addAll(
         sink.consume(sharedStates),
         sharedStates.subscribe { timelineSubject.onNext(it) },
         sharedStates.connect()
     )
-    val binding = if (timelineSubject.value == null) CREATED else RESTORED
-    bindingsSubject.onNext(binding)
+    val sourceEvent = if (timelineSubject.value == null) CREATED else RESTORED
+    sourceEventsSubject.onNext(sourceEvent)
   }
 
   fun restoreState(persistentState: P?) {
@@ -50,7 +50,7 @@ class MviDelegate<S, P>(
 
   fun unbind() {
     if (compositeDisposable.size() > 0) {
-      bindingsSubject.onNext(DESTROYED)
+      sourceEventsSubject.onNext(DESTROYED)
       compositeDisposable.clear()
     }
   }

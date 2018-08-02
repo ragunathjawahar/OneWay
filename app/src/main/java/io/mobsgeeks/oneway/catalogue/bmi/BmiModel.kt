@@ -1,13 +1,13 @@
 package io.mobsgeeks.oneway.catalogue.bmi
 
-import io.mobsgeeks.oneway.Binding
+import io.mobsgeeks.oneway.SourceEvent
 import io.mobsgeeks.oneway.catalogue.bmi.usecases.BmiUseCases
 import io.reactivex.Observable
 
 object BmiModel {
   fun bind(
       intentions: Observable<BmiIntention>,
-      bindings: Observable<Binding>,
+      sourceEvents: Observable<SourceEvent>,
       useCases: BmiUseCases
   ): Observable<BmiState> {
     val changeWeightIntentions = intentions
@@ -18,8 +18,8 @@ object BmiModel {
         .ofType(ChangeMeasurementSystemIntention::class.java)
 
     return Observable.mergeArray(
-        bindings.compose(useCases.createdUseCase),
-        bindings.compose(useCases.restoredUseCase),
+        sourceEvents.compose(useCases.createdUseCase),
+        sourceEvents.compose(useCases.restoredUseCase),
         changeWeightIntentions.compose(useCases.changeWeightUseCase),
         changeHeightIntentions.compose(useCases.changeHeightUseCase),
         changeMeasurementIntentions.compose(useCases.changeMeasurementSystemUseCase)
