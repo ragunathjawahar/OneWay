@@ -6,7 +6,7 @@ import io.mobsgeeks.oneway.SourceEvent
 import io.mobsgeeks.oneway.catalogue.R
 import io.mobsgeeks.oneway.catalogue.budapest.drivers.BudapestViewDriver
 import io.mobsgeeks.oneway.catalogue.budapest.usecases.BudapestUseCases
-import io.mobsgeeks.oneway.catalogue.budapest.usecases.NameChangeUseCase
+import io.mobsgeeks.oneway.catalogue.budapest.usecases.EnterNameUseCase
 import io.mobsgeeks.oneway.catalogue.mvi.MviActivity
 import io.mobsgeeks.oneway.usecases.DefaultSourceCreatedUseCase
 import io.mobsgeeks.oneway.usecases.DefaultSourceRestoredUseCase
@@ -15,16 +15,16 @@ import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.budapest_fragment.*
 
 class BudapestActivity : MviActivity<BudapestState>(), BudapestView {
-  private val intentions: Observable<BudapestIntention>
-    get() = nameEditText.textChanges().skipInitialValue()
-        .map { it.toString() }
-        .map { NameChangeIntention(it) }
+  private val intentionsGroup: BudapestIntentionsGroup
+    get() = BudapestIntentionsGroup(
+        nameEditText.textChanges().skipInitialValue()
+    )
 
   private val useCases: BudapestUseCases
     get() = BudapestUseCases(
         DefaultSourceCreatedUseCase(BudapestState.STRANGER),
         DefaultSourceRestoredUseCase(timeline),
-        NameChangeUseCase()
+        EnterNameUseCase()
     )
 
   private val viewDriver: BudapestViewDriver
@@ -39,7 +39,7 @@ class BudapestActivity : MviActivity<BudapestState>(), BudapestView {
       sourceEvents: Observable<SourceEvent>,
       timeline: Observable<BudapestState>
   ): Observable<BudapestState> =
-      BudapestModel.createSource(intentions, sourceEvents, useCases)
+      BudapestModel.createSource(intentionsGroup.intentions(), sourceEvents, useCases)
 
   override fun sink(source: Observable<BudapestState>): Disposable =
       viewDriver.render(source)

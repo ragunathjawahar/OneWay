@@ -2,7 +2,7 @@ package io.mobsgeeks.oneway.catalogue.budapest
 
 import io.mobsgeeks.oneway.SourceEvent
 import io.mobsgeeks.oneway.catalogue.budapest.usecases.BudapestUseCases
-import io.mobsgeeks.oneway.catalogue.budapest.usecases.NameChangeUseCase
+import io.mobsgeeks.oneway.catalogue.budapest.usecases.EnterNameUseCase
 import io.mobsgeeks.oneway.test.MviTestRule
 import io.mobsgeeks.oneway.usecases.DefaultSourceCreatedUseCase
 import io.mobsgeeks.oneway.usecases.DefaultSourceRestoredUseCase
@@ -17,7 +17,7 @@ class BudapestModelTest {
     val useCases = BudapestUseCases(
         DefaultSourceCreatedUseCase(BudapestState.STRANGER),
         DefaultSourceRestoredUseCase(timeline),
-        NameChangeUseCase()
+        EnterNameUseCase()
     )
     BudapestModel.createSource(intentions, sourceEvents, useCases)
   }
@@ -49,7 +49,7 @@ class BudapestModelTest {
 
     // when
     testRule.startWith(BudapestState.STRANGER) {
-      intentions.onNext(NameChangeIntention(name))
+      intentions.onNext(EnterNameIntention(name))
     }
 
     // then

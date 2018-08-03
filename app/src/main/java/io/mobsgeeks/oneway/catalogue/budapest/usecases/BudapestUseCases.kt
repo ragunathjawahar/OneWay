@@ -7,5 +7,5 @@ import io.mobsgeeks.oneway.usecases.DefaultSourceRestoredUseCase
 class BudapestUseCases(
     val createdUseCase: DefaultSourceCreatedUseCase<BudapestState>,
     val restoredUseCase: DefaultSourceRestoredUseCase<BudapestState>,
-    val nameChangeUseCase: NameChangeUseCase
+    val enterNameUseCase: EnterNameUseCase
 )
