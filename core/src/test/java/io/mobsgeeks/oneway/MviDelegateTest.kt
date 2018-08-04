@@ -31,8 +31,8 @@ class MviDelegateTest {
     override fun serialize(state: String): ByteArray =
         state.toByteArray()
 
-    override fun deserialize(persistentState: ByteArray): String =
-        String(persistentState)
+    override fun deserialize(persistableState: ByteArray): String =
+        String(persistableState)
   }
 
   private val mviDelegate = MviDelegate(stateSerializer)

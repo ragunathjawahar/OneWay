@@ -1,4 +1,4 @@
-package io.mobsgeeks.oneway.android
+package io.mobsgeeks.oneway.android.barebones
 
 import android.os.Bundle
 
