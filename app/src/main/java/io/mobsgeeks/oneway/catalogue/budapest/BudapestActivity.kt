@@ -3,18 +3,18 @@ package io.mobsgeeks.oneway.catalogue.budapest
 import android.os.Bundle
 import com.jakewharton.rxbinding2.widget.textChanges
 import io.mobsgeeks.oneway.SourceEvent
+import io.mobsgeeks.oneway.android.OneWayActivity
 import io.mobsgeeks.oneway.catalogue.R
 import io.mobsgeeks.oneway.catalogue.budapest.drivers.BudapestViewDriver
 import io.mobsgeeks.oneway.catalogue.budapest.usecases.BudapestUseCases
 import io.mobsgeeks.oneway.catalogue.budapest.usecases.EnterNameUseCase
-import io.mobsgeeks.oneway.catalogue.mvi.MviActivity
 import io.mobsgeeks.oneway.usecases.DefaultSourceCreatedUseCase
 import io.mobsgeeks.oneway.usecases.DefaultSourceRestoredUseCase
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.budapest_fragment.*
 
-class BudapestActivity : MviActivity<BudapestState>(), BudapestView {
+class BudapestActivity : OneWayActivity<BudapestState>(), BudapestView {
   private val intentionsGroup: BudapestIntentionsGroup
     get() = BudapestIntentionsGroup(
         nameEditText.textChanges().skipInitialValue()

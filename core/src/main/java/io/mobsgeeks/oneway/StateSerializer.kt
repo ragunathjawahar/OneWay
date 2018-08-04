@@ -5,6 +5,6 @@ interface StateSerializer<S, P> {
   /** @param state The state that has to be persisted. */
   fun serialize(state: S): P
 
-  /** @param persistentState The persistent state. */
-  fun deserialize(persistentState: P): S
+  /** @param persistableState The persistable state. */
+  fun deserialize(persistableState: P): S
 }

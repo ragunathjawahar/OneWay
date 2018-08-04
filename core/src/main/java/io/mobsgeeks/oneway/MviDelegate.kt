@@ -10,8 +10,6 @@ import kotlin.LazyThreadSafetyMode.NONE
 class MviDelegate<S, P>(
     private val stateSerializer: StateSerializer<S, P>
 ) {
-  constructor() : this(NoOpStateSerializer<S>() as StateSerializer<S, P>)
-
   private val compositeDisposable = CompositeDisposable()
   private val sourceEventsSubject = PublishSubject.create<SourceEvent>()
   private val timelineSubject = BehaviorSubject.create<S>()

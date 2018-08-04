@@ -3,19 +3,19 @@ package io.mobsgeeks.oneway.catalogue.counter
 import android.os.Bundle
 import com.jakewharton.rxbinding2.view.clicks
 import io.mobsgeeks.oneway.SourceEvent
+import io.mobsgeeks.oneway.android.OneWayActivity
 import io.mobsgeeks.oneway.catalogue.R
 import io.mobsgeeks.oneway.catalogue.counter.drivers.CounterViewDriver
 import io.mobsgeeks.oneway.catalogue.counter.usecases.CounterUseCases
 import io.mobsgeeks.oneway.catalogue.counter.usecases.DecrementUseCase
 import io.mobsgeeks.oneway.catalogue.counter.usecases.IncrementUseCase
-import io.mobsgeeks.oneway.catalogue.mvi.MviActivity
 import io.mobsgeeks.oneway.usecases.DefaultSourceCreatedUseCase
 import io.mobsgeeks.oneway.usecases.DefaultSourceRestoredUseCase
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.counter_fragment.*
 
-class CounterActivity : MviActivity<CounterState>(), CounterView {
+class CounterActivity : OneWayActivity<CounterState>(), CounterView {
   private val intentionsGroup: CounterIntentionsGroup
     get() = CounterIntentionsGroup(incrementButton.clicks(), decrementButton.clicks())
 

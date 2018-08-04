@@ -28,6 +28,9 @@ dependencies {
   // Kotlin
   implementation srcDependencies.kotlin
 
+  // Rx
+  implementation srcDependencies.rxJava
+
   // Support
   implementation srcDependencies.appCompat
 
