@@ -20,14 +20,6 @@ abstract class BareBonesOneWayActivity<S, P> : AppCompatActivity() {
 
   protected abstract val persister: Persister<P>
 
-  @CallSuper override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    savedInstanceState?.let {
-      val persistedState = persister.read(savedInstanceState)
-      mviDelegate.restoreState(persistedState)
-    }
-  }
-
   @CallSuper override fun onStart() {
     super.onStart()
     mviDelegate.bind(createSource(), createSink())
@@ -39,9 +31,17 @@ abstract class BareBonesOneWayActivity<S, P> : AppCompatActivity() {
   }
 
   @CallSuper override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
     val state = mviDelegate.saveState()
     state?.let { persister.write(state, outState) }
-    super.onSaveInstanceState(outState)
+  }
+
+  @CallSuper override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+    super.onRestoreInstanceState(savedInstanceState)
+    savedInstanceState?.let {
+      val persistedState = persister.read(savedInstanceState)
+      mviDelegate.restoreState(persistedState)
+    }
   }
 
   protected abstract fun source(
