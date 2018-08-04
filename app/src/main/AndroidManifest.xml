@@ -15,7 +15,7 @@
     >
 
     <activity
-      android:name=".bmi.BmiActivity"
+      android:name=".TheActivity"
       >
 
       <intent-filter>

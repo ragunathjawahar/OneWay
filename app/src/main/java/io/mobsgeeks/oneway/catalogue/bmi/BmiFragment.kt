@@ -2,10 +2,13 @@ package io.mobsgeeks.oneway.catalogue.bmi
 
 import android.os.Bundle
 import android.support.annotation.StringRes
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.jakewharton.rxbinding2.widget.changes
 import com.jakewharton.rxbinding2.widget.checkedChanges
 import io.mobsgeeks.oneway.SourceEvent
-import io.mobsgeeks.oneway.android.OneWayActivity
+import io.mobsgeeks.oneway.android.OneWayFragment
 import io.mobsgeeks.oneway.catalogue.R
 import io.mobsgeeks.oneway.catalogue.bmi.BmiCategory.*
 import io.mobsgeeks.oneway.catalogue.bmi.MeasurementSystem.IMPERIAL
@@ -21,7 +24,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.bmi_fragment.*
 
-class BmiActivity : OneWayActivity<BmiState>(), BmiView {
+class BmiFragment : OneWayFragment<BmiState>(), BmiView {
   private val bmiOffset
     get() = BmiOffset(
         resources.getInteger(R.integer.min_weight_kg).toDouble(),
@@ -55,10 +58,12 @@ class BmiActivity : OneWayActivity<BmiState>(), BmiView {
   private val viewDriver
     get() = BmiViewDriver(this)
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setContentView(R.layout.bmi_fragment)
-  }
+  override fun onCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+      savedInstanceState: Bundle?
+  ): View =
+      inflater.inflate(R.layout.bmi_fragment, container, false)
 
   override fun source(
       sourceEvents: Observable<SourceEvent>,
