@@ -1,5 +1,10 @@
 ext {
   versions = [
+      // Android
+      minSdk: 16,
+      compileSdk: 27,
+      targetSdk: 27,
+
       // Leak Canary
       leakCanary: '1.6.1',
 
