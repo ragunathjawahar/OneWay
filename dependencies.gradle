@@ -23,7 +23,7 @@ ext {
 
       // Test
       jUnit: '4.12',
-      truth: '0.41',
+      truth: '0.40', // Not using latest version because of - https://github.com/google/truth/issues/472
       mockitoKotlin: '1.6.0'
   ]
 

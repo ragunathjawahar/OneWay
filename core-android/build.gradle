@@ -37,4 +37,5 @@ dependencies {
   // Android Test
   androidTestImplementation testDependencies.androidTestRunner
   androidTestImplementation testDependencies.espresso
+  androidTestImplementation testDependencies.truth
 }
