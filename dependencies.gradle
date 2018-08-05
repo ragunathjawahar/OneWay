@@ -24,6 +24,7 @@ ext {
       // Test
       jUnit: '4.12',
       truth: '0.40', // Not using latest version because of - https://github.com/google/truth/issues/472
+      mockitoAndroid: '2.6.1',
       mockitoKotlin: '1.6.0'
   ]
 
@@ -50,6 +51,7 @@ ext {
       // Android Test
       androidTestRunner: "com.android.support.test:runner:${versions.androidTestRunner}",
       espresso: "com.android.support.test.espresso:espresso-core:${versions.espresso}",
+      mockitoAndroid: "org.mockito:mockito-android:${versions.mockitoAndroid}",
 
       // Test
       jUnit: "junit:junit:${versions.jUnit}",

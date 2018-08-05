@@ -10,6 +10,7 @@ android {
     versionCode      1
     versionName     '1.0'
 
+    multiDexEnabled true
     testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
   }
 
@@ -37,5 +38,6 @@ dependencies {
   // Android Test
   androidTestImplementation testDependencies.androidTestRunner
   androidTestImplementation testDependencies.espresso
+  androidTestImplementation testDependencies.mockitoAndroid
   androidTestImplementation testDependencies.truth
 }

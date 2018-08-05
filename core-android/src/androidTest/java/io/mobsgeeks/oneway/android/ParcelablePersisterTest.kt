@@ -18,8 +18,9 @@ class ParcelablePersisterTest {
     persister.write(student, bundle)
 
     // then
-    assertThat(bundle.keySet().size)
-        .isEqualTo(1)
+    val readStudent = persister.read(bundle)
+    assertThat(readStudent)
+        .isEqualTo(student)
   }
 
   @Test fun readFromBundle() {
@@ -27,12 +28,12 @@ class ParcelablePersisterTest {
     persister.write(student, bundle)
 
     // when
-    val revivedStudent = persister.read(bundle)
+    val readStudent = persister.read(bundle)
 
     // then
-    assertThat(revivedStudent)
+    assertThat(readStudent)
         .isNotNull()
-    assertThat(revivedStudent)
+    assertThat(readStudent)
         .isEqualTo(student)
   }
 
