@@ -4,12 +4,7 @@ import io.mobsgeeks.oneway.SourceEvent
 import io.mobsgeeks.oneway.catalogue.bmi.MeasurementSystem.IMPERIAL
 import io.mobsgeeks.oneway.catalogue.bmi.MeasurementSystem.SI
 import io.mobsgeeks.oneway.catalogue.bmi.usecases.BmiUseCases
-import io.mobsgeeks.oneway.catalogue.bmi.usecases.ChangeHeightUseCase
-import io.mobsgeeks.oneway.catalogue.bmi.usecases.ChangeMeasurementSystemUseCase
-import io.mobsgeeks.oneway.catalogue.bmi.usecases.ChangeWeightUseCase
 import io.mobsgeeks.oneway.test.MviTestRule
-import io.mobsgeeks.oneway.usecases.DefaultSourceCreatedUseCase
-import io.mobsgeeks.oneway.usecases.DefaultSourceRestoredUseCase
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import org.junit.Test
@@ -18,14 +13,11 @@ class BmiModelTest {
   private val initialState = BmiState(48.0, 160.0, SI)
   private val intentions = PublishSubject.create<BmiIntention>()
   private val testRule = MviTestRule { sourceEvents: Observable<SourceEvent>, timeline: Observable<BmiState> ->
-    val useCases = BmiUseCases(
-        DefaultSourceCreatedUseCase(initialState),
-        DefaultSourceRestoredUseCase(timeline),
-        ChangeWeightUseCase(timeline),
-        ChangeHeightUseCase(timeline),
-        ChangeMeasurementSystemUseCase(timeline)
+    BmiModel.createSource(
+        intentions,
+        sourceEvents,
+        BmiUseCases(initialState, timeline)
     )
-    BmiModel.createSource(intentions, sourceEvents, useCases)
   }
 
   @Test fun `when screen is created, then emit default state`() {

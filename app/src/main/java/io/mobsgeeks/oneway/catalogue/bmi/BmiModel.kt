@@ -18,8 +18,8 @@ object BmiModel {
         .ofType(ChangeMeasurementSystemIntention::class.java)
 
     return Observable.mergeArray(
-        sourceEvents.compose(useCases.createdUseCase),
-        sourceEvents.compose(useCases.restoredUseCase),
+        sourceEvents.compose(useCases.sourceCreatedUseCase),
+        sourceEvents.compose(useCases.sourceRestoredUseCase),
         changeWeightIntentions.compose(useCases.changeWeightUseCase),
         changeHeightIntentions.compose(useCases.changeHeightUseCase),
         changeMeasurementIntentions.compose(useCases.changeMeasurementSystemUseCase)

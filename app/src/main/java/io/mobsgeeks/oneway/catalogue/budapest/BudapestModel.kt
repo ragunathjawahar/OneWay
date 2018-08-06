@@ -15,8 +15,8 @@ object BudapestModel {
       useCases: BudapestUseCases
   ): Observable<BudapestState> {
     return Observable.merge(
-        sourceEvents.compose(useCases.createdUseCase),
-        sourceEvents.compose(useCases.restoredUseCase),
+        sourceEvents.compose(useCases.sourceCreatedUseCase),
+        sourceEvents.compose(useCases.sourceRestoredUseCase),
         intentions.ofType(EnterNameIntention::class.java).compose(useCases.enterNameUseCase)
     )
   }

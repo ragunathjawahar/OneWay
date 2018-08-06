@@ -5,46 +5,25 @@ import com.jakewharton.rxbinding2.view.clicks
 import io.mobsgeeks.oneway.SourceEvent
 import io.mobsgeeks.oneway.android.OneWayActivity
 import io.mobsgeeks.oneway.catalogue.R
+import io.mobsgeeks.oneway.catalogue.counter.CounterState.Companion.ZERO
 import io.mobsgeeks.oneway.catalogue.counter.drivers.CounterViewDriver
 import io.mobsgeeks.oneway.catalogue.counter.usecases.CounterUseCases
-import io.mobsgeeks.oneway.catalogue.counter.usecases.DecrementUseCase
-import io.mobsgeeks.oneway.catalogue.counter.usecases.IncrementUseCase
-import io.mobsgeeks.oneway.usecases.DefaultSourceCreatedUseCase
-import io.mobsgeeks.oneway.usecases.DefaultSourceRestoredUseCase
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.counter_fragment.*
 
 class CounterActivity : OneWayActivity<CounterState>(), CounterView {
   private val intentionsGroup: CounterIntentionsGroup
-    get() = CounterIntentionsGroup(incrementButton.clicks(), decrementButton.clicks())
-
-  private val createdUseCase: DefaultSourceCreatedUseCase<CounterState>
-    get() = DefaultSourceCreatedUseCase(CounterState.ZERO)
-
-  private val restoredUseCase: DefaultSourceRestoredUseCase<CounterState>
-    get() = DefaultSourceRestoredUseCase(timeline)
-
-  private val incrementUseCase: IncrementUseCase
-    get() = IncrementUseCase(timeline)
-
-  private val decrementUseCase: DecrementUseCase
-    get() = DecrementUseCase(timeline)
+    get() = CounterIntentionsGroup(
+        incrementButton.clicks(),
+        decrementButton.clicks()
+    )
 
   private val useCases: CounterUseCases
-    get() = CounterUseCases(
-        createdUseCase,
-        restoredUseCase,
-        incrementUseCase,
-        decrementUseCase
-    )
+    get() = CounterUseCases(ZERO, timeline)
 
   private val viewDriver: CounterViewDriver
     get() = CounterViewDriver(this)
-
-  override fun showCounter(counter: Int) {
-    counterTextView.text = counter.toString()
-  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -59,4 +38,8 @@ class CounterActivity : OneWayActivity<CounterState>(), CounterView {
 
   override fun sink(source: Observable<CounterState>): Disposable =
       viewDriver.render(source)
+
+  override fun showCounter(counter: Int) {
+    counterTextView.text = counter.toString()
+  }
 }

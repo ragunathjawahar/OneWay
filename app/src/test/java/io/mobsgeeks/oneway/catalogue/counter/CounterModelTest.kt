@@ -2,11 +2,7 @@ package io.mobsgeeks.oneway.catalogue.counter
 
 import io.mobsgeeks.oneway.catalogue.counter.CounterState.Companion.ZERO
 import io.mobsgeeks.oneway.catalogue.counter.usecases.CounterUseCases
-import io.mobsgeeks.oneway.catalogue.counter.usecases.DecrementUseCase
-import io.mobsgeeks.oneway.catalogue.counter.usecases.IncrementUseCase
 import io.mobsgeeks.oneway.test.MviTestRule
-import io.mobsgeeks.oneway.usecases.DefaultSourceCreatedUseCase
-import io.mobsgeeks.oneway.usecases.DefaultSourceRestoredUseCase
 import io.reactivex.subjects.PublishSubject
 import org.junit.Test
 
@@ -14,14 +10,11 @@ class CounterModelTest {
   private val intentions = PublishSubject.create<CounterIntention>()
 
   private val mviTestRule = MviTestRule<CounterState> { sourceEvents, timeline ->
-    val useCases = CounterUseCases(
-        DefaultSourceCreatedUseCase(CounterState.ZERO),
-        DefaultSourceRestoredUseCase(timeline),
-        IncrementUseCase(timeline),
-        DecrementUseCase(timeline)
+    return@MviTestRule CounterModel.createSource(
+        intentions,
+        sourceEvents,
+        CounterUseCases(CounterState.ZERO, timeline)
     )
-
-    return@MviTestRule CounterModel.createSource(intentions, sourceEvents, useCases)
   }
 
   @Test fun `creating the screen starts with a ZERO state`() {

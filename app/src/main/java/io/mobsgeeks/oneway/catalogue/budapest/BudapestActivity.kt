@@ -5,11 +5,9 @@ import com.jakewharton.rxbinding2.widget.textChanges
 import io.mobsgeeks.oneway.SourceEvent
 import io.mobsgeeks.oneway.android.OneWayActivity
 import io.mobsgeeks.oneway.catalogue.R
+import io.mobsgeeks.oneway.catalogue.budapest.BudapestState.Companion.STRANGER
 import io.mobsgeeks.oneway.catalogue.budapest.drivers.BudapestViewDriver
 import io.mobsgeeks.oneway.catalogue.budapest.usecases.BudapestUseCases
-import io.mobsgeeks.oneway.catalogue.budapest.usecases.EnterNameUseCase
-import io.mobsgeeks.oneway.usecases.DefaultSourceCreatedUseCase
-import io.mobsgeeks.oneway.usecases.DefaultSourceRestoredUseCase
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.budapest_fragment.*
@@ -21,11 +19,7 @@ class BudapestActivity : OneWayActivity<BudapestState>(), BudapestView {
     )
 
   private val useCases: BudapestUseCases
-    get() = BudapestUseCases(
-        DefaultSourceCreatedUseCase(BudapestState.STRANGER),
-        DefaultSourceRestoredUseCase(timeline),
-        EnterNameUseCase()
-    )
+    get() = BudapestUseCases(STRANGER, timeline)
 
   private val viewDriver: BudapestViewDriver
     get() = BudapestViewDriver(this)

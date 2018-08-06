@@ -15,11 +15,6 @@ import io.mobsgeeks.oneway.catalogue.bmi.MeasurementSystem.IMPERIAL
 import io.mobsgeeks.oneway.catalogue.bmi.MeasurementSystem.SI
 import io.mobsgeeks.oneway.catalogue.bmi.drivers.BmiViewDriver
 import io.mobsgeeks.oneway.catalogue.bmi.usecases.BmiUseCases
-import io.mobsgeeks.oneway.catalogue.bmi.usecases.ChangeHeightUseCase
-import io.mobsgeeks.oneway.catalogue.bmi.usecases.ChangeMeasurementSystemUseCase
-import io.mobsgeeks.oneway.catalogue.bmi.usecases.ChangeWeightUseCase
-import io.mobsgeeks.oneway.usecases.DefaultSourceCreatedUseCase
-import io.mobsgeeks.oneway.usecases.DefaultSourceRestoredUseCase
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.bmi_fragment.*
@@ -48,11 +43,8 @@ class BmiFragment : OneWayFragment<BmiState>(), BmiView {
 
   private val useCases
     get() = BmiUseCases(
-        DefaultSourceCreatedUseCase(initialState),
-        DefaultSourceRestoredUseCase(timeline),
-        ChangeWeightUseCase(timeline),
-        ChangeHeightUseCase(timeline),
-        ChangeMeasurementSystemUseCase(timeline)
+        initialState,
+        timeline
     )
 
   private val viewDriver
