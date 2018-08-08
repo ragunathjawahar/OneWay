@@ -1,9 +1,12 @@
 package io.mobsgeeks.oneway.catalogue.budapest
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.jakewharton.rxbinding2.widget.textChanges
 import io.mobsgeeks.oneway.SourceEvent
-import io.mobsgeeks.oneway.android.OneWayActivity
+import io.mobsgeeks.oneway.android.OneWayFragment
 import io.mobsgeeks.oneway.catalogue.R
 import io.mobsgeeks.oneway.catalogue.budapest.BudapestState.Companion.STRANGER
 import io.mobsgeeks.oneway.catalogue.budapest.drivers.BudapestViewDriver
@@ -12,7 +15,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.budapest_fragment.*
 
-class BudapestActivity : OneWayActivity<BudapestState>(), BudapestView {
+class BudapestFragment : OneWayFragment<BudapestState>(), BudapestView {
   private val intentionsGroup: BudapestIntentionsGroup
     get() = BudapestIntentionsGroup(
         nameEditText.textChanges().skipInitialValue()
@@ -24,10 +27,12 @@ class BudapestActivity : OneWayActivity<BudapestState>(), BudapestView {
   private val viewDriver: BudapestViewDriver
     get() = BudapestViewDriver(this)
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setContentView(R.layout.budapest_fragment)
-  }
+  override fun onCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+      savedInstanceState: Bundle?
+  ): View =
+      inflater.inflate(R.layout.budapest_fragment, container, false)
 
   override fun source(
       sourceEvents: Observable<SourceEvent>,
