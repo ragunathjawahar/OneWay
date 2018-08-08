@@ -1,7 +1,7 @@
-package io.mobsgeeks.oneway.catalogue.bmi
+package io.mobsgeeks.oneway.catalogue.bmi.domain
 
 import com.google.common.truth.Truth.assertThat
-import io.mobsgeeks.oneway.catalogue.bmi.BmiCategory.*
+import io.mobsgeeks.oneway.catalogue.bmi.domain.BmiCategory.*
 import org.junit.Test
 
 /** BMI values for tests were derived from - [Google's BMI Calculator](https://www.google.co.in/search?q=bmi+calculator). */

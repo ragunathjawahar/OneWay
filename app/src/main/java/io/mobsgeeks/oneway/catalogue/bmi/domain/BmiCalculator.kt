@@ -1,6 +1,6 @@
-package io.mobsgeeks.oneway.catalogue.bmi
+package io.mobsgeeks.oneway.catalogue.bmi.domain
 
-import io.mobsgeeks.oneway.catalogue.bmi.BmiCategory.*
+import io.mobsgeeks.oneway.catalogue.bmi.domain.BmiCategory.*
 
 object BmiCalculator {
   fun calculate(weightInKg: Double, heightInCm: Double): BmiResult {

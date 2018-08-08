@@ -5,7 +5,7 @@ import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.verifyNoMoreInteractions
 import io.mobsgeeks.oneway.catalogue.bmi.BmiState
 import io.mobsgeeks.oneway.catalogue.bmi.BmiView
-import io.mobsgeeks.oneway.catalogue.bmi.MeasurementSystem.SI
+import io.mobsgeeks.oneway.catalogue.bmi.domain.MeasurementSystem.SI
 import io.reactivex.subjects.PublishSubject
 import org.junit.Test
 

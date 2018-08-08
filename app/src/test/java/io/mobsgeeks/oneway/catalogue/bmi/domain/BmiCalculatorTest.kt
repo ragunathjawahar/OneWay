@@ -1,10 +1,10 @@
-package io.mobsgeeks.oneway.catalogue.bmi
+package io.mobsgeeks.oneway.catalogue.bmi.domain
 
 import com.google.common.collect.Range
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
-class BmiTest {
+class BmiCalculatorTest {
   @Test fun `when weight is 0, then BMI is 0`() {
     // when
     val result = BmiCalculator.calculate(0.0, 170.0)

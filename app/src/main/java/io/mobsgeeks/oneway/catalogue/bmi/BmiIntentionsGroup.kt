@@ -1,8 +1,8 @@
 package io.mobsgeeks.oneway.catalogue.bmi
 
 import io.mobsgeeks.oneway.IntentionsGroup
-import io.mobsgeeks.oneway.catalogue.bmi.MeasurementSystem.IMPERIAL
-import io.mobsgeeks.oneway.catalogue.bmi.MeasurementSystem.SI
+import io.mobsgeeks.oneway.catalogue.bmi.domain.MeasurementSystem.IMPERIAL
+import io.mobsgeeks.oneway.catalogue.bmi.domain.MeasurementSystem.SI
 import io.reactivex.Observable
 
 class BmiIntentionsGroup(
