@@ -13,7 +13,7 @@ class AndroidMviDelegate<S, P>(
     private val androidMviContract: AndroidMviContract<S, P>
 ) {
   private val mviDelegate: MviDelegate<S, P> by lazy(NONE) {
-    MviDelegate(androidMviContract.stateSerializer)
+    MviDelegate(androidMviContract.stateConverter)
   }
 
   val timeline: Observable<S> =

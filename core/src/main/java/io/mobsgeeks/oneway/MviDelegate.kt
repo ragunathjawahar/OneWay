@@ -7,9 +7,7 @@ import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlin.LazyThreadSafetyMode.NONE
 
-class MviDelegate<S, P>(
-    private val stateSerializer: StateSerializer<S, P>
-) {
+class MviDelegate<S, P>(private val stateConverter: StateConverter<S, P>) {
   private val compositeDisposable = CompositeDisposable()
   private val sourceEventsSubject = PublishSubject.create<SourceEvent>()
   private val timelineSubject = BehaviorSubject.create<S>()
@@ -23,10 +21,7 @@ class MviDelegate<S, P>(
     timelineSubject.hide().share()
   }
 
-  fun bind(
-      source: Source<S>,
-      sink: Sink<S>
-  ) {
+  fun bind(source: Source<S>, sink: Sink<S>) {
     val sharedStates = source.produce(sourceEvents, timeline).publish()
     compositeDisposable.addAll(
         sink.consume(sharedStates),
@@ -37,19 +32,19 @@ class MviDelegate<S, P>(
     sourceEventsSubject.onNext(sourceEvent)
   }
 
-  fun restoreState(persistentState: P?) {
-    persistentState?.let { timelineSubject.onNext(stateSerializer.deserialize(it)) }
-  }
-
-  fun saveState(): P? {
-    val state = timelineSubject.value
-    return state?.let { stateSerializer.serialize(state) }
-  }
-
   fun unbind() {
     if (compositeDisposable.size() > 0) {
       sourceEventsSubject.onNext(DESTROYED)
       compositeDisposable.clear()
     }
+  }
+
+  fun saveState(): P? {
+    val state = timelineSubject.value
+    return state?.let { stateConverter.to(state) }
+  }
+
+  fun restoreState(persistentState: P?) {
+    persistentState?.let { timelineSubject.onNext(stateConverter.from(it)) }
   }
 }

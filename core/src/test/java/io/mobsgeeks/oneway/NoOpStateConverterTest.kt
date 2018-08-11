@@ -3,25 +3,25 @@ package io.mobsgeeks.oneway
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
-class NoOpStateSerializerTest {
-  private val noOpStateSerializer = NoOpStateSerializer<Cat>()
+class NoOpStateConverterTest {
+  private val noOpStateConverter = NoOpStateConverter<Cat>()
   private val cat = Cat()
 
   @Test fun `it returns the same object after serialization`() {
     // when
-    val serializedCat = noOpStateSerializer.serialize(cat)
+    val toCat = noOpStateConverter.to(cat)
 
     // then
-    assertThat(serializedCat)
+    assertThat(toCat)
         .isSameAs(cat)
   }
 
   @Test fun `it returns the same object after deserialization`() {
     // when
-    val deserializedCat = noOpStateSerializer.deserialize(cat)
+    val fromCat = noOpStateConverter.from(cat)
 
     // then
-    assertThat(deserializedCat)
+    assertThat(fromCat)
         .isSameAs(cat)
   }
 }

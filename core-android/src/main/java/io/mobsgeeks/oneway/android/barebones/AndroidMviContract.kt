@@ -1,14 +1,14 @@
 package io.mobsgeeks.oneway.android.barebones
 
 import io.mobsgeeks.oneway.SourceEvent
-import io.mobsgeeks.oneway.StateSerializer
+import io.mobsgeeks.oneway.StateConverter
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 
 interface AndroidMviContract<S, P> {
   val timeline: Observable<S>
 
-  val stateSerializer: StateSerializer<S, P>
+  val stateConverter: StateConverter<S, P>
 
   val persister: Persister<P>
 

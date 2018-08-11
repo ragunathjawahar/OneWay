@@ -3,9 +3,9 @@ package io.mobsgeeks.oneway.android.barebones
 import android.os.Bundle
 import android.support.test.runner.AndroidJUnit4
 import io.mobsgeeks.oneway.SourceEvent
-import io.mobsgeeks.oneway.StateSerializer
+import io.mobsgeeks.oneway.StateConverter
 import io.mobsgeeks.oneway.android.fixtures.ByteArrayPersister
-import io.mobsgeeks.oneway.android.fixtures.ByteArrayStateSerializer
+import io.mobsgeeks.oneway.android.fixtures.ByteArrayStateConverter
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.observers.TestObserver
@@ -18,15 +18,15 @@ import org.mockito.Mockito.*
 class AndroidMviDelegateTest {
   private val testObserver = TestObserver<String>()
   private val sourceSubject = PublishSubject.create<String>()
-  private val spiedStateSerializer = spy(ByteArrayStateSerializer())
+  private val spiedStateConverter = spy(ByteArrayStateConverter())
   private val spiedPersister = spy(ByteArrayPersister())
 
   private val androidMviContract = object : AndroidMviContract<String, ByteArray> {
     override val timeline: Observable<String>
       get() = PublishSubject.create() // Unused in tests, hence using a dummy.
 
-    override val stateSerializer: StateSerializer<String, ByteArray>
-      get() = spiedStateSerializer
+    override val stateConverter: StateConverter<String, ByteArray>
+      get() = spiedStateConverter
 
     override val persister: Persister<ByteArray>
       get() = spiedPersister
@@ -75,7 +75,7 @@ class AndroidMviDelegateTest {
   }
 
   // FIXME(rj) 5/Aug/18 - Tests internal implementation, hence a tightly-coupled test.
-  @Test fun saveStateSerializesAndPersistsState() {
+  @Test fun saveStateConvertsAndPersistsState() {
     // given
     val preciousState = "My Precious"
     val bundle = Bundle()
@@ -86,11 +86,11 @@ class AndroidMviDelegateTest {
     androidMviDelegate.saveState(bundle)
 
     // then
-    val inOrder = inOrder(spiedStateSerializer, spiedPersister)
-    inOrder.verify(spiedStateSerializer).serialize(preciousState)
+    val inOrder = inOrder(spiedStateConverter, spiedPersister)
+    inOrder.verify(spiedStateConverter).to(preciousState)
     inOrder.verify(spiedPersister).write(preciousState.toByteArray(), bundle)
 
-    verifyNoMoreInteractions(spiedStateSerializer)
+    verifyNoMoreInteractions(spiedStateConverter)
     verifyNoMoreInteractions(spiedPersister)
   }
 
@@ -102,17 +102,17 @@ class AndroidMviDelegateTest {
     androidMviDelegate.bind()
     sourceSubject.onNext(aState)
     androidMviDelegate.saveState(bundle)
-    reset(spiedPersister, spiedStateSerializer)
+    reset(spiedPersister, spiedStateConverter)
 
     // when
     androidMviDelegate.restoreState(bundle)
 
     // then
-    val inOrder = inOrder(spiedPersister, spiedStateSerializer)
+    val inOrder = inOrder(spiedPersister, spiedStateConverter)
     inOrder.verify(spiedPersister).read(bundle)
-    inOrder.verify(spiedStateSerializer).deserialize(aState.toByteArray())
+    inOrder.verify(spiedStateConverter).from(aState.toByteArray())
 
     verifyNoMoreInteractions(spiedPersister)
-    verifyNoMoreInteractions(spiedStateSerializer)
+    verifyNoMoreInteractions(spiedStateConverter)
   }
 }
