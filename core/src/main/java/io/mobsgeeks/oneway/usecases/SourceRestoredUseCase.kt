@@ -6,7 +6,7 @@ import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import io.reactivex.functions.BiFunction
 
-class DefaultSourceRestoredUseCase<T>(
+class SourceRestoredUseCase<T>(
     private val timeline: Observable<T>
 ) : ObservableTransformer<SourceEvent, T> {
   override fun apply(sourceEvents: Observable<SourceEvent>): Observable<T> {

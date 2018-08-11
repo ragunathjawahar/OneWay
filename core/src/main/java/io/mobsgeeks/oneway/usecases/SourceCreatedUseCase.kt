@@ -6,7 +6,7 @@ import io.reactivex.Observable
 import io.reactivex.ObservableSource
 import io.reactivex.ObservableTransformer
 
-class DefaultSourceCreatedUseCase<T>(
+class SourceCreatedUseCase<T>(
     private val initialState: T
 ) : ObservableTransformer<SourceEvent, T> {
   override fun apply(sourceEvents: Observable<SourceEvent>): ObservableSource<T> {
