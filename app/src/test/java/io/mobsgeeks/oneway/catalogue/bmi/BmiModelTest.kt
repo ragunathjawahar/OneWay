@@ -22,7 +22,7 @@ class BmiModelTest {
 
   @Test fun `when screen is created, then emit default state`() {
     // when
-    testRule.screenIsCreated()
+    testRule.sourceIsCreated()
 
     // then
     testRule.assertStates(initialState)
@@ -34,8 +34,8 @@ class BmiModelTest {
 
     // when
     testRule.startWith(lastKnownState) {
-      testRule.screenIsDestroyed()
-      testRule.screenIsRestored()
+      testRule.sourceIsDestroyed()
+      testRule.sourceIsRestored()
     }
 
     // then

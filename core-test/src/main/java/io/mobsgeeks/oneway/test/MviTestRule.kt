@@ -8,7 +8,15 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 
-class MviTestRule<S>(private val sourceFunction: (Observable<SourceEvent>, Observable<S>) -> Observable<S>) {
+/**
+ * A test rule that makes isolated testing MVI models more enjoyable.
+ *
+ * @param sourceFunction provides `sourceEvents` and `timeline` for the
+ *                       model to create a source.
+ */
+class MviTestRule<S>(
+    private val sourceFunction: (Observable<SourceEvent>, Observable<S>) -> Observable<S>
+) {
   private val sourceEventsSubject = PublishSubject.create<SourceEvent>()
   private val sourceEvents: Observable<SourceEvent> = sourceEventsSubject.hide()
 
@@ -16,35 +24,42 @@ class MviTestRule<S>(private val sourceFunction: (Observable<SourceEvent>, Obser
   private val timeline: Observable<S> = timelineSubject.hide()
 
   private lateinit var internalTestObserver: TestObserver<S>
-  val testObserver: TestObserver<S>
-    get() = internalTestObserver
 
   private val compositeDisposable = CompositeDisposable()
+
+  /** A test observer that is subscribed to the source. */
+  val testObserver: TestObserver<S>
+    get() = internalTestObserver
 
   init {
     createSource(sourceFunction)
   }
 
-  fun screenIsCreated() {
+  /** Simulates the [SourceEvent.CREATED] event. */
+  fun sourceIsCreated() {
     createSource(sourceFunction)
     sourceEventsSubject.onNext(CREATED)
   }
 
-  fun screenIsRestored() {
-    createSource(sourceFunction)
-    sourceEventsSubject.onNext(RESTORED)
-  }
-
-  fun screenIsDestroyed() {
+  /** Simulates the [SourceEvent.DESTROYED] event. */
+  fun sourceIsDestroyed() {
     sourceEventsSubject.onNext(DESTROYED)
     compositeDisposable.clear()
   }
 
+  /** Simulates the [SourceEvent.RESTORED] event. */
+  fun sourceIsRestored() {
+    createSource(sourceFunction)
+    sourceEventsSubject.onNext(RESTORED)
+  }
+
+  /** Starts with the given [startState] and then executes the following [block]. */
   fun startWith(startState: S, block: () -> Unit) {
     timelineSubject.onNext(startState)
     block()
   }
 
+  /** Asserts the [states] that were observed by the [testObserver]. */
   fun assertStates(vararg states: S) {
     with(testObserver) {
       assertNoErrors()

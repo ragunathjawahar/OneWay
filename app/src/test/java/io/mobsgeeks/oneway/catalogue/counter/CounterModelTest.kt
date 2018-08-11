@@ -19,7 +19,7 @@ class CounterModelTest {
 
   @Test fun `creating the screen starts with a ZERO state`() {
     // when
-    mviTestRule.screenIsCreated()
+    mviTestRule.sourceIsCreated()
 
     // then
     mviTestRule.assertStates(ZERO)
@@ -53,7 +53,7 @@ class CounterModelTest {
 
     // when
     mviTestRule.startWith(three) {
-      mviTestRule.screenIsRestored()
+      mviTestRule.sourceIsRestored()
     }
 
     // then

@@ -20,7 +20,7 @@ class BudapestModelTest {
 
   @Test fun `creating a screen starts with a stranger state`() {
     // when
-    testRule.screenIsCreated()
+    testRule.sourceIsCreated()
 
     // then
     testRule.assertStates(STRANGER)
@@ -30,7 +30,7 @@ class BudapestModelTest {
     // when
     val spiderManState = BudapestState("Spider-Man")
     testRule.startWith(spiderManState) {
-      testRule.screenIsRestored()
+      testRule.sourceIsRestored()
     }
 
     // then

@@ -24,7 +24,7 @@ class MviTestRuleTest {
     }
 
     // when
-    testRule.screenIsCreated()
+    testRule.sourceIsCreated()
 
     // then
     with(sourceEventsTestObserver) {
@@ -46,7 +46,7 @@ class MviTestRuleTest {
     }
 
     // when
-    testRule.screenIsRestored()
+    testRule.sourceIsRestored()
 
     // then
     with(sourceEventsTestObserver) {
@@ -68,7 +68,7 @@ class MviTestRuleTest {
     }
 
     // when
-    testRule.screenIsDestroyed()
+    testRule.sourceIsDestroyed()
 
     // then
     with(sourceEventsTestObserver) {
@@ -149,7 +149,7 @@ class MviTestRuleTest {
     val mviTestRule = MviTestRule(sourceFunction)
 
     // when
-    mviTestRule.screenIsCreated()
+    mviTestRule.sourceIsCreated()
 
     // then
     mviTestRule.assertStates(stateA, stateB)
@@ -158,7 +158,7 @@ class MviTestRuleTest {
   // TODO(rj) 24/Jun/18 - Ensure no state emission happens after the subscription is disposed.
   @Test fun `it disposes subscriptions when the screen is destroyed`() {
     // when
-    testRule.screenIsDestroyed()
+    testRule.sourceIsDestroyed()
 
     // then
     assertThat(testRule.testObserver.isDisposed)
@@ -167,10 +167,10 @@ class MviTestRuleTest {
 
   @Test fun `it restores subscriptions when the screen is restored`() {
     // given
-    testRule.screenIsDestroyed()
+    testRule.sourceIsDestroyed()
 
     // when
-    testRule.screenIsRestored()
+    testRule.sourceIsRestored()
 
     // then
     assertThat(testRule.testObserver.hasSubscription())
@@ -181,10 +181,10 @@ class MviTestRuleTest {
 
   @Test fun `it restores subscriptions when the screen is created`() {
     // given
-    testRule.screenIsDestroyed()
+    testRule.sourceIsDestroyed()
 
     // when
-    testRule.screenIsCreated()
+    testRule.sourceIsCreated()
 
     // then
     assertThat(testRule.testObserver.hasSubscription())
@@ -211,12 +211,12 @@ class MviTestRuleTest {
     val mviTestRule = MviTestRule(sourceFunction)
 
     // when
-    mviTestRule.screenIsCreated()
+    mviTestRule.sourceIsCreated()
     mviTestRule.assertStates(oneState)
     val testObserverAfterCreated = mviTestRule.testObserver
 
-    mviTestRule.screenIsDestroyed()
-    mviTestRule.screenIsRestored()
+    mviTestRule.sourceIsDestroyed()
+    mviTestRule.sourceIsRestored()
     val testObserverAfterRestored = mviTestRule.testObserver
 
     // then
