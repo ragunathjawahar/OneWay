@@ -16,7 +16,7 @@
 package io.mobsgeeks.oneway
 
 /**
- * A `StateConverter` that does not perform any conversion between the state
+ * A [StateConverter] that does not perform any conversion between the state
  * used by the model and the state representation required for persistence.
  * Use this class if the state used by the model is also suitable for
  * persistence.

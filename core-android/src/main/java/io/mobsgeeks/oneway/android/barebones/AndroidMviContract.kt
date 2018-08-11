@@ -40,22 +40,21 @@ interface AndroidMviContract<S, P> {
   val timeline: Observable<S>
 
   /**
-   * Responsible for converting the state into a representation suitable
-   * for persistence.
+   * Converting the state into a representation suitable for persistence.
    */
   val stateConverter: StateConverter<S, P>
 
   /** Used to save and restore the persistable state object. */
   val persister: Persister<P>
 
-  /** Provides `sourceEvents` and `timeline` to the model. */
+  /** Creates a source, provides access to [sourceEvents] and the [timeline]. */
   fun source(
       sourceEvents: Observable<SourceEvent>,
       timeline: Observable<S>
   ): Observable<S>
 
   /**
-   * Allows source events to be consumed. The consumer is usually a
+   * Consume the source that was returned by [source], the consumer is usually a
    * [io.mobsgeeks.oneway.drivers.ViewDriver].
    */
   fun sink(source: Observable<S>): Disposable

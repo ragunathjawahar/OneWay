@@ -18,10 +18,10 @@ package io.mobsgeeks.oneway
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 
-/** Consumer of the states produced by the `Source`. */
+/** Consumer of the states produced by the [Source]. */
 interface Sink<S> {
   /**
-   * Consumes the state stream and returns a `Disposable` for managing
+   * Consumes the state stream and returns a [Disposable] for managing
    * the subscription.
    */
   fun consume(source: Observable<S>): Disposable

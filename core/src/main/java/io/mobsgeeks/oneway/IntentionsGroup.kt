@@ -23,6 +23,6 @@ import io.reactivex.Observable
  * each intention.
  */
 interface IntentionsGroup<I> {
-  /** Merges and exposes all intentions as an `Observable`. */
+  /** Merges and exposes all intentions as an [Observable]. */
   fun intentions(): Observable<I>
 }

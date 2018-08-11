@@ -12,15 +12,17 @@ object CounterModel {
   ): Observable<CounterState> {
     val incrementIntentions = intentions
         .ofType(Increment::class.java)
+        .map { Unit }
 
     val decrementIntentions = intentions
         .ofType(Decrement::class.java)
+        .map { Unit }
 
     return Observable.merge(
         sourceEvents.compose(useCases.sourceCreatedUseCase),
         sourceEvents.compose(useCases.sourceRestoredUseCase),
-        incrementIntentions.map { Unit }.compose(useCases.incrementUseCase),
-        decrementIntentions.map { Unit }.compose(useCases.decrementUseCase)
+        incrementIntentions.compose(useCases.incrementUseCase),
+        decrementIntentions.compose(useCases.decrementUseCase)
     )
   }
 }

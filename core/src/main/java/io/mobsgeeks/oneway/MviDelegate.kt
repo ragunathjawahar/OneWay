@@ -23,7 +23,7 @@ import io.reactivex.subjects.PublishSubject
 import kotlin.LazyThreadSafetyMode.NONE
 
 /**
- * Manages the subscription between a `Source` and a `Sink`. This includes dispatching
+ * Manages the subscription between a [Source] and a [Sink]. This includes dispatching
  * appropriate lifecycle events and managing state.
  */
 class MviDelegate<S, P>(private val stateConverter: StateConverter<S, P>) {
@@ -46,9 +46,9 @@ class MviDelegate<S, P>(private val stateConverter: StateConverter<S, P>) {
   }
 
   /**
-   * Creates a subscription between the `Source` and the `Sink`. After the subscription
-   * has been established, it also dispatches either a `CREATED` or a `RESTORED`
-   * `SourceEvent` depending upon the state of the system.
+   * Creates a subscription between the [Source] and the [Sink]. After the subscription
+   * has been established, it also dispatches either a [SourceEvent.CREATED] or a
+   * [SourceEvent.RESTORED] event depending upon the state of the system.
    */
   fun bind(source: Source<S>, sink: Sink<S>) {
     val sharedStates = source.produce(sourceEvents, timeline).publish()
@@ -62,8 +62,8 @@ class MviDelegate<S, P>(private val stateConverter: StateConverter<S, P>) {
   }
 
   /**
-   * Disposes the subscription between the `Source` and the `Sink`. It also dispatches
-   * a `DESTROYED` `SourceEvent` before the subscription is cleared.
+   * Disposes the subscription between the [Source] and the [Sink]. It also dispatches
+   * a [SourceEvent.DESTROYED] event before the subscription is cleared.
    */
   fun unbind() {
     if (compositeDisposable.size() > 0) {
@@ -74,7 +74,7 @@ class MviDelegate<S, P>(private val stateConverter: StateConverter<S, P>) {
 
   /**
    * Gets the current state of the source. This function is usually called after the
-   * subscription between the `Source` and the `Sink` has been disposed.
+   * subscription between the [Source] and the [Sink] has been disposed.
    */
   fun getState(): P? {
     val state = timelineSubject.value
@@ -82,9 +82,9 @@ class MviDelegate<S, P>(private val stateConverter: StateConverter<S, P>) {
   }
 
   /**
-   * Puts a state into the `timeline`. This function is usually called before
-   * re-establishing the subscription between the `Source` and the `Sink` after an
-   * `unbind`.
+   * Puts a state into the [timeline]. This function is usually called before
+   * re-establishing the subscription between the [Source] and the [Sink] after an
+   * [unbind].
    */
   fun putState(persistentState: P?) {
     persistentState?.let { timelineSubject.onNext(stateConverter.from(it)) }

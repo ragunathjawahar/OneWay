@@ -23,7 +23,7 @@ import io.reactivex.functions.BiFunction
 
 /**
  * Convenience class that emits the last known state from the `timeline` when
- * it receives `SourceEvent.RESTORED`.
+ * it receives a [SourceEvent.RESTORED] event.
  */
 class SourceRestoredUseCase<S>(
     private val timeline: Observable<S>

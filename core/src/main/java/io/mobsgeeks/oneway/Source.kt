@@ -20,7 +20,7 @@ import io.reactivex.Observable
 /** Producer of the state stream. */
 interface Source<S> {
   /**
-   * Produces a state stream that is handed over to a `Sink`, the consumer.
+   * Produces a state stream that is handed over to a [Sink], the consumer.
    *
    * @param sourceEvents a stream of lifecycle events.
    * @param timeline a state stream that grants access to the most recent state.
