@@ -22,8 +22,8 @@ import io.reactivex.ObservableSource
 import io.reactivex.ObservableTransformer
 
 /**
- * Convenience class that emits an `initialState` when it receives a
- * created `SourceEvent`.
+ * Convenience class that emits an initial state when it receives
+ * `SourceEvent.CREATED`.
  */
 class SourceCreatedUseCase<S>(
     private val initialState: S

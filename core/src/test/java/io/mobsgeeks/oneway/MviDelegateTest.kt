@@ -119,10 +119,10 @@ class MviDelegateTest {
     mviDelegate.bind(source, sink)
 
     // when
-    val lastKnownState = mviDelegate.saveState()
+    val currentState = mviDelegate.getState()
 
     // then
-    assertThat(lastKnownState)
+    assertThat(currentState)
         .isNull()
   }
 
@@ -134,12 +134,12 @@ class MviDelegateTest {
 
     // when
     publisher.onNext(arrow)
-    val lastKnownState = mviDelegate.saveState()
+    val currentState = mviDelegate.getState()
 
     // then
-    assertThat(lastKnownState)
+    assertThat(currentState)
         .isNotNull()
-    assertThat(lastKnownState)
+    assertThat(currentState)
         .isEqualTo(persistableArrow)
   }
 
@@ -148,11 +148,11 @@ class MviDelegateTest {
     val arrow = "Arrow"
     val persistentState = arrow.toByteArray()
     val timelineTestObserver = TestObserver<String>()
+    mviDelegate.timeline.subscribe(timelineTestObserver)
 
     // when
-    mviDelegate.timeline.subscribe(timelineTestObserver)
-    mviDelegate.restoreState(persistentState)
-    val restoredState = mviDelegate.saveState()
+    mviDelegate.putState(persistentState)
+    val currentState = mviDelegate.getState()
 
     // then
     with(timelineTestObserver) {
@@ -161,17 +161,17 @@ class MviDelegateTest {
       assertNotTerminated()
     }
 
-    assertThat(restoredState)
+    assertThat(currentState)
         .isEqualTo(persistentState)
   }
 
   @Test fun `it signals a RESTORED source event when state is restored`() {
     // given
     val persistentState = "Arrow".toByteArray()
+    mviDelegate.sourceEvents.subscribe(sourceEventsTestObserver)
 
     // when
-    mviDelegate.sourceEvents.subscribe(sourceEventsTestObserver)
-    mviDelegate.restoreState(persistentState)
+    mviDelegate.putState(persistentState)
     mviDelegate.bind(source, sink)
 
     // then
@@ -189,7 +189,7 @@ class MviDelegateTest {
     // when
     mviDelegate.bind(source, sink)
     mviDelegate.unbind()
-    mviDelegate.restoreState(null)
+    mviDelegate.putState(null)
     mviDelegate.bind(source, sink)
 
     // then

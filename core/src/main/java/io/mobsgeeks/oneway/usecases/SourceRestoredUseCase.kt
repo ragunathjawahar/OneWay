@@ -22,8 +22,8 @@ import io.reactivex.ObservableTransformer
 import io.reactivex.functions.BiFunction
 
 /**
- * Convenience class that emits the last known state when it receives a
- * restored `SourceEvent`.
+ * Convenience class that emits the last known state from the `timeline` when
+ * it receives `SourceEvent.RESTORED`.
  */
 class SourceRestoredUseCase<S>(
     private val timeline: Observable<S>

@@ -28,14 +28,14 @@ class AndroidMviDelegate<S, P>(
   }
 
   fun saveState(bundle: Bundle) {
-    val state = mviDelegate.saveState()
+    val state = mviDelegate.getState()
     state?.let { androidMviContract.persister.write(state, bundle) }
   }
 
   fun restoreState(bundle: Bundle?) {
     bundle?.let {
       val persistedState = androidMviContract.persister.read(it)
-      mviDelegate.restoreState(persistedState)
+      mviDelegate.putState(persistedState)
     }
   }
 
