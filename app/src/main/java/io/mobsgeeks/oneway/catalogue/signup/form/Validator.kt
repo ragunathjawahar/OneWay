@@ -1,4 +1,4 @@
-package io.mobsgeeks.oneway.catalogue.signup
+package io.mobsgeeks.oneway.catalogue.signup.form
 
 class Validator(private vararg val conditions: Username) {
   fun validate(username: String): Set<Username> =

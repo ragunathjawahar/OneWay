@@ -1,7 +1,7 @@
-package io.mobsgeeks.oneway.catalogue.signup
+package io.mobsgeeks.oneway.catalogue.signup.form
 
 import com.google.common.truth.Truth.assertThat
-import io.mobsgeeks.oneway.catalogue.signup.Username.*
+import io.mobsgeeks.oneway.catalogue.signup.form.Username.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized

@@ -1,4 +1,4 @@
-package io.mobsgeeks.oneway.catalogue.signup
+package io.mobsgeeks.oneway.catalogue.signup.form
 
 import java.util.regex.Pattern
 
