@@ -15,11 +15,11 @@ class ValidUsernameTest(
         listOf("tom", "jackreacher", "wisdom99", "a1947", "voodoo513499")
   }
 
-  private val validator = Validator(*Username.values())
+  private val validator = Validator()
 
   @Test fun `username is valid`() {
     // when
-    val unmetConditions = validator.validate(username)
+    val unmetConditions = validator.validate<Username>(username)
 
     // then
     assertThat(unmetConditions)

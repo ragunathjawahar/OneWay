@@ -28,11 +28,11 @@ class InvalidUsernameTest(
     }
   }
 
-  private val validator = Validator(*values())
+  private val validator = Validator()
 
   @Test fun `username is invalid`() {
     // when
-    val result = validator.validate(username)
+    val result = validator.validate<Username>(username)
 
     // then
     assertThat(result)
