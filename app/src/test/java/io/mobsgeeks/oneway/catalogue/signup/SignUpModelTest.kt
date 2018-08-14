@@ -3,9 +3,8 @@ package io.mobsgeeks.oneway.catalogue.signup
 import io.mobsgeeks.oneway.catalogue.signup.SignUpState.Companion.UNTOUCHED
 import io.mobsgeeks.oneway.catalogue.signup.form.PhoneNumberCondition
 import io.mobsgeeks.oneway.catalogue.signup.form.Validator
-import io.mobsgeeks.oneway.catalogue.signup.usecases.ValidatePhoneNumberUseCase
+import io.mobsgeeks.oneway.catalogue.signup.usecases.SignUpUseCases
 import io.mobsgeeks.oneway.test.MviTestRule
-import io.mobsgeeks.oneway.usecases.SourceCreatedUseCase
 import io.reactivex.subjects.PublishSubject
 import org.junit.Test
 
@@ -18,8 +17,7 @@ class SignUpModelTest {
     SignUpModel.createSource(
         intentionsSubject,
         sourceEvents,
-        SourceCreatedUseCase(UNTOUCHED),
-        ValidatePhoneNumberUseCase(timeline, validator)
+        SignUpUseCases(UNTOUCHED, timeline, validator)
     )
   }
 
@@ -52,15 +50,33 @@ class SignUpModelTest {
     // when
     testRule.startWith(UNTOUCHED) {
       typePhoneNumber(invalidPhoneNumber)
-
-      // then
-      val invalidPhoneNumberState = UNTOUCHED
-          .unmetPhoneNumberConditions(PhoneNumberCondition.values().toSet())
-      testRule.assertStates(invalidPhoneNumberState)
     }
+
+    // then
+    val invalidPhoneNumberState = UNTOUCHED
+        .unmetPhoneNumberConditions(PhoneNumberCondition.values().toSet())
+    testRule.assertStates(invalidPhoneNumberState)
+  }
+
+  @Test fun `entering a valid username validates the username`() {
+    // given
+    val validUsername = "spiderman"
+
+    // when
+    testRule.startWith(UNTOUCHED) {
+      typeUsername(validUsername)
+    }
+
+    // then
+    val validUsernameState = UNTOUCHED.unmetUsernameConditions(emptySet())
+    testRule.assertStates(validUsernameState)
   }
 
   private fun typePhoneNumber(phoneNumber: String) {
     intentionsSubject.onNext(EnterPhoneNumberIntention(phoneNumber))
+  }
+
+  private fun typeUsername(username: String) {
+    intentionsSubject.onNext(EnterUsernameIntention(username))
   }
 }
