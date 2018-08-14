@@ -19,11 +19,13 @@ class SignUpViewDriver(
 
   override fun render(source: Observable<SignUpState>): Disposable {
     val compositeDisposable = CompositeDisposable()
-    val delayedSource = source.debounce(
-        SHOW_ERROR_DEBOUNCE_MILLIS,
-        TimeUnit.MILLISECONDS,
-        schedulersProvider.computation()
-    )
+    val delayedSource = source
+        .debounce(
+            SHOW_ERROR_DEBOUNCE_MILLIS,
+            TimeUnit.MILLISECONDS,
+            schedulersProvider.computation()
+        )
+        .observeOn(schedulersProvider.ui())
 
     compositeDisposable.addAll(
         delayedSource.map { it.phoneNumberField }.filter { it.untouched }.subscribe { view.hidePhoneNumberError() },
