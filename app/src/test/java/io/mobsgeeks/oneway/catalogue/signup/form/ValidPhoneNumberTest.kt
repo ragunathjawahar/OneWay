@@ -20,7 +20,7 @@ class ValidPhoneNumberTest(
   @Test
   fun `phone number is valid`() {
     // when
-    val unmetConditions = validator.validate<PhoneNumber>(phoneNumber)
+    val unmetConditions = validator.validate<PhoneNumberCondition>(phoneNumber)
 
     // then
     Truth.assertThat(unmetConditions)

@@ -1,7 +1,7 @@
 package io.mobsgeeks.oneway.catalogue.signup
 
 import io.mobsgeeks.oneway.catalogue.signup.SignUpState.Companion.UNTOUCHED
-import io.mobsgeeks.oneway.catalogue.signup.form.PhoneNumber
+import io.mobsgeeks.oneway.catalogue.signup.form.PhoneNumberCondition
 import io.mobsgeeks.oneway.catalogue.signup.form.Validator
 import io.mobsgeeks.oneway.catalogue.signup.usecases.ValidatePhoneNumberUseCase
 import io.mobsgeeks.oneway.test.MviTestRule
@@ -55,7 +55,7 @@ class SignUpModelTest {
 
       // then
       val invalidPhoneNumberState = UNTOUCHED
-          .unmetPhoneNumberConditions(PhoneNumber.values().toSet())
+          .unmetPhoneNumberConditions(PhoneNumberCondition.values().toSet())
       testRule.assertStates(invalidPhoneNumberState)
     }
   }

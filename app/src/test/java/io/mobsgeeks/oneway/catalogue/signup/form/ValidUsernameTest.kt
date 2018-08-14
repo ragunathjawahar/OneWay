@@ -19,7 +19,7 @@ class ValidUsernameTest(
 
   @Test fun `username is valid`() {
     // when
-    val unmetConditions = validator.validate<Username>(username)
+    val unmetConditions = validator.validate<UsernameCondition>(username)
 
     // then
     assertThat(unmetConditions)

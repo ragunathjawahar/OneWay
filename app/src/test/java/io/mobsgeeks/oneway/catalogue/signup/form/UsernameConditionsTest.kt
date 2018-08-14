@@ -9,7 +9,7 @@ class UsernameConditionsTest {
     val username = ""
 
     // when
-    val valid = Username.MIN_LENGTH.isValid(username)
+    val valid = UsernameCondition.MIN_LENGTH.isValid(username)
 
     // then
     assertThat(valid)
@@ -21,7 +21,7 @@ class UsernameConditionsTest {
     val username = "tom"
 
     // when
-    val valid = Username.MIN_LENGTH.isValid(username)
+    val valid = UsernameCondition.MIN_LENGTH.isValid(username)
 
     // then
     assertThat(valid)
@@ -33,7 +33,7 @@ class UsernameConditionsTest {
     val justSpaces = "   "
 
     // when
-    val valid = Username.NO_SPACES.isValid(justSpaces)
+    val valid = UsernameCondition.NO_SPACES.isValid(justSpaces)
 
     // then
     assertThat(valid)
@@ -45,7 +45,7 @@ class UsernameConditionsTest {
     val username = "ethan"
 
     // when
-    val valid = Username.ALLOWED_CHARACTERS.isValid(username)
+    val valid = UsernameCondition.ALLOWED_CHARACTERS.isValid(username)
 
     // then
     assertThat(valid)
@@ -57,7 +57,7 @@ class UsernameConditionsTest {
     val username = "ethan92"
 
     // when
-    val valid = Username.ALLOWED_CHARACTERS.isValid(username)
+    val valid = UsernameCondition.ALLOWED_CHARACTERS.isValid(username)
 
     // then
     assertThat(valid)
@@ -69,7 +69,7 @@ class UsernameConditionsTest {
     val username = "ethan@92"
 
     // when
-    val valid = Username.ALLOWED_CHARACTERS.isValid(username)
+    val valid = UsernameCondition.ALLOWED_CHARACTERS.isValid(username)
 
     // then
     assertThat(valid)
@@ -81,7 +81,7 @@ class UsernameConditionsTest {
     val username = "8neo"
 
     // when
-    val valid = Username.STARTS_WITH_ALPHABET.isValid(username)
+    val valid = UsernameCondition.STARTS_WITH_ALPHABET.isValid(username)
 
     // then
     assertThat(valid)

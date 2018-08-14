@@ -9,7 +9,7 @@ class PhoneNumberConditionsTest {
     val phoneNumber = "9876543210"
 
     // when
-    val valid = PhoneNumber.LENGTH.isValid(phoneNumber)
+    val valid = PhoneNumberCondition.LENGTH.isValid(phoneNumber)
 
     // then
     assertThat(valid)
@@ -21,7 +21,7 @@ class PhoneNumberConditionsTest {
     val phoneNumber = "abc123*345"
 
     // when
-    val valid = PhoneNumber.DIGITS_ONLY.isValid(phoneNumber)
+    val valid = PhoneNumberCondition.DIGITS_ONLY.isValid(phoneNumber)
 
     // then
     assertThat(valid)
@@ -34,8 +34,8 @@ class PhoneNumberConditionsTest {
     val phoneNumberStartingWith8 = "8976543210"
 
     // when
-    val numberStartingWith9IsValid = PhoneNumber.STARTS_WITH.isValid(phoneNumberStartingWith9)
-    val numberStartingWith8IsValid = PhoneNumber.STARTS_WITH.isValid(phoneNumberStartingWith8)
+    val numberStartingWith9IsValid = PhoneNumberCondition.STARTS_WITH.isValid(phoneNumberStartingWith9)
+    val numberStartingWith8IsValid = PhoneNumberCondition.STARTS_WITH.isValid(phoneNumberStartingWith8)
 
     // then
     assertThat(numberStartingWith9IsValid)
@@ -50,7 +50,7 @@ class PhoneNumberConditionsTest {
     val notPhoneNumber = "6123456789"
 
     // when
-    val valid = PhoneNumber.STARTS_WITH.isValid(notPhoneNumber)
+    val valid = PhoneNumberCondition.STARTS_WITH.isValid(notPhoneNumber)
 
     assertThat(valid)
         .isFalse()

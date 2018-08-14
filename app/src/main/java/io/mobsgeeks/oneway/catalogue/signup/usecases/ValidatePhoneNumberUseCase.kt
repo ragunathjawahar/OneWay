@@ -2,7 +2,7 @@ package io.mobsgeeks.oneway.catalogue.signup.usecases
 
 import io.mobsgeeks.oneway.catalogue.signup.EnterPhoneNumberIntention
 import io.mobsgeeks.oneway.catalogue.signup.SignUpState
-import io.mobsgeeks.oneway.catalogue.signup.form.PhoneNumber
+import io.mobsgeeks.oneway.catalogue.signup.form.PhoneNumberCondition
 import io.mobsgeeks.oneway.catalogue.signup.form.Validator
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
@@ -18,7 +18,7 @@ class ValidatePhoneNumberUseCase(
   ): ObservableSource<SignUpState> {
     return phoneNumberIntentions
         .map { it.phoneNumber }
-        .map { validator.validate<PhoneNumber>(it) }
+        .map { validator.validate<PhoneNumberCondition>(it) }
         .withLatestFrom(timeline) { unmetConditions, state ->
           state.unmetPhoneNumberConditions(unmetConditions)
         }

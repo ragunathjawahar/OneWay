@@ -2,7 +2,7 @@ package io.mobsgeeks.oneway.catalogue.signup.form
 
 import java.util.regex.Pattern
 
-enum class PhoneNumber : Condition {
+enum class PhoneNumberCondition : Condition {
   LENGTH {
     override fun isValid(text: String): Boolean =
         text.length == 10

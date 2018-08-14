@@ -2,7 +2,7 @@ package io.mobsgeeks.oneway.catalogue.signup.form
 
 import java.util.regex.Pattern
 
-enum class Username : Condition {
+enum class UsernameCondition : Condition {
   ALLOWED_CHARACTERS {
     private val alphabetPattern = Pattern.compile("\\w+")
 

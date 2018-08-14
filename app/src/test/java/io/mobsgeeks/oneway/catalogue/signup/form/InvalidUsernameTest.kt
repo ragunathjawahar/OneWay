@@ -1,7 +1,7 @@
 package io.mobsgeeks.oneway.catalogue.signup.form
 
 import com.google.common.truth.Truth.assertThat
-import io.mobsgeeks.oneway.catalogue.signup.form.Username.*
+import io.mobsgeeks.oneway.catalogue.signup.form.UsernameCondition.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -9,16 +9,16 @@ import org.junit.runners.Parameterized.Parameters
 
 @RunWith(Parameterized::class)
 class InvalidUsernameTest(
-    usernameUnmetConditionsPair: Pair<String, Set<Username>>
+    usernameUnmetConditionsPair: Pair<String, Set<UsernameCondition>>
 ) {
   private val username: String = usernameUnmetConditionsPair.first
-  private val unmetConditions: Set<Username> = usernameUnmetConditionsPair.second
+  private val unmetConditions: Set<UsernameCondition> = usernameUnmetConditionsPair.second
 
   companion object {
-    @Parameters @JvmStatic fun invalidUsernames(): List<Pair<String, Set<Username>>> {
+    @Parameters @JvmStatic fun invalidUsernames(): List<Pair<String, Set<UsernameCondition>>> {
       return listOf(
           "" to setOf(ALLOWED_CHARACTERS, MIN_LENGTH, STARTS_WITH_ALPHABET),
-          " " to Username.values().toSet(),
+          " " to UsernameCondition.values().toSet(),
           "a" to setOf(MIN_LENGTH),
           " ab" to setOf(ALLOWED_CHARACTERS, NO_SPACES, STARTS_WITH_ALPHABET),
           "94949" to setOf(STARTS_WITH_ALPHABET),
@@ -32,7 +32,7 @@ class InvalidUsernameTest(
 
   @Test fun `username is invalid`() {
     // when
-    val result = validator.validate<Username>(username)
+    val result = validator.validate<UsernameCondition>(username)
 
     // then
     assertThat(result)
