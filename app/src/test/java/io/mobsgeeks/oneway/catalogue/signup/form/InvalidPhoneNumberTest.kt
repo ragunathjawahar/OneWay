@@ -11,9 +11,6 @@ import org.junit.runners.Parameterized.Parameters
 class InvalidPhoneNumberTest(
     phoneNumberUnmetConditionsPair: Pair<String, Set<PhoneNumberCondition>>
 ) {
-  private val phoneNumber: String = phoneNumberUnmetConditionsPair.first
-  private val unmetConditions: Set<PhoneNumberCondition> = phoneNumberUnmetConditionsPair.second
-
   companion object {
     @Parameters @JvmStatic fun invalidUsernames(): List<Pair<String, Set<PhoneNumberCondition>>> {
       return listOf(
@@ -29,6 +26,8 @@ class InvalidPhoneNumberTest(
     }
   }
 
+  private val phoneNumber: String = phoneNumberUnmetConditionsPair.first
+  private val unmetConditions: Set<PhoneNumberCondition> = phoneNumberUnmetConditionsPair.second
   private val validator = Validator()
 
   @Test fun `phone number is invalid`() {

@@ -11,9 +11,6 @@ import org.junit.runners.Parameterized.Parameters
 class InvalidUsernameTest(
     usernameUnmetConditionsPair: Pair<String, Set<UsernameCondition>>
 ) {
-  private val username: String = usernameUnmetConditionsPair.first
-  private val unmetConditions: Set<UsernameCondition> = usernameUnmetConditionsPair.second
-
   companion object {
     @Parameters @JvmStatic fun invalidUsernames(): List<Pair<String, Set<UsernameCondition>>> {
       return listOf(
@@ -28,6 +25,8 @@ class InvalidUsernameTest(
     }
   }
 
+  private val username: String = usernameUnmetConditionsPair.first
+  private val unmetConditions: Set<UsernameCondition> = usernameUnmetConditionsPair.second
   private val validator = Validator()
 
   @Test fun `username is invalid`() {
