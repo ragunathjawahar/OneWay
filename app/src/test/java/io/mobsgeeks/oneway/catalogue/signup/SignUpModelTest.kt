@@ -2,6 +2,7 @@ package io.mobsgeeks.oneway.catalogue.signup
 
 import io.mobsgeeks.oneway.catalogue.signup.SignUpState.Companion.UNTOUCHED
 import io.mobsgeeks.oneway.catalogue.signup.form.PhoneNumberCondition
+import io.mobsgeeks.oneway.catalogue.signup.form.UsernameCondition
 import io.mobsgeeks.oneway.catalogue.signup.form.Validator
 import io.mobsgeeks.oneway.catalogue.signup.usecases.SignUpUseCases
 import io.mobsgeeks.oneway.test.MviTestRule
@@ -70,6 +71,21 @@ class SignUpModelTest {
     // then
     val validUsernameState = UNTOUCHED.unmetUsernameConditions(emptySet())
     testRule.assertStates(validUsernameState)
+  }
+
+  @Test fun `entering an invalid username validates the username`() {
+    // given
+    val invalidUsername = " "
+
+    // when
+    testRule.startWith(UNTOUCHED) {
+      typeUsername(invalidUsername)
+    }
+
+    // then
+    val invalidUsernameState = UNTOUCHED
+        .unmetUsernameConditions(UsernameCondition.values().toSet())
+    testRule.assertStates(invalidUsernameState)
   }
 
   private fun typePhoneNumber(phoneNumber: String) {
