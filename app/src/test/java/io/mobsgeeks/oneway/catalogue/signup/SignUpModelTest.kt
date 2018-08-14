@@ -30,6 +30,19 @@ class SignUpModelTest {
     testRule.assertStates(UNTOUCHED)
   }
 
+  @Test fun `restoring the screen restores with the last known state`() {
+    // given
+    val validPhoneNumberState = UNTOUCHED.unmetPhoneNumberConditions(emptySet())
+    testRule.startWith(validPhoneNumberState) {}
+    testRule.sourceIsDestroyed()
+
+    // when
+    testRule.sourceIsRestored()
+
+    // then
+    testRule.assertStates(validPhoneNumberState)
+  }
+
   @Test fun `entering a valid phone number validates the phone number`() {
     // given
     val validPhoneNumber = "9876543210"

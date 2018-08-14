@@ -12,6 +12,7 @@ object SignUpModel {
   ): Observable<SignUpState> {
     return Observable.merge(
         sourceEvents.compose(useCases.sourceCreatedUseCase),
+        sourceEvents.compose(useCases.sourceRestoredUseCase),
         intentions.ofType(EnterPhoneNumberIntention::class.java).compose(useCases.validatePhoneNumberUseCase),
         intentions.ofType(EnterUsernameIntention::class.java).compose(useCases.validateUsernameUseCase)
     )
