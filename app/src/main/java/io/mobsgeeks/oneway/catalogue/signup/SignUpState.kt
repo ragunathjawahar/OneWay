@@ -1,7 +1,15 @@
 package io.mobsgeeks.oneway.catalogue.signup
 
-class SignUpState {
+import io.mobsgeeks.oneway.catalogue.signup.form.PhoneNumber
+
+data class SignUpState(
+    val phoneNumberUntouched: Boolean,
+    val phoneNumberUnmetConditions: Set<PhoneNumber>
+) {
   companion object {
-    val UNTOUCHED = SignUpState()
+    val UNTOUCHED = SignUpState(true, emptySet())
   }
+
+  fun unmetPhoneNumberConditions(unmetConditions: Set<PhoneNumber>): SignUpState =
+      copy(phoneNumberUntouched = false, phoneNumberUnmetConditions = unmetConditions)
 }
