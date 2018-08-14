@@ -28,8 +28,17 @@ class SignUpViewDriver(
         .observeOn(schedulersProvider.ui())
 
     compositeDisposable.addAll(
-        delayedSource.map { it.phoneNumberField }.filter { it.untouched }.subscribe { view.hidePhoneNumberError() },
-        delayedSource.map { it.usernameField }.filter { it.untouched }.subscribe { view.hideUsernameError() }
+        delayedSource
+            .map { it.phoneNumberField }
+            .filter { it.untouched }
+            .distinctUntilChanged()
+            .subscribe { view.hidePhoneNumberError() },
+
+        delayedSource
+            .map { it.usernameField }
+            .filter { it.untouched }
+            .distinctUntilChanged()
+            .subscribe { view.hideUsernameError() }
     )
 
     return compositeDisposable
