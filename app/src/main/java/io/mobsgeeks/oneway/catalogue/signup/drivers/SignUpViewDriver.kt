@@ -5,17 +5,31 @@ import io.mobsgeeks.oneway.catalogue.signup.SignUpState
 import io.mobsgeeks.oneway.catalogue.signup.SignUpView
 import io.mobsgeeks.oneway.drivers.ViewDriver
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import java.util.concurrent.TimeUnit
 
 class SignUpViewDriver(
     private val view: SignUpView,
     private val schedulersProvider: SchedulersProvider
 ) : ViewDriver<SignUpState> {
   companion object {
-    const val SHOW_ERROR_THRESHOLD_MILLIS = 200L
+    const val SHOW_ERROR_DEBOUNCE_MILLIS = 200L
   }
 
   override fun render(source: Observable<SignUpState>): Disposable {
-    return source.subscribe {  }
+    val compositeDisposable = CompositeDisposable()
+    val delayedSource = source.debounce(
+        SHOW_ERROR_DEBOUNCE_MILLIS,
+        TimeUnit.MILLISECONDS,
+        schedulersProvider.computation()
+    )
+
+    compositeDisposable.addAll(
+        delayedSource.map { it.phoneNumberField }.filter { it.untouched }.subscribe { view.hidePhoneNumberError() },
+        delayedSource.map { it.usernameField }.filter { it.untouched }.subscribe { view.hideUsernameError() }
+    )
+
+    return compositeDisposable
   }
 }
