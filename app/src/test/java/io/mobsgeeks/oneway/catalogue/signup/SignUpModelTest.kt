@@ -1,6 +1,7 @@
 package io.mobsgeeks.oneway.catalogue.signup
 
 import io.mobsgeeks.oneway.catalogue.signup.SignUpState.Companion.UNTOUCHED
+import io.mobsgeeks.oneway.catalogue.signup.form.PhoneNumber
 import io.mobsgeeks.oneway.catalogue.signup.form.Validator
 import io.mobsgeeks.oneway.catalogue.signup.usecases.ValidatePhoneNumberUseCase
 import io.mobsgeeks.oneway.test.MviTestRule
@@ -30,15 +31,33 @@ class SignUpModelTest {
     testRule.assertStates(UNTOUCHED)
   }
 
-  @Test fun `entering phone number validates the phone number`() {
+  @Test fun `entering a valid phone number validates the phone number`() {
+    // given
+    val validPhoneNumber = "9876543210"
+
     // when
     testRule.startWith(UNTOUCHED) {
-      typePhoneNumber("9876543210")
+      typePhoneNumber(validPhoneNumber)
     }
 
     // then
     val validPhoneNumberState = UNTOUCHED.unmetPhoneNumberConditions(emptySet())
     testRule.assertStates(validPhoneNumberState)
+  }
+
+  @Test fun `entering an invalid phone number validates the phone number`() {
+    // given
+    val invalidPhoneNumber = ""
+
+    // when
+    testRule.startWith(UNTOUCHED) {
+      typePhoneNumber(invalidPhoneNumber)
+
+      // then
+      val invalidPhoneNumberState = UNTOUCHED
+          .unmetPhoneNumberConditions(PhoneNumber.values().toSet())
+      testRule.assertStates(invalidPhoneNumberState)
+    }
   }
 
   private fun typePhoneNumber(phoneNumber: String) {
