@@ -1,6 +1,6 @@
 package io.mobsgeeks.oneway.catalogue.bmi
 
-import io.mobsgeeks.oneway.catalogue.bmi.domain.MeasurementSystem
+import io.mobsgeeks.oneway.catalogue.bmi.calculator.MeasurementSystem
 
 sealed class BmiIntention
 data class ChangeWeightIntention(val weightInKg: Double) : BmiIntention()

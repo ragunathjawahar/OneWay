@@ -1,10 +1,10 @@
 package io.mobsgeeks.oneway.catalogue.bmi
 
 import android.os.Parcelable
-import io.mobsgeeks.oneway.catalogue.bmi.domain.BmiCalculator
-import io.mobsgeeks.oneway.catalogue.bmi.domain.BmiCategory
-import io.mobsgeeks.oneway.catalogue.bmi.domain.MeasurementSystem
-import io.mobsgeeks.oneway.catalogue.bmi.domain.MeasurementSystem.IMPERIAL
+import io.mobsgeeks.oneway.catalogue.bmi.calculator.BmiCalculator
+import io.mobsgeeks.oneway.catalogue.bmi.calculator.BmiCategory
+import io.mobsgeeks.oneway.catalogue.bmi.calculator.MeasurementSystem
+import io.mobsgeeks.oneway.catalogue.bmi.calculator.MeasurementSystem.IMPERIAL
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize data class BmiState(

@@ -2,9 +2,9 @@ package io.mobsgeeks.oneway.catalogue.bmi
 
 import com.google.common.collect.Range
 import com.google.common.truth.Truth.assertThat
-import io.mobsgeeks.oneway.catalogue.bmi.domain.BmiCalculator
-import io.mobsgeeks.oneway.catalogue.bmi.domain.MeasurementSystem.IMPERIAL
-import io.mobsgeeks.oneway.catalogue.bmi.domain.MeasurementSystem.SI
+import io.mobsgeeks.oneway.catalogue.bmi.calculator.BmiCalculator
+import io.mobsgeeks.oneway.catalogue.bmi.calculator.MeasurementSystem.IMPERIAL
+import io.mobsgeeks.oneway.catalogue.bmi.calculator.MeasurementSystem.SI
 import org.junit.Test
 
 class BmiStateTest {

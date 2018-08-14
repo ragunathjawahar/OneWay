@@ -10,11 +10,11 @@ import com.jakewharton.rxbinding2.widget.checkedChanges
 import io.mobsgeeks.oneway.SourceEvent
 import io.mobsgeeks.oneway.android.OneWayFragment
 import io.mobsgeeks.oneway.catalogue.R
-import io.mobsgeeks.oneway.catalogue.bmi.domain.BmiCategory
-import io.mobsgeeks.oneway.catalogue.bmi.domain.BmiCategory.*
-import io.mobsgeeks.oneway.catalogue.bmi.domain.MeasurementSystem
-import io.mobsgeeks.oneway.catalogue.bmi.domain.MeasurementSystem.IMPERIAL
-import io.mobsgeeks.oneway.catalogue.bmi.domain.MeasurementSystem.SI
+import io.mobsgeeks.oneway.catalogue.bmi.calculator.BmiCategory
+import io.mobsgeeks.oneway.catalogue.bmi.calculator.BmiCategory.*
+import io.mobsgeeks.oneway.catalogue.bmi.calculator.MeasurementSystem
+import io.mobsgeeks.oneway.catalogue.bmi.calculator.MeasurementSystem.IMPERIAL
+import io.mobsgeeks.oneway.catalogue.bmi.calculator.MeasurementSystem.SI
 import io.mobsgeeks.oneway.catalogue.bmi.drivers.BmiViewDriver
 import io.mobsgeeks.oneway.catalogue.bmi.usecases.BmiUseCases
 import io.reactivex.Observable

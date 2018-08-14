@@ -1,4 +1,4 @@
-package io.mobsgeeks.oneway.catalogue.bmi.domain
+package io.mobsgeeks.oneway.catalogue.bmi.calculator
 
 import com.google.common.collect.Range
 import com.google.common.truth.Truth.assertThat

@@ -1,7 +1,7 @@
 package io.mobsgeeks.oneway.catalogue.bmi
 
-import io.mobsgeeks.oneway.catalogue.bmi.domain.BmiCategory
-import io.mobsgeeks.oneway.catalogue.bmi.domain.MeasurementSystem
+import io.mobsgeeks.oneway.catalogue.bmi.calculator.BmiCategory
+import io.mobsgeeks.oneway.catalogue.bmi.calculator.MeasurementSystem
 
 interface BmiView {
   fun showBmi(bmi: Double)

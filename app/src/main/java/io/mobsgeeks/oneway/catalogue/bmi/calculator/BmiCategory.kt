@@ -1,4 +1,4 @@
-package io.mobsgeeks.oneway.catalogue.bmi.domain
+package io.mobsgeeks.oneway.catalogue.bmi.calculator
 
 /**
  * Categories extracted from [BMI Categories](https://en.wikipedia.org/wiki/Body_mass_index#Categories).

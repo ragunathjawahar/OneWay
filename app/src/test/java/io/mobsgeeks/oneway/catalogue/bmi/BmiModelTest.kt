@@ -1,8 +1,8 @@
 package io.mobsgeeks.oneway.catalogue.bmi
 
 import io.mobsgeeks.oneway.SourceEvent
-import io.mobsgeeks.oneway.catalogue.bmi.domain.MeasurementSystem.IMPERIAL
-import io.mobsgeeks.oneway.catalogue.bmi.domain.MeasurementSystem.SI
+import io.mobsgeeks.oneway.catalogue.bmi.calculator.MeasurementSystem.IMPERIAL
+import io.mobsgeeks.oneway.catalogue.bmi.calculator.MeasurementSystem.SI
 import io.mobsgeeks.oneway.catalogue.bmi.usecases.BmiUseCases
 import io.mobsgeeks.oneway.test.MviTestRule
 import io.reactivex.Observable
