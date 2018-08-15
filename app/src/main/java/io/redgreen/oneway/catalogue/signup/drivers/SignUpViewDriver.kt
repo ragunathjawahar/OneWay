@@ -57,6 +57,7 @@ class SignUpViewDriver(
     val compositeDisposable = CompositeDisposable()
     compositeDisposable.addAll(
         validPhoneNumberFields
+            .filter { !it.untouched }
             .doOnNext { displayErrorEventsSubject.onNext(DisplayPhoneNumberErrorEvent(false)) }
             .subscribe { view.hidePhoneNumberError() },
 
@@ -64,17 +65,42 @@ class SignUpViewDriver(
             .doOnNext { displayErrorEventsSubject.onNext(DisplayPhoneNumberErrorEvent(true)) }
             .subscribe { view.showPhoneNumberErrors(it.unmetConditions) },
 
+        source
+            .map { it.phoneNumberField }
+            .filter { it.displayingError }
+            .distinctUntilChanged()
+            .subscribe {
+              if (it.unmetConditions.isEmpty()) {
+                view.hidePhoneNumberError()
+              } else {
+                view.showPhoneNumberErrors(it.unmetConditions)
+              }
+            },
+
         validUsernameFields
+            .filter { !it.untouched }
             .doOnNext { displayErrorEventsSubject.onNext(DisplayUsernameErrorEvent(false)) }
             .subscribe { view.hideUsernameError() },
 
         invalidUsernameFields
             .doOnNext { displayErrorEventsSubject.onNext(DisplayUsernameErrorEvent(true)) }
-            .subscribe { view.showUsernameErrors(it.unmetConditions) }
+            .subscribe { view.showUsernameErrors(it.unmetConditions) },
+
+        source
+            .map { it.usernameField }
+            .filter { it.displayingError }
+            .distinctUntilChanged()
+            .subscribe {
+              if (it.unmetConditions.isEmpty()) {
+                view.hideUsernameError()
+              } else {
+                view.showUsernameErrors(it.unmetConditions)
+              }
+            }
     )
     return compositeDisposable
   }
 
   fun displayErrorEvents(): Observable<DisplayErrorEvent> =
-      displayErrorEventsSubject.hide()
+      displayErrorEventsSubject.distinctUntilChanged().hide()
 }

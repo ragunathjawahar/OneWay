@@ -1,9 +1,6 @@
 package io.redgreen.oneway.catalogue.signup.drivers
 
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.verifyNoMoreInteractions
-import com.nhaarman.mockito_kotlin.verifyZeroInteractions
+import com.nhaarman.mockito_kotlin.*
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import io.redgreen.oneway.catalogue.base.TestSchedulersProvider
@@ -61,8 +58,6 @@ class SignUpViewDriverTest {
     feedStateToSource(untouchedPhoneNumberState)
 
     // then
-    verify(view).hidePhoneNumberError()
-
     verify(view).hideUsernameError()
     verifyNoMoreInteractions(view)
   }
@@ -77,8 +72,6 @@ class SignUpViewDriverTest {
 
     // then
     verify(view).hidePhoneNumberError()
-
-    verify(view).hideUsernameError()
     verifyNoMoreInteractions(view)
   }
 
@@ -92,8 +85,6 @@ class SignUpViewDriverTest {
 
     // then
     verify(view).showPhoneNumberErrors(invalidPhoneNumberState.phoneNumberField.unmetConditions)
-
-    verify(view).hideUsernameError()
     verifyNoMoreInteractions(view)
   }
 
@@ -105,8 +96,6 @@ class SignUpViewDriverTest {
     feedStateToSource(untouchedUsernameState)
 
     // then
-    verify(view).hideUsernameError()
-
     verify(view).hidePhoneNumberError()
     verifyNoMoreInteractions(view)
   }
@@ -121,8 +110,6 @@ class SignUpViewDriverTest {
 
     // then
     verify(view).hideUsernameError()
-
-    verify(view).hidePhoneNumberError()
     verifyNoMoreInteractions(view)
   }
 
@@ -136,8 +123,6 @@ class SignUpViewDriverTest {
 
     // then
     verify(view).showUsernameErrors(invalidUsernameState.usernameField.unmetConditions)
-
-    verify(view).hidePhoneNumberError()
     verifyNoMoreInteractions(view)
   }
 
@@ -151,8 +136,7 @@ class SignUpViewDriverTest {
 
     // then
     displayErrorEventsTestObserver.assertValues(
-        DisplayPhoneNumberErrorEvent(true),
-        DisplayUsernameErrorEvent(false)
+        DisplayPhoneNumberErrorEvent(true)
     )
   }
 
@@ -166,8 +150,7 @@ class SignUpViewDriverTest {
 
     // then
     displayErrorEventsTestObserver.assertValues(
-        DisplayPhoneNumberErrorEvent(false),
-        DisplayUsernameErrorEvent(false)
+        DisplayPhoneNumberErrorEvent(false)
     )
   }
 
@@ -181,7 +164,6 @@ class SignUpViewDriverTest {
 
     // then
     displayErrorEventsTestObserver.assertValues(
-        DisplayPhoneNumberErrorEvent(false),
         DisplayUsernameErrorEvent(true)
     )
   }
@@ -196,9 +178,64 @@ class SignUpViewDriverTest {
 
     // then
     displayErrorEventsTestObserver.assertValues(
-        DisplayPhoneNumberErrorEvent(false),
         DisplayUsernameErrorEvent(false)
     )
+  }
+
+  @Test fun `it should display phone number error immediately if it is already showing an error`() {
+    // given
+    val unmetConditions1 = PhoneNumberCondition.values().toSet()
+    val notDisplayingPhoneNumberErrorState = SignUpState.UNTOUCHED
+        .unmetPhoneNumberConditions(unmetConditions1)
+
+    val unmetConditions2 = setOf(STARTS_WITH)
+    val displayingPhoneNumberErrorState = notDisplayingPhoneNumberErrorState
+        .displayingPhoneNumberError(true)
+        .unmetPhoneNumberConditions(unmetConditions2)
+
+    val validPhoneNumberState = displayingPhoneNumberErrorState
+        .unmetPhoneNumberConditions(emptySet())
+
+    // when
+    feedStateToSource(notDisplayingPhoneNumberErrorState)
+    feedStateToSource(displayingPhoneNumberErrorState, 0L)
+    feedStateToSource(validPhoneNumberState, 0L)
+
+    // then
+    val inOrder = inOrder(view)
+    inOrder.verify(view).showPhoneNumberErrors(unmetConditions1)
+    inOrder.verify(view).showPhoneNumberErrors(unmetConditions2)
+    inOrder.verify(view).hidePhoneNumberError()
+
+    verifyNoMoreInteractions(view)
+  }
+
+  @Test fun `it should display username error immediately if it is already showing an error`() {
+    // given
+    val unmetConditions1 = UsernameCondition.values().toSet()
+    val notDisplayingUsernameErrorState = SignUpState.UNTOUCHED
+        .unmetUsernameConditions(unmetConditions1)
+
+    val unmetConditions2 = setOf(MIN_LENGTH)
+    val displayingUsernameErrorState = notDisplayingUsernameErrorState
+        .displayingUsernameError(true)
+        .unmetUsernameConditions(unmetConditions2)
+
+    val validUsernameState = displayingUsernameErrorState
+        .unmetUsernameConditions(emptySet())
+
+    // when
+    feedStateToSource(notDisplayingUsernameErrorState)
+    feedStateToSource(displayingUsernameErrorState, 0L)
+    feedStateToSource(validUsernameState, 0L)
+
+    // then
+    val inOrder = inOrder(view)
+    inOrder.verify(view).showUsernameErrors(unmetConditions1)
+    inOrder.verify(view).showUsernameErrors(unmetConditions2)
+    inOrder.verify(view).hideUsernameError()
+
+    verifyNoMoreInteractions(view)
   }
 
   private fun feedStateToSource(
