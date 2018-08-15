@@ -58,6 +58,23 @@ class SignUpViewDriverTest {
 
     // then
     verify(view).hidePhoneNumberError()
+
+    verify(view).hideUsernameError()
+    verifyNoMoreInteractions(view)
+  }
+
+  @Test fun `it should not display error if phone number field is valid`() {
+    // given
+    val validPhoneNumberState = SignUpState.UNTOUCHED
+        .unmetPhoneNumberConditions(emptySet())
+
+    // when
+    feedStateToSource(validPhoneNumberState)
+
+    // then
+    verify(view).hidePhoneNumberError()
+
+    verify(view).hideUsernameError()
     verifyNoMoreInteractions(view)
   }
 
@@ -70,10 +87,30 @@ class SignUpViewDriverTest {
 
     // then
     verify(view).hideUsernameError()
+
+    verify(view).hidePhoneNumberError()
     verifyNoMoreInteractions(view)
   }
 
-  private fun feedStateToSource(state: SignUpState, advanceTimeByMillis: Long = SHOW_ERROR_DEBOUNCE_MILLIS) {
+  @Test fun `it should not display error if username field is valid`() {
+    // given
+    val validUsernameState = SignUpState.UNTOUCHED
+        .unmetUsernameConditions(emptySet())
+
+    // when
+    feedStateToSource(validUsernameState)
+
+    // then
+    verify(view).hideUsernameError()
+
+    verify(view).hidePhoneNumberError()
+    verifyNoMoreInteractions(view)
+  }
+
+  private fun feedStateToSource(
+      state: SignUpState,
+      advanceTimeByMillis: Long = SHOW_ERROR_DEBOUNCE_MILLIS
+  ) {
     sourceSubject.onNext(state)
     schedulersProvider.testScheduler.advanceTimeBy(advanceTimeByMillis, MILLISECONDS)
   }

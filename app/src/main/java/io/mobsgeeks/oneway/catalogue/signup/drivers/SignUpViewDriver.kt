@@ -30,13 +30,13 @@ class SignUpViewDriver(
     compositeDisposable.addAll(
         delayedSource
             .map { it.phoneNumberField }
-            .filter { it.untouched }
+            .filter { it.untouched || it.unmetConditions.isEmpty() }
             .distinctUntilChanged()
             .subscribe { view.hidePhoneNumberError() },
 
         delayedSource
             .map { it.usernameField }
-            .filter { it.untouched }
+            .filter { it.untouched || it.unmetConditions.isEmpty() }
             .distinctUntilChanged()
             .subscribe { view.hideUsernameError() }
     )
