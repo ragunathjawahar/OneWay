@@ -45,6 +45,7 @@ dependencies {
   // Support libraries
   implementation srcDependencies.appCompat
   implementation srcDependencies.constraintLayout
+  implementation srcDependencies.design
 
   // Test
   testImplementation project(':core-test')

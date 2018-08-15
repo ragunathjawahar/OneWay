@@ -31,4 +31,8 @@
   <string name="template_height_imperial">%.1f ft</string>
   <string name="si_units">SI Units</string>
   <string name="imperial_units">Imperial Units</string>
+
+  <!-- Sign Up -->
+  <string name="username">Username</string>
+  <string name="phone_number">Phone Number</string>
 </resources>

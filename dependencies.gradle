@@ -16,6 +16,7 @@ ext {
       // Support
       appCompat: '27.1.1',
       constraintLayout: '1.1.2',
+      design: '27.1.1',
 
       // Android Test
       androidTestRunner: '1.0.2',
@@ -42,6 +43,7 @@ ext {
       // Support
       appCompat: "com.android.support:appcompat-v7:${versions.appCompat}",
       constraintLayout: "com.android.support.constraint:constraint-layout:${versions.constraintLayout}",
+      design: "com.android.support:design:${versions.design}",
 
       // Kotlin version is specified in root 'build.gradle'
       kotlin: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion",
