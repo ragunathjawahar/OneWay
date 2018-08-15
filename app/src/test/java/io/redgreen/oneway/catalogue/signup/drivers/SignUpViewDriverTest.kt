@@ -6,7 +6,6 @@ import io.reactivex.subjects.PublishSubject
 import io.redgreen.oneway.catalogue.base.TestSchedulersProvider
 import io.redgreen.oneway.catalogue.signup.SignUpState
 import io.redgreen.oneway.catalogue.signup.SignUpView
-import io.redgreen.oneway.catalogue.signup.drivers.SignUpViewDriver.Companion.SHOW_ERROR_DEBOUNCE_MILLIS
 import io.redgreen.oneway.catalogue.signup.form.PhoneNumberCondition
 import io.redgreen.oneway.catalogue.signup.form.PhoneNumberCondition.STARTS_WITH
 import io.redgreen.oneway.catalogue.signup.form.PhoneNumberCondition.values
@@ -18,9 +17,13 @@ import org.junit.Test
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
 class SignUpViewDriverTest {
+  companion object {
+    private const val ERROR_THRESHOLD_MILLIS = 200L
+  }
+
   private val view = mock<SignUpView>()
   private val schedulersProvider = TestSchedulersProvider()
-  private val viewDriver = SignUpViewDriver(view, schedulersProvider)
+  private val viewDriver = SignUpViewDriver(view, schedulersProvider, ERROR_THRESHOLD_MILLIS)
   private val displayErrorEventsTestObserver = viewDriver.displayErrorEvents().test()
   private val sourceSubject = PublishSubject.create<SignUpState>()
   private lateinit var disposable: Disposable
@@ -41,7 +44,7 @@ class SignUpViewDriverTest {
         .unmetPhoneNumberConditions(values().toSet().minus(STARTS_WITH))
 
     // when
-    val thresholdMinus1Millis = SHOW_ERROR_DEBOUNCE_MILLIS - 1
+    val thresholdMinus1Millis = ERROR_THRESHOLD_MILLIS - 1
     feedStateToSource(invalidPhoneNumberState, thresholdMinus1Millis)
     feedStateToSource(anotherInvalidPhoneNumberState, thresholdMinus1Millis)
 
@@ -240,7 +243,7 @@ class SignUpViewDriverTest {
 
   private fun feedStateToSource(
       state: SignUpState,
-      advanceTimeByMillis: Long = SHOW_ERROR_DEBOUNCE_MILLIS
+      advanceTimeByMillis: Long = ERROR_THRESHOLD_MILLIS
   ) {
     sourceSubject.onNext(state)
     schedulersProvider.testScheduler.advanceTimeBy(advanceTimeByMillis, MILLISECONDS)

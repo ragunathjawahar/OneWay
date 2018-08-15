@@ -12,18 +12,15 @@ import java.util.concurrent.TimeUnit
 
 class SignUpViewDriver(
     private val view: SignUpView,
-    private val schedulersProvider: SchedulersProvider
+    private val schedulersProvider: SchedulersProvider,
+    private val errorThresholdMillis: Long
 ) : ViewDriver<SignUpState> {
-  companion object {
-    const val SHOW_ERROR_DEBOUNCE_MILLIS = 200L
-  }
-
   private val displayErrorEventsSubject = PublishSubject.create<DisplayErrorEvent>()
 
   override fun render(source: Observable<SignUpState>): Disposable {
     val delayedSource = source
         .debounce(
-            SHOW_ERROR_DEBOUNCE_MILLIS,
+            errorThresholdMillis,
             TimeUnit.MILLISECONDS,
             schedulersProvider.computation()
         )

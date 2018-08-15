@@ -40,7 +40,13 @@ class SignUpFragment : OneWayFragment<SignUpState>(), SignUpView {
     get() = DefaultSchedulersProvider()
 
   private val viewDriver: SignUpViewDriver
-    get() = SignUpViewDriver(this, schedulersProvider)
+    get() {
+      val errorThresholdMillis = resources
+          .getInteger(R.integer.error_threshold_millis)
+          .toLong()
+
+      return SignUpViewDriver(this, schedulersProvider, errorThresholdMillis)
+    }
 
   override fun onCreateView(
       inflater: LayoutInflater,
