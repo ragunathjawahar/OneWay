@@ -57,6 +57,7 @@ class SignUpViewDriver(
     val compositeDisposable = CompositeDisposable()
     compositeDisposable.addAll(
         validPhoneNumberFields
+            .doOnNext { displayErrorEventsSubject.onNext(DisplayPhoneNumberErrorEvent(false)) }
             .subscribe { view.hidePhoneNumberError() },
 
         invalidPhoneNumberFields
@@ -64,6 +65,7 @@ class SignUpViewDriver(
             .subscribe { view.showPhoneNumberErrors(it.unmetConditions) },
 
         validUsernameFields
+            .doOnNext { displayErrorEventsSubject.onNext(DisplayUsernameErrorEvent(false)) }
             .subscribe { view.hideUsernameError() },
 
         invalidUsernameFields

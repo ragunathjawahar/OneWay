@@ -150,7 +150,25 @@ class SignUpViewDriverTest {
     feedStateToSource(phoneNumberHasErrorsState)
 
     // then
-    displayErrorEventsTestObserver.assertValue(DisplayPhoneNumberErrorEvent(true))
+    displayErrorEventsTestObserver.assertValues(
+        DisplayPhoneNumberErrorEvent(true),
+        DisplayUsernameErrorEvent(false)
+    )
+  }
+
+  @Test fun `it should notify when phone number stops displaying an error`() {
+    // given
+    val validPhoneNumberState = SignUpState.UNTOUCHED
+        .unmetPhoneNumberConditions(emptySet())
+
+    // when
+    feedStateToSource(validPhoneNumberState)
+
+    // then
+    displayErrorEventsTestObserver.assertValues(
+        DisplayPhoneNumberErrorEvent(false),
+        DisplayUsernameErrorEvent(false)
+    )
   }
 
   @Test fun `it should notify when username displays an error`() {
@@ -162,7 +180,25 @@ class SignUpViewDriverTest {
     feedStateToSource(usernameHasErrorsState)
 
     // then
-    displayErrorEventsTestObserver.assertValue(DisplayUsernameErrorEvent(true))
+    displayErrorEventsTestObserver.assertValues(
+        DisplayPhoneNumberErrorEvent(false),
+        DisplayUsernameErrorEvent(true)
+    )
+  }
+
+  @Test fun `it should notify when username stops displaying an error`() {
+    // given
+    val validUsernameState = SignUpState.UNTOUCHED
+        .unmetUsernameConditions(emptySet())
+
+    // when
+    feedStateToSource(validUsernameState)
+
+    // then
+    displayErrorEventsTestObserver.assertValues(
+        DisplayPhoneNumberErrorEvent(false),
+        DisplayUsernameErrorEvent(false)
+    )
   }
 
   private fun feedStateToSource(
