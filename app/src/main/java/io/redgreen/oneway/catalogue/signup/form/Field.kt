@@ -11,4 +11,10 @@ data class Field<T>(
 ) : Parcelable where T : Enum<T>, T : Condition {
   fun validationResult(unmetConditions: Set<T>): Field<T> =
       copy(untouched = false, unmetConditions = unmetConditions)
+
+  fun validationResult(unmetConditions: Set<T>, displayError: Boolean): Field<T> =
+      copy(untouched = false, unmetConditions = unmetConditions, displayingError = displayError)
+
+  fun displayError(display: Boolean): Field<T> =
+      copy(displayingError = display)
 }

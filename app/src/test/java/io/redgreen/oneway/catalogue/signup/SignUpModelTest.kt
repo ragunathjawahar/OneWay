@@ -17,10 +17,9 @@ import org.junit.Test
 class SignUpModelTest {
   private val intentionsSubject = PublishSubject.create<SignUpIntention>()
   private val displayErrorEventsSubject = PublishSubject.create<DisplayErrorEvent>()
+  private val validator = Validator()
 
   private val testRule = MviTestRule<SignUpState> { sourceEvents, timeline ->
-    val validator = Validator()
-
     SignUpModel.createSource(
         intentionsSubject,
         displayErrorEventsSubject,
@@ -186,11 +185,51 @@ class SignUpModelTest {
     )
   }
 
+  @Test fun `when phone number loses focus, then validate and show error immediately`() {
+    // given
+    val phoneNumber = ""
+    val unmetConditions = validator.validate<PhoneNumberCondition>(phoneNumber)
+    val displayPhoneNumberErrorImmediateState = UNTOUCHED
+        .displayPhoneNumberErrorImmediate(unmetConditions)
+
+    // when
+    testRule.startWith(UNTOUCHED) {
+      loseFocusPhoneNumber(phoneNumber)
+    }
+
+    // then
+    testRule.assertStates(displayPhoneNumberErrorImmediateState)
+  }
+
+  @Test fun `when username loses focus, then validate and show error immediately`() {
+    // given
+    val username = ""
+    val unmetConditions = validator.validate<UsernameCondition>(username)
+    val displayUsernameErrorImmediateState = UNTOUCHED
+        .displayUsernameErrorImmediate(unmetConditions)
+
+    // when
+    testRule.startWith(UNTOUCHED) {
+      loseFocusUsername(username)
+    }
+
+    // then
+    testRule.assertStates(displayUsernameErrorImmediateState)
+  }
+
   private fun typePhoneNumber(phoneNumber: String) {
     intentionsSubject.onNext(EnterInputIntention.phoneNumber(phoneNumber))
   }
 
   private fun typeUsername(username: String) {
     intentionsSubject.onNext(EnterInputIntention.username(username))
+  }
+
+  private fun loseFocusPhoneNumber(phoneNumber: String) {
+    intentionsSubject.onNext(LoseFocusIntention.phoneNumber(phoneNumber))
+  }
+
+  private fun loseFocusUsername(username: String) {
+    intentionsSubject.onNext(LoseFocusIntention.username(username))
   }
 }

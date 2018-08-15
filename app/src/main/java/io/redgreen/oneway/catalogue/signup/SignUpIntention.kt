@@ -18,3 +18,16 @@ data class EnterInputIntention(
         EnterInputIntention(username, USERNAME)
   }
 }
+
+data class LoseFocusIntention(
+    val text: String,
+    val whichField: WhichField
+) : SignUpIntention() {
+  companion object {
+    fun phoneNumber(phoneNumber: String): LoseFocusIntention =
+        LoseFocusIntention(phoneNumber, PHONE_NUMBER)
+
+    fun username(username: String): LoseFocusIntention =
+        LoseFocusIntention(username, USERNAME)
+  }
+}

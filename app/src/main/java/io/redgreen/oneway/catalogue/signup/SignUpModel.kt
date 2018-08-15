@@ -15,7 +15,7 @@ object SignUpModel {
     return Observable.mergeArray(
         sourceEvents.compose(useCases.sourceCreatedUseCase),
         sourceEvents.compose(useCases.sourceRestoredUseCase),
-        intentions.ofType(EnterInputIntention::class.java).compose(useCases.validateInputUseCase),
+        intentions.compose(useCases.validateInputUseCase),
         displayErrorEvents.compose(useCases.displayErrorEventsUseCase)
     )
   }

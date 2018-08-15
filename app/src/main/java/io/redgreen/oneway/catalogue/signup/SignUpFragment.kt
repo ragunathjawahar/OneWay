@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.jakewharton.rxbinding2.view.focusChanges
 import com.jakewharton.rxbinding2.widget.textChanges
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
@@ -23,8 +24,11 @@ import kotlin.LazyThreadSafetyMode.NONE
 class SignUpFragment : OneWayFragment<SignUpState>(), SignUpView {
   private val intentionsGroup: SignUpIntentionsGroup
     get() = SignUpIntentionsGroup(
+        this,
         phoneNumberEditText.textChanges().skipInitialValue(),
-        usernameEditText.textChanges().skipInitialValue()
+        phoneNumberEditText.focusChanges().skipInitialValue(),
+        usernameEditText.textChanges().skipInitialValue(),
+        usernameEditText.focusChanges().skipInitialValue()
     )
 
   private val validator: Validator by lazy(NONE) {
@@ -73,6 +77,9 @@ class SignUpFragment : OneWayFragment<SignUpState>(), SignUpView {
   override fun sink(source: Observable<SignUpState>): Disposable =
       viewDriver.render(source)
 
+  override fun getPhoneNumber(): String =
+      phoneNumberEditText.text.toString()
+
   override fun showPhoneNumberErrors(unmetConditions: Set<PhoneNumberCondition>) {
     phoneNumberTextInputLayout.error = unmetConditions.toString()
   }
@@ -80,6 +87,9 @@ class SignUpFragment : OneWayFragment<SignUpState>(), SignUpView {
   override fun hidePhoneNumberError() {
     phoneNumberTextInputLayout.error = null
   }
+
+  override fun getUsername(): String =
+      usernameEditText.text.toString()
 
   override fun showUsernameErrors(unmetConditions: Set<UsernameCondition>) {
     usernameTextInputLayout.error = unmetConditions.toString()

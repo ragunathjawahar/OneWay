@@ -22,8 +22,14 @@ data class SignUpState(
       copy(usernameField = usernameField.validationResult(unmetConditions))
 
   fun displayingPhoneNumberError(displaying: Boolean): SignUpState =
-      copy(phoneNumberField = phoneNumberField.copy(displayingError = displaying))
+      copy(phoneNumberField = phoneNumberField.displayError(displaying))
 
   fun displayingUsernameError(displaying: Boolean): SignUpState =
-      copy(usernameField = usernameField.copy(displayingError = displaying))
+      copy(usernameField = usernameField.displayError(displaying))
+
+  fun displayPhoneNumberErrorImmediate(unmetConditions: Set<PhoneNumberCondition>): SignUpState =
+      copy(phoneNumberField = phoneNumberField.validationResult(unmetConditions, true))
+
+  fun displayUsernameErrorImmediate(unmetConditions: Set<UsernameCondition>): SignUpState =
+      copy(usernameField = usernameField.validationResult(unmetConditions, true))
 }
