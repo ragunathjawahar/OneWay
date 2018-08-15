@@ -17,4 +17,7 @@ data class SignUpState(
 
   fun unmetUsernameConditions(unmetConditions: Set<UsernameCondition>): SignUpState =
       copy(usernameField = usernameField.validationResult(unmetConditions))
+
+  fun displayingPhoneNumberError(displaying: Boolean): SignUpState =
+      copy(phoneNumberField = phoneNumberField.copy(displayingError = displaying))
 }

@@ -2,7 +2,10 @@ package io.redgreen.oneway.catalogue.signup
 
 import io.reactivex.subjects.PublishSubject
 import io.redgreen.oneway.catalogue.signup.SignUpState.Companion.UNTOUCHED
+import io.redgreen.oneway.catalogue.signup.drivers.DisplayErrorEvent
+import io.redgreen.oneway.catalogue.signup.drivers.DisplayPhoneNumberErrorEvent
 import io.redgreen.oneway.catalogue.signup.form.PhoneNumberCondition
+import io.redgreen.oneway.catalogue.signup.form.PhoneNumberCondition.LENGTH
 import io.redgreen.oneway.catalogue.signup.form.UsernameCondition
 import io.redgreen.oneway.catalogue.signup.form.Validator
 import io.redgreen.oneway.catalogue.signup.usecases.SignUpUseCases
@@ -11,12 +14,14 @@ import org.junit.Test
 
 class SignUpModelTest {
   private val intentionsSubject = PublishSubject.create<SignUpIntention>()
+  private val displayErrorEventsSubject = PublishSubject.create<DisplayErrorEvent>()
 
   private val testRule = MviTestRule<SignUpState> { sourceEvents, timeline ->
     val validator = Validator()
 
     SignUpModel.createSource(
         intentionsSubject,
+        displayErrorEventsSubject,
         sourceEvents,
         SignUpUseCases(UNTOUCHED, timeline, validator)
     )
@@ -99,6 +104,45 @@ class SignUpModelTest {
     val invalidUsernameState = UNTOUCHED
         .unmetUsernameConditions(UsernameCondition.values().toSet())
     testRule.assertStates(invalidUsernameState)
+  }
+
+  @Test fun `when view displays an error for phone number, update phone number field as such`() {
+    // given
+    val invalidPhoneNumberState = UNTOUCHED
+        .unmetPhoneNumberConditions(setOf(LENGTH))
+
+    // when
+    testRule.startWith(invalidPhoneNumberState) {
+      displayErrorEventsSubject.onNext(DisplayPhoneNumberErrorEvent(true))
+    }
+
+    // then
+    val displayingPhoneNumberErrorState = invalidPhoneNumberState
+        .displayingPhoneNumberError(true)
+    testRule.assertStates(displayingPhoneNumberErrorState)
+  }
+
+  @Test fun `when view stops displays an error for phone number, update phone number field as such`() {
+    // given
+    val invalidPhoneNumberState = UNTOUCHED
+        .unmetPhoneNumberConditions(setOf(LENGTH))
+
+    // when
+    testRule.startWith(invalidPhoneNumberState) {
+      typePhoneNumber("9876543210")
+      displayErrorEventsSubject.onNext(DisplayPhoneNumberErrorEvent(false))
+    }
+
+    // then
+    val validPhoneNumberState = invalidPhoneNumberState
+        .unmetPhoneNumberConditions(emptySet())
+    val notDisplayingPhoneNumberErrorState = validPhoneNumberState
+        .displayingPhoneNumberError(false)
+
+    testRule.assertStates(
+        validPhoneNumberState,
+        notDisplayingPhoneNumberErrorState
+    )
   }
 
   private fun typePhoneNumber(phoneNumber: String) {
