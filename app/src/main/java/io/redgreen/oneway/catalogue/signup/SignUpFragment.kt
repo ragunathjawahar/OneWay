@@ -22,8 +22,8 @@ import kotlinx.android.synthetic.main.sign_up_fragment.*
 class SignUpFragment : OneWayFragment<SignUpState>(), SignUpView {
   private val intentionsGroup: SignUpIntentionsGroup
     get() = SignUpIntentionsGroup(
-        phoneNumberEditText.textChanges(),
-        usernameEditText.textChanges()
+        phoneNumberEditText.textChanges().skipInitialValue(),
+        usernameEditText.textChanges().skipInitialValue()
     )
 
   private val validator: Validator
