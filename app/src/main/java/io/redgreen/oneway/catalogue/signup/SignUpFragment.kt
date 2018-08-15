@@ -18,6 +18,7 @@ import io.redgreen.oneway.catalogue.signup.form.UsernameCondition
 import io.redgreen.oneway.catalogue.signup.form.Validator
 import io.redgreen.oneway.catalogue.signup.usecases.SignUpUseCases
 import kotlinx.android.synthetic.main.sign_up_fragment.*
+import kotlin.LazyThreadSafetyMode.NONE
 
 class SignUpFragment : OneWayFragment<SignUpState>(), SignUpView {
   private val intentionsGroup: SignUpIntentionsGroup
@@ -26,8 +27,9 @@ class SignUpFragment : OneWayFragment<SignUpState>(), SignUpView {
         usernameEditText.textChanges().skipInitialValue()
     )
 
-  private val validator: Validator
-    get() = Validator()
+  private val validator: Validator by lazy(NONE) {
+    Validator()
+  }
 
   private val useCases: SignUpUseCases
     get() = SignUpUseCases(
@@ -36,16 +38,15 @@ class SignUpFragment : OneWayFragment<SignUpState>(), SignUpView {
         validator
     )
 
-  private val schedulersProvider: SchedulersProvider
-    get() = DefaultSchedulersProvider()
+  private val schedulersProvider: SchedulersProvider by lazy(NONE) {
+    DefaultSchedulersProvider()
+  }
 
-  private val viewDriver: SignUpViewDriver
-    get() {
+  private val viewDriver: SignUpViewDriver by lazy(NONE) {
       val errorThresholdMillis = resources
           .getInteger(R.integer.error_threshold_millis)
           .toLong()
-
-      return SignUpViewDriver(this, schedulersProvider, errorThresholdMillis)
+      return@lazy SignUpViewDriver(this, schedulersProvider, errorThresholdMillis)
     }
 
   override fun onCreateView(

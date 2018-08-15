@@ -16,7 +16,7 @@ enum class PhoneNumberCondition : Condition {
   },
 
   STARTS_WITH {
-    private val startsWith8or9Pattern = Pattern.compile("[8,9].*")
+    private val startsWith8or9Pattern = Pattern.compile("[8,9].*", Pattern.DOTALL)
 
     override fun isValid(text: String): Boolean =
         startsWith8or9Pattern.matcher(text).matches()
