@@ -13,7 +13,6 @@ class SignUpUseCases(
 ) {
   val sourceCreatedUseCase = SourceCreatedUseCase(initialState)
   val sourceRestoredUseCase = SourceRestoredUseCase(timeline)
-  val validatePhoneNumberUseCase = ValidatePhoneNumberUseCase(timeline, validator)
-  val validateUsernameUseCase = ValidateUsernameUseCase(timeline, validator)
+  val validateInputUseCase = ValidateInputUseCase(timeline, validator)
   val displayErrorEventsUseCase = DisplayErrorEventsUseCase(timeline)
 }
