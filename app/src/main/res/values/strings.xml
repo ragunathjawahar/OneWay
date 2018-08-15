@@ -35,4 +35,5 @@
   <!-- Sign Up -->
   <string name="username">Username</string>
   <string name="phone_number">Phone Number</string>
+  <string name="sign_up">Sign Up</string>
 </resources>
