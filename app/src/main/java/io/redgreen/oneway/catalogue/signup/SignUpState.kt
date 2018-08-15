@@ -20,4 +20,7 @@ data class SignUpState(
 
   fun displayingPhoneNumberError(displaying: Boolean): SignUpState =
       copy(phoneNumberField = phoneNumberField.copy(displayingError = displaying))
+
+  fun displayingUsernameError(displaying: Boolean): SignUpState =
+      copy(usernameField = usernameField.copy(displayingError = displaying))
 }

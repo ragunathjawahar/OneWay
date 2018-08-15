@@ -4,9 +4,11 @@ import io.reactivex.subjects.PublishSubject
 import io.redgreen.oneway.catalogue.signup.SignUpState.Companion.UNTOUCHED
 import io.redgreen.oneway.catalogue.signup.drivers.DisplayErrorEvent
 import io.redgreen.oneway.catalogue.signup.drivers.DisplayPhoneNumberErrorEvent
+import io.redgreen.oneway.catalogue.signup.drivers.DisplayUsernameErrorEvent
 import io.redgreen.oneway.catalogue.signup.form.PhoneNumberCondition
 import io.redgreen.oneway.catalogue.signup.form.PhoneNumberCondition.LENGTH
 import io.redgreen.oneway.catalogue.signup.form.UsernameCondition
+import io.redgreen.oneway.catalogue.signup.form.UsernameCondition.MIN_LENGTH
 import io.redgreen.oneway.catalogue.signup.form.Validator
 import io.redgreen.oneway.catalogue.signup.usecases.SignUpUseCases
 import io.redgreen.oneway.test.MviTestRule
@@ -122,7 +124,7 @@ class SignUpModelTest {
     testRule.assertStates(displayingPhoneNumberErrorState)
   }
 
-  @Test fun `when view stops displays an error for phone number, update phone number field as such`() {
+  @Test fun `when view stops displaying error for phone number, update phone number field as such`() {
     // given
     val invalidPhoneNumberState = UNTOUCHED
         .unmetPhoneNumberConditions(setOf(LENGTH))
@@ -142,6 +144,45 @@ class SignUpModelTest {
     testRule.assertStates(
         validPhoneNumberState,
         notDisplayingPhoneNumberErrorState
+    )
+  }
+
+  @Test fun `when view displays an error for username, update username field as such`() {
+    // given
+    val invalidUsernameState = UNTOUCHED
+        .unmetUsernameConditions(setOf(MIN_LENGTH))
+
+    // when
+    testRule.startWith(invalidUsernameState) {
+      displayErrorEventsSubject.onNext(DisplayUsernameErrorEvent(true))
+    }
+
+    // then
+    val displayingUsernameErrorState = invalidUsernameState
+        .displayingUsernameError(true)
+    testRule.assertStates(displayingUsernameErrorState)
+  }
+
+  @Test fun `when view stops displaying error for username, update username field as such`() {
+    // given
+    val invalidUsernameState = UNTOUCHED
+        .unmetUsernameConditions(setOf(MIN_LENGTH))
+
+    // when
+    testRule.startWith(invalidUsernameState) {
+      typeUsername("groot")
+      displayErrorEventsSubject.onNext(DisplayUsernameErrorEvent(false))
+    }
+
+    // then
+    val validUsernameState = invalidUsernameState
+        .unmetUsernameConditions(emptySet())
+    val notDisplayingUsernameErrorState = validUsernameState
+        .displayingUsernameError(false)
+
+    testRule.assertStates(
+        validUsernameState,
+        notDisplayingUsernameErrorState
     )
   }
 

@@ -7,6 +7,7 @@ import io.reactivex.rxkotlin.withLatestFrom
 import io.redgreen.oneway.catalogue.signup.SignUpState
 import io.redgreen.oneway.catalogue.signup.drivers.DisplayErrorEvent
 import io.redgreen.oneway.catalogue.signup.drivers.DisplayPhoneNumberErrorEvent
+import io.redgreen.oneway.catalogue.signup.drivers.DisplayUsernameErrorEvent
 
 class DisplayErrorEventsUseCase(
     private val timeline: Observable<SignUpState>
@@ -15,10 +16,11 @@ class DisplayErrorEventsUseCase(
       displayErrorEvents: Observable<DisplayErrorEvent>
   ): ObservableSource<SignUpState> {
     return displayErrorEvents
-        .ofType(DisplayPhoneNumberErrorEvent::class.java)
         .withLatestFrom(timeline) { errorEvent, state ->
-          state.displayingPhoneNumberError(errorEvent.displaying)
+          when (errorEvent) {
+            is DisplayPhoneNumberErrorEvent -> state.displayingPhoneNumberError(errorEvent.displaying)
+            is DisplayUsernameErrorEvent -> state.displayingUsernameError(errorEvent.displaying)
+          }
         }
-
   }
 }
