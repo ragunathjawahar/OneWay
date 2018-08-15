@@ -18,7 +18,6 @@ class SignUpViewDriver(
   }
 
   override fun render(source: Observable<SignUpState>): Disposable {
-    val compositeDisposable = CompositeDisposable()
     val delayedSource = source
         .debounce(
             SHOW_ERROR_DEBOUNCE_MILLIS,
@@ -27,20 +26,45 @@ class SignUpViewDriver(
         )
         .observeOn(schedulersProvider.ui())
 
+    // Phone number
+    val phoneNumberFields = delayedSource
+        .map { it.phoneNumberField }
+
+    val validPhoneNumberFields = phoneNumberFields
+        .filter { it.untouched || it.unmetConditions.isEmpty() }
+        .distinctUntilChanged()
+
+    val invalidPhoneNumberFields = phoneNumberFields
+        .filter { it.unmetConditions.isNotEmpty() }
+        .distinctUntilChanged()
+
+    // Username
+    val usernameFields = delayedSource
+        .map { it.usernameField }
+
+    val validUsernameFields = usernameFields
+        .filter { it.untouched || it.unmetConditions.isEmpty() }
+        .distinctUntilChanged()
+
+    val invalidUsernameFields = usernameFields
+        .filter { it.unmetConditions.isNotEmpty() }
+        .distinctUntilChanged()
+
+    // Subscriptions
+    val compositeDisposable = CompositeDisposable()
     compositeDisposable.addAll(
-        delayedSource
-            .map { it.phoneNumberField }
-            .filter { it.untouched || it.unmetConditions.isEmpty() }
-            .distinctUntilChanged()
+        validPhoneNumberFields
             .subscribe { view.hidePhoneNumberError() },
 
-        delayedSource
-            .map { it.usernameField }
-            .filter { it.untouched || it.unmetConditions.isEmpty() }
-            .distinctUntilChanged()
-            .subscribe { view.hideUsernameError() }
-    )
+        invalidPhoneNumberFields
+            .subscribe { view.showPhoneNumberErrors(it.unmetConditions) },
 
+        validUsernameFields
+            .subscribe { view.hideUsernameError() },
+
+        invalidUsernameFields
+            .subscribe { view.showUsernameErrors(it.unmetConditions) }
+    )
     return compositeDisposable
   }
 }

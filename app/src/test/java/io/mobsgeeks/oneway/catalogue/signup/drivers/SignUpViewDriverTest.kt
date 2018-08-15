@@ -8,8 +8,10 @@ import io.mobsgeeks.oneway.catalogue.base.TestSchedulersProvider
 import io.mobsgeeks.oneway.catalogue.signup.SignUpState
 import io.mobsgeeks.oneway.catalogue.signup.SignUpView
 import io.mobsgeeks.oneway.catalogue.signup.drivers.SignUpViewDriver.Companion.SHOW_ERROR_DEBOUNCE_MILLIS
+import io.mobsgeeks.oneway.catalogue.signup.form.PhoneNumberCondition
 import io.mobsgeeks.oneway.catalogue.signup.form.PhoneNumberCondition.STARTS_WITH
 import io.mobsgeeks.oneway.catalogue.signup.form.PhoneNumberCondition.values
+import io.mobsgeeks.oneway.catalogue.signup.form.UsernameCondition
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import org.junit.After
@@ -78,6 +80,21 @@ class SignUpViewDriverTest {
     verifyNoMoreInteractions(view)
   }
 
+  @Test fun `it should display error if phone number has errors and has exceeded error threshold`() {
+    // given
+    val invalidPhoneNumberState = SignUpState.UNTOUCHED
+        .unmetPhoneNumberConditions(PhoneNumberCondition.values().toSet())
+
+    // when
+    feedStateToSource(invalidPhoneNumberState)
+
+    // then
+    verify(view).showPhoneNumberErrors(invalidPhoneNumberState.phoneNumberField.unmetConditions)
+
+    verify(view).hideUsernameError()
+    verifyNoMoreInteractions(view)
+  }
+
   @Test fun `it should not display error if username field is untouched`() {
     val untouchedUsernameState = SignUpState.UNTOUCHED
         .unmetPhoneNumberConditions(emptySet())
@@ -102,6 +119,21 @@ class SignUpViewDriverTest {
 
     // then
     verify(view).hideUsernameError()
+
+    verify(view).hidePhoneNumberError()
+    verifyNoMoreInteractions(view)
+  }
+
+  @Test fun `it should display error if username has errors and has exceeded error threshold`() {
+    // given
+    val invalidUsernameState = SignUpState.UNTOUCHED
+        .unmetUsernameConditions(UsernameCondition.values().toSet())
+
+    // when
+    feedStateToSource(invalidUsernameState)
+
+    // then
+    verify(view).showUsernameErrors(invalidUsernameState.usernameField.unmetConditions)
 
     verify(view).hidePhoneNumberError()
     verifyNoMoreInteractions(view)
