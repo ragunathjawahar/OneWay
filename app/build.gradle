@@ -6,7 +6,7 @@ android {
   compileSdkVersion versions.compileSdk
 
   defaultConfig {
-    applicationId   'io.mobsgeeks.oneway.catalogue'
+    applicationId   'io.redgreen.oneway.catalogue'
     minSdkVersion    versions.minSdk
     targetSdkVersion versions.targetSdk
     versionCode      1
