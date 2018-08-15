@@ -187,10 +187,10 @@ class SignUpModelTest {
   }
 
   private fun typePhoneNumber(phoneNumber: String) {
-    intentionsSubject.onNext(EnterPhoneNumberIntention(phoneNumber))
+    intentionsSubject.onNext(EnterInputIntention.phoneNumber(phoneNumber))
   }
 
   private fun typeUsername(username: String) {
-    intentionsSubject.onNext(EnterUsernameIntention(username))
+    intentionsSubject.onNext(EnterInputIntention.username(username))
   }
 }

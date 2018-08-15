@@ -2,7 +2,6 @@ package io.redgreen.oneway.catalogue.signup.usecases
 
 import io.reactivex.Observable
 import io.redgreen.oneway.catalogue.signup.SignUpState
-import io.redgreen.oneway.catalogue.signup.drivers.DisplayErrorEvent
 import io.redgreen.oneway.catalogue.signup.form.Validator
 import io.redgreen.oneway.usecases.SourceCreatedUseCase
 import io.redgreen.oneway.usecases.SourceRestoredUseCase

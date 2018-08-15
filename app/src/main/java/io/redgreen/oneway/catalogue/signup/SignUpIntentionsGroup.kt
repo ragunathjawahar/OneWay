@@ -13,13 +13,13 @@ class SignUpIntentionsGroup(
           enterUsername().share()
       )
 
-  private fun enterPhoneNumber(): Observable<EnterPhoneNumberIntention> =
+  private fun enterPhoneNumber(): Observable<EnterInputIntention> =
       phoneNumberTextChanges
           .map { it.toString() }
-          .map { EnterPhoneNumberIntention(it) }
+          .map { EnterInputIntention.phoneNumber(it) }
 
-  private fun enterUsername(): Observable<EnterUsernameIntention> =
+  private fun enterUsername(): Observable<EnterInputIntention> =
       usernameTextChanges
           .map { it.toString() }
-          .map { EnterUsernameIntention(it) }
+          .map { EnterInputIntention.username(it) }
 }
