@@ -3,6 +3,7 @@ package io.redgreen.oneway.catalogue.signup.drivers
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.subjects.PublishSubject
 import io.redgreen.oneway.catalogue.base.SchedulersProvider
 import io.redgreen.oneway.catalogue.signup.SignUpState
 import io.redgreen.oneway.catalogue.signup.SignUpView
@@ -16,6 +17,8 @@ class SignUpViewDriver(
   companion object {
     const val SHOW_ERROR_DEBOUNCE_MILLIS = 200L
   }
+
+  private val displayErrorEventsSubject = PublishSubject.create<DisplayErrorEvent>()
 
   override fun render(source: Observable<SignUpState>): Disposable {
     val delayedSource = source
@@ -57,14 +60,19 @@ class SignUpViewDriver(
             .subscribe { view.hidePhoneNumberError() },
 
         invalidPhoneNumberFields
+            .doOnNext { displayErrorEventsSubject.onNext(DisplayPhoneNumberErrorEvent(true)) }
             .subscribe { view.showPhoneNumberErrors(it.unmetConditions) },
 
         validUsernameFields
             .subscribe { view.hideUsernameError() },
 
         invalidUsernameFields
+            .doOnNext { displayErrorEventsSubject.onNext(DisplayUsernameErrorEvent(true)) }
             .subscribe { view.showUsernameErrors(it.unmetConditions) }
     )
     return compositeDisposable
   }
+
+  fun displayErrorEvents(): Observable<DisplayErrorEvent> =
+      displayErrorEventsSubject.hide()
 }

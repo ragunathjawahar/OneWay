@@ -14,6 +14,7 @@ import io.redgreen.oneway.catalogue.signup.form.PhoneNumberCondition
 import io.redgreen.oneway.catalogue.signup.form.PhoneNumberCondition.STARTS_WITH
 import io.redgreen.oneway.catalogue.signup.form.PhoneNumberCondition.values
 import io.redgreen.oneway.catalogue.signup.form.UsernameCondition
+import io.redgreen.oneway.catalogue.signup.form.UsernameCondition.MIN_LENGTH
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -23,6 +24,7 @@ class SignUpViewDriverTest {
   private val view = mock<SignUpView>()
   private val schedulersProvider = TestSchedulersProvider()
   private val viewDriver = SignUpViewDriver(view, schedulersProvider)
+  private val displayErrorEventsTestObserver = viewDriver.displayErrorEvents().test()
   private val sourceSubject = PublishSubject.create<SignUpState>()
   private lateinit var disposable: Disposable
 
@@ -137,6 +139,30 @@ class SignUpViewDriverTest {
 
     verify(view).hidePhoneNumberError()
     verifyNoMoreInteractions(view)
+  }
+
+  @Test fun `it should notify when phone number displays an error`() {
+    // given
+    val phoneNumberHasErrorsState = SignUpState.UNTOUCHED
+        .unmetPhoneNumberConditions(setOf(STARTS_WITH))
+
+    // when
+    feedStateToSource(phoneNumberHasErrorsState)
+
+    // then
+    displayErrorEventsTestObserver.assertValue(DisplayPhoneNumberErrorEvent(true))
+  }
+
+  @Test fun `it should notify when username displays an error`() {
+    // given
+    val usernameHasErrorsState = SignUpState.UNTOUCHED
+        .unmetUsernameConditions(setOf(MIN_LENGTH))
+
+    // when
+    feedStateToSource(usernameHasErrorsState)
+
+    // then
+    displayErrorEventsTestObserver.assertValue(DisplayUsernameErrorEvent(true))
   }
 
   private fun feedStateToSource(
