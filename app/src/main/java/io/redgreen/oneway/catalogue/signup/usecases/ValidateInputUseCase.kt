@@ -29,19 +29,19 @@ class ValidateInputUseCase(
 
     return Observable.merge(
         getPhoneNumberValidationStates(enterInputIntentions) { state, unmetConditions ->
-          state.unmetPhoneNumberConditions(unmetConditions)
+          state.phoneNumberUnmetConditions(unmetConditions)
         },
 
         getUsernameValidationStates(enterInputIntentions) { state, unmetConditions ->
-          state.unmetUsernameConditions(unmetConditions)
+          state.usernameUnmetConditions(unmetConditions)
         },
 
         getPhoneNumberValidationStates(loseFocusIntentions) { state, unmetConditions ->
-          state.displayPhoneNumberErrorImmediate(unmetConditions)
+          state.phoneNumberUnmetConditions(unmetConditions).phoneNumberDisplayError(true)
         },
 
         getUsernameValidationStates(loseFocusIntentions) { state, unmetConditions ->
-          state.displayUsernameErrorImmediate(unmetConditions)
+          state.usernameUnmetConditions(unmetConditions).usernameDisplayError(true)
         }
     )
   }

@@ -15,21 +15,15 @@ data class SignUpState(
     val UNTOUCHED = SignUpState(Field(), Field())
   }
 
-  fun unmetPhoneNumberConditions(unmetConditions: Set<PhoneNumberCondition>): SignUpState =
-      copy(phoneNumberField = phoneNumberField.validationResult(unmetConditions))
+  fun phoneNumberUnmetConditions(unmetConditions: Set<PhoneNumberCondition>): SignUpState =
+      copy(phoneNumberField = phoneNumberField.unmetConditions(unmetConditions))
 
-  fun unmetUsernameConditions(unmetConditions: Set<UsernameCondition>): SignUpState =
-      copy(usernameField = usernameField.validationResult(unmetConditions))
+  fun phoneNumberDisplayError(display: Boolean): SignUpState =
+      copy(phoneNumberField = phoneNumberField.displayError(display))
 
-  fun displayingPhoneNumberError(displaying: Boolean): SignUpState =
-      copy(phoneNumberField = phoneNumberField.displayError(displaying))
+  fun usernameUnmetConditions(unmetConditions: Set<UsernameCondition>): SignUpState =
+      copy(usernameField = usernameField.unmetConditions(unmetConditions))
 
-  fun displayingUsernameError(displaying: Boolean): SignUpState =
+  fun usernameDisplayError(displaying: Boolean): SignUpState =
       copy(usernameField = usernameField.displayError(displaying))
-
-  fun displayPhoneNumberErrorImmediate(unmetConditions: Set<PhoneNumberCondition>): SignUpState =
-      copy(phoneNumberField = phoneNumberField.validationResult(unmetConditions, true))
-
-  fun displayUsernameErrorImmediate(unmetConditions: Set<UsernameCondition>): SignUpState =
-      copy(usernameField = usernameField.validationResult(unmetConditions, true))
 }

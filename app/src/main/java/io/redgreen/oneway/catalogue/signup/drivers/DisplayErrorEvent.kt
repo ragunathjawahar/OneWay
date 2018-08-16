@@ -1,11 +1,8 @@
 package io.redgreen.oneway.catalogue.signup.drivers
 
-sealed class DisplayErrorEvent
+import io.redgreen.oneway.catalogue.signup.form.WhichField
 
-data class DisplayPhoneNumberErrorEvent(
-    val displaying: Boolean = false
-) : DisplayErrorEvent()
-
-data class DisplayUsernameErrorEvent(
-    val displaying: Boolean = false
-) : DisplayErrorEvent()
+data class DisplayErrorEvent(
+    val whichField: WhichField,
+    val display: Boolean = false
+)
