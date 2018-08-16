@@ -7,13 +7,11 @@ import io.reactivex.subjects.PublishSubject
 import io.redgreen.oneway.catalogue.base.SchedulersProvider
 import io.redgreen.oneway.catalogue.signup.SignUpState
 import io.redgreen.oneway.catalogue.signup.SignUpView
-import io.redgreen.oneway.catalogue.signup.form.Field
-import io.redgreen.oneway.catalogue.signup.form.PhoneNumberCondition
-import io.redgreen.oneway.catalogue.signup.form.UsernameCondition
+import io.redgreen.oneway.catalogue.signup.form.*
 import io.redgreen.oneway.catalogue.signup.form.WhichField.PHONE_NUMBER
 import io.redgreen.oneway.catalogue.signup.form.WhichField.USERNAME
 import io.redgreen.oneway.drivers.ViewDriver
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeUnit.MILLISECONDS
 
 class SignUpViewDriver(
     private val view: SignUpView,
@@ -22,101 +20,79 @@ class SignUpViewDriver(
 ) : ViewDriver<SignUpState> {
   private val displayErrorEventsSubject = PublishSubject.create<DisplayErrorEvent>()
 
+  private val showPhoneNumberErrorUiEffect: (Set<PhoneNumberCondition>) -> Unit =
+      { unmetConditions -> view.showPhoneNumberErrors(unmetConditions) }
+
+  private val hidePhoneNumberErrorUiEffect: () -> Unit =
+      { view.hidePhoneNumberError() }
+
+  private val showUsernameErrorUiEffect: (Set<UsernameCondition>) -> Unit =
+      { unmetConditions -> view.showUsernameErrors(unmetConditions) }
+
+  private val hideUsernameErrorUiEffect: () -> Unit =
+      { view.hideUsernameError() }
+
   override fun render(source: Observable<SignUpState>): Disposable {
     val delayedSource = source
-        .debounce(errorThresholdMillis, TimeUnit.MILLISECONDS, schedulersProvider.computation())
+        .debounce(errorThresholdMillis, MILLISECONDS, schedulersProvider.computation())
         .observeOn(schedulersProvider.ui())
-
-    val phoneNumberFields = source.map { it.phoneNumberField }
-    val usernameFields = source.map { it.usernameField }
     val delayedPhoneNumberFields = delayedSource.map { it.phoneNumberField }
     val delayedUsernameFields = delayedSource.map { it.usernameField }
 
-    val compositeDisposable = CompositeDisposable()
-    compositeDisposable.addAll(
-        renderValidPhoneNumbers(delayedPhoneNumberFields),
-        renderInvalidPhoneNumbers(delayedPhoneNumberFields),
-        renderValidUsernames(delayedUsernameFields),
-        renderInvalidUsernames(delayedUsernameFields),
+    val phoneNumberFields = source.map { it.phoneNumberField }
+    val usernameFields = source.map { it.usernameField }
 
-        renderPhoneNumbersWithImmediateFeedback(phoneNumberFields),
-        renderUsernamesWithImmediateFeedback(usernameFields)
-    )
-    return compositeDisposable
+    return CompositeDisposable().apply {
+      addAll(
+          handleValidFields(delayedPhoneNumberFields, PHONE_NUMBER, hidePhoneNumberErrorUiEffect),
+          handleValidFields(delayedUsernameFields, USERNAME, hideUsernameErrorUiEffect),
+
+          handleInvalidFields(delayedPhoneNumberFields, PHONE_NUMBER, showPhoneNumberErrorUiEffect),
+          handleInvalidFields(delayedUsernameFields, USERNAME, showUsernameErrorUiEffect),
+
+          handleFieldsThatDisplayError(phoneNumberFields, hidePhoneNumberErrorUiEffect, showPhoneNumberErrorUiEffect),
+          handleFieldsThatDisplayError(usernameFields, hideUsernameErrorUiEffect, showUsernameErrorUiEffect)
+      )
+    }
   }
 
   fun displayErrorEvents(): Observable<DisplayErrorEvent> =
       displayErrorEventsSubject.distinctUntilChanged().hide()
 
-  private fun renderValidPhoneNumbers(
-      phoneNumberFields: Observable<Field<PhoneNumberCondition>>
-  ): Disposable {
-    return phoneNumberFields
-        .filter { it.untouched || it.unmetConditions.isEmpty() }
+  private fun <T> handleValidFields(
+      fields: Observable<Field<T>>,
+      whichField: WhichField,
+      hideErrorUiEffect: () -> Unit
+  ): Disposable where T : Enum<T>, T : Condition {
+    return fields
+        .filter { !it.untouched && !it.hasErrors() }
         .distinctUntilChanged()
-        .filter { !it.untouched }
-        .doOnNext { displayErrorEventsSubject.onNext(DisplayErrorEvent(PHONE_NUMBER, false)) }
-        .subscribe { view.hidePhoneNumberError() }
+        .doOnNext { displayErrorEventsSubject.onNext(DisplayErrorEvent(whichField, false)) }
+        .subscribe { hideErrorUiEffect() }
   }
 
-  private fun renderInvalidPhoneNumbers(
-      phoneNumberFields: Observable<Field<PhoneNumberCondition>>
-  ): Disposable {
-    return phoneNumberFields
-        .filter { it.unmetConditions.isNotEmpty() }
+  private fun <T> handleInvalidFields(
+      fields: Observable<Field<T>>,
+      whichField: WhichField,
+      showErrorUiEffect: (Set<T>) -> Unit
+  ): Disposable where T : Enum<T>, T : Condition {
+    return fields
+        .map { it.unmetConditions }
+        .filter { it.isNotEmpty() }
         .distinctUntilChanged()
-        .doOnNext { displayErrorEventsSubject.onNext(DisplayErrorEvent(PHONE_NUMBER, true)) }
-        .subscribe { view.showPhoneNumberErrors(it.unmetConditions) }
+        .doOnNext { displayErrorEventsSubject.onNext(DisplayErrorEvent(whichField, true)) }
+        .subscribe { showErrorUiEffect(it) }
   }
 
-  private fun renderValidUsernames(
-      usernameFields: Observable<Field<UsernameCondition>>
-  ): Disposable {
-    return usernameFields
-        .filter { it.untouched || it.unmetConditions.isEmpty() }
-        .distinctUntilChanged()
-        .filter { !it.untouched }
-        .doOnNext { displayErrorEventsSubject.onNext(DisplayErrorEvent(USERNAME, false)) }
-        .subscribe { view.hideUsernameError() }
-  }
-
-  private fun renderInvalidUsernames(
-      usernameFields: Observable<Field<UsernameCondition>>
-  ): Disposable {
-    return usernameFields
-        .filter { it.unmetConditions.isNotEmpty() }
-        .distinctUntilChanged()
-        .doOnNext { displayErrorEventsSubject.onNext(DisplayErrorEvent(USERNAME, true)) }
-        .subscribe { view.showUsernameErrors(it.unmetConditions) }
-  }
-
-  private fun renderPhoneNumbersWithImmediateFeedback(
-      phoneNumberFields: Observable<Field<PhoneNumberCondition>>
-  ): Disposable {
-    return phoneNumberFields
+  private fun <T> handleFieldsThatDisplayError(
+      fields: Observable<Field<T>>,
+      hideErrorUiEffect: () -> Unit,
+      showErrorUiEffect: (Set<T>) -> Unit
+  ): Disposable where T : Enum<T>, T : Condition {
+    return fields
         .filter { it.displayError }
+        .map { it.unmetConditions }
         .distinctUntilChanged()
-        .subscribe {
-          if (it.unmetConditions.isEmpty()) {
-            view.hidePhoneNumberError()
-          } else {
-            view.showPhoneNumberErrors(it.unmetConditions)
-          }
-        }
-  }
-
-  private fun renderUsernamesWithImmediateFeedback(
-      usernameFields: Observable<Field<UsernameCondition>>
-  ): Disposable {
-    return usernameFields
-        .filter { it.displayError }
-        .distinctUntilChanged()
-        .subscribe {
-          if (it.unmetConditions.isEmpty()) {
-            view.hideUsernameError()
-          } else {
-            view.showUsernameErrors(it.unmetConditions)
-          }
-        }
+        .subscribe { if (it.isEmpty()) hideErrorUiEffect() else showErrorUiEffect(it) }
   }
 }

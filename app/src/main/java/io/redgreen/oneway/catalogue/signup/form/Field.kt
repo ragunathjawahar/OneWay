@@ -14,4 +14,7 @@ data class Field<T>(
 
   fun displayError(display: Boolean): Field<T> =
       copy(displayError = display)
+
+  fun hasErrors(): Boolean =
+      unmetConditions.isNotEmpty()
 }
