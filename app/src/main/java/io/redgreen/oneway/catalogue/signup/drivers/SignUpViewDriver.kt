@@ -65,7 +65,7 @@ class SignUpViewDriver(
       hideErrorUiEffect: () -> Unit
   ): Disposable where T : Enum<T>, T : Condition {
     return fields
-        .filter { !it.untouched && !it.hasErrors() }
+        .filter { it.touched && !it.hasErrors() }
         .distinctUntilChanged()
         .doOnNext { displayErrorEventsSubject.onNext(DisplayErrorEvent(whichField, false)) }
         .subscribe { hideErrorUiEffect() }
