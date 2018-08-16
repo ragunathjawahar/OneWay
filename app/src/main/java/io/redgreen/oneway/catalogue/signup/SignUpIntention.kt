@@ -31,3 +31,8 @@ data class LoseFocusIntention(
         LoseFocusIntention(username, USERNAME)
   }
 }
+
+data class SignUpCtaIntention(
+    val phoneNumber: String,
+    val username: String
+) : SignUpIntention()

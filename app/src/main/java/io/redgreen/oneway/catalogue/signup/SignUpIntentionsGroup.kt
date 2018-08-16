@@ -8,14 +8,16 @@ class SignUpIntentionsGroup(
     private val phoneNumberTextChanges: Observable<CharSequence>,
     private val phoneNumberFocusChanges: Observable<Boolean>,
     private val usernameTextChanges: Observable<CharSequence>,
-    private val usernameFocusChanges: Observable<Boolean>
+    private val usernameFocusChanges: Observable<Boolean>,
+    private val signUpClicks: Observable<Unit>
 ) : IntentionsGroup<SignUpIntention> {
   override fun intentions(): Observable<SignUpIntention> =
-      Observable.merge(
+      Observable.mergeArray(
           enterPhoneNumber().share(),
           loseFocusPhoneNumber().share(),
           enterUsername().share(),
-          loseFocusUsername().share()
+          loseFocusUsername().share(),
+          signUp().share()
       )
 
   private fun enterPhoneNumber(): Observable<EnterInputIntention> =
@@ -37,4 +39,7 @@ class SignUpIntentionsGroup(
       usernameFocusChanges
           .filter { !it }
           .map { LoseFocusIntention.username(view.getUsername()) }
+
+  private fun signUp(): Observable<SignUpCtaIntention> =
+      signUpClicks.map { SignUpCtaIntention(view.getPhoneNumber(), view.getUsername()) }
 }

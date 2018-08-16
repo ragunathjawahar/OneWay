@@ -15,4 +15,5 @@ class SignUpUseCases(
   val sourceRestoredUseCase = SourceRestoredUseCase(timeline)
   val validateInputUseCase = ValidateInputUseCase(timeline, validator)
   val displayErrorEventsUseCase = DisplayErrorEventsUseCase(timeline)
+  val signUpCtaUseCase = SignUpCtaUseCase(timeline, validator)
 }

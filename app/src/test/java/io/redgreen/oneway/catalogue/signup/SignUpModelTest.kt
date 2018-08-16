@@ -219,6 +219,27 @@ class SignUpModelTest {
     testRule.assertStates(displayUsernameErrorImmediateState)
   }
 
+  @Test fun `when sign up clicked, then validate all fields immediately`() {
+    // given
+    val phoneNumber = ""
+    val username = ""
+    val phoneNumberUnmetConditions = validator.validate<PhoneNumberCondition>(phoneNumber)
+    val usernameUnmetConditions = validator.validate<UsernameCondition>(username)
+
+    // when
+    testRule.startWith(UNTOUCHED) {
+      tapSignUp(phoneNumber, username)
+    }
+
+    // then
+    val validatedAllFieldsState = UNTOUCHED
+        .phoneNumberUnmetConditions(phoneNumberUnmetConditions)
+        .phoneNumberDisplayError(true)
+        .usernameUnmetConditions(usernameUnmetConditions)
+        .usernameDisplayError(true)
+    testRule.assertStates(validatedAllFieldsState)
+  }
+
   private fun typePhoneNumber(phoneNumber: String) {
     intentionsSubject.onNext(EnterInputIntention.phoneNumber(phoneNumber))
   }
@@ -233,5 +254,9 @@ class SignUpModelTest {
 
   private fun loseFocusUsername(username: String) {
     intentionsSubject.onNext(LoseFocusIntention.username(username))
+  }
+
+  private fun tapSignUp(phoneNumber: String, username: String) {
+    intentionsSubject.onNext(SignUpCtaIntention(phoneNumber, username))
   }
 }

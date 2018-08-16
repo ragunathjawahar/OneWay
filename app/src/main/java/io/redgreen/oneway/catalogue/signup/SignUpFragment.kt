@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.view.focusChanges
 import com.jakewharton.rxbinding2.widget.textChanges
 import io.reactivex.Observable
@@ -28,7 +29,8 @@ class SignUpFragment : OneWayFragment<SignUpState>(), SignUpView {
         phoneNumberEditText.textChanges().skipInitialValue(),
         phoneNumberEditText.focusChanges().skipInitialValue(),
         usernameEditText.textChanges().skipInitialValue(),
-        usernameEditText.focusChanges().skipInitialValue()
+        usernameEditText.focusChanges().skipInitialValue(),
+        signUpButton.clicks()
     )
 
   private val validator: Validator by lazy(NONE) {

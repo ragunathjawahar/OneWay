@@ -16,7 +16,8 @@ object SignUpModel {
         sourceEvents.compose(useCases.sourceCreatedUseCase),
         sourceEvents.compose(useCases.sourceRestoredUseCase),
         intentions.compose(useCases.validateInputUseCase),
-        displayErrorEvents.compose(useCases.displayErrorEventsUseCase)
+        displayErrorEvents.compose(useCases.displayErrorEventsUseCase),
+        intentions.ofType(SignUpCtaIntention::class.java).compose(useCases.signUpCtaUseCase)
     )
   }
 }
