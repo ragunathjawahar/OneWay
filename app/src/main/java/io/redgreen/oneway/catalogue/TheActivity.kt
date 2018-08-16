@@ -2,7 +2,7 @@ package io.redgreen.oneway.catalogue
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import io.redgreen.oneway.catalogue.signup.SignUpFragment
+import io.redgreen.oneway.catalogue.showcase.ShowcaseFragment
 
 class TheActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -12,7 +12,7 @@ class TheActivity : AppCompatActivity() {
     if (savedInstanceState == null) {
       supportFragmentManager
           .beginTransaction()
-          .replace(R.id.container, SignUpFragment())
+          .replace(R.id.container, ShowcaseFragment())
           .commit()
     }
   }
