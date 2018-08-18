@@ -2,7 +2,7 @@ package io.redgreen.oneway.catalogue.bmi
 
 import com.nhaarman.mockito_kotlin.mock
 import io.reactivex.subjects.PublishSubject
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class BmiIntentionsGroupTest {
   private val weightChangesSubject = PublishSubject.create<Int>()

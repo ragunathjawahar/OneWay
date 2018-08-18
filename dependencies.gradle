@@ -24,6 +24,7 @@ ext {
 
       // Test
       jUnit: '4.12',
+      jUnit5: '5.2.0',
       truth: '0.40', // Not using latest version because of - https://github.com/google/truth/issues/472
       mockitoAndroid: '2.6.1',
       mockitoKotlin: '1.6.0'
@@ -57,6 +58,8 @@ ext {
 
       // Test
       jUnit: "junit:junit:${versions.jUnit}",
+      jUnit5: "org.junit.jupiter:junit-jupiter-api:${versions.jUnit5}",
+      jUnit5Runtime: "org.junit.jupiter:junit-jupiter-engine:${versions.jUnit5}",
       mockitoKotlin: "com.nhaarman:mockito-kotlin:${versions.mockitoKotlin}",
       truth: "com.google.truth:truth:${versions.truth}"
   ]

@@ -2,7 +2,7 @@ package io.redgreen.oneway.catalogue.bmi.calculator
 
 import com.google.common.truth.Truth.assertThat
 import io.redgreen.oneway.catalogue.bmi.calculator.BmiCategory.*
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 /** BMI values for tests were derived from - [Google's BMI Calculator](https://www.google.co.in/search?q=bmi+calculator). */
 class BmiCategoryTest {

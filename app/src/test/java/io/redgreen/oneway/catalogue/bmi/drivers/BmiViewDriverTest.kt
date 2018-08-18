@@ -7,7 +7,7 @@ import io.reactivex.subjects.PublishSubject
 import io.redgreen.oneway.catalogue.bmi.BmiState
 import io.redgreen.oneway.catalogue.bmi.BmiView
 import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem.SI
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class BmiViewDriverTest {
   @Test fun `it should render bmi, category, weight, height and measurement system`() {

@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'de.mannodermaus.android-junit5'
 
 android {
   compileSdkVersion versions.compileSdk
@@ -51,6 +52,8 @@ dependencies {
   testImplementation project(':core-test')
 
   testImplementation testDependencies.jUnit
+  testImplementation testDependencies.jUnit5
+  testRuntimeOnly testDependencies.jUnit5Runtime
   testImplementation testDependencies.mockitoKotlin
   testImplementation testDependencies.truth
 

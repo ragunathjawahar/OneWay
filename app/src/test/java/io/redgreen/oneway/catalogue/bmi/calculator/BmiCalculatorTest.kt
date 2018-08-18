@@ -2,7 +2,8 @@ package io.redgreen.oneway.catalogue.bmi.calculator
 
 import com.google.common.collect.Range
 import com.google.common.truth.Truth.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
 
 class BmiCalculatorTest {
   @Test fun `when weight is 0, then BMI is 0`() {
@@ -32,14 +33,16 @@ class BmiCalculatorTest {
         .isEqualTo(0.0)
   }
 
-  @Test(expected = IllegalStateException::class)
-  fun `when weight is negative, then throw exception`() {
-    BmiCalculator.calculate(-1.0, 170.0)
+  @Test fun `when weight is negative, then throw exception`() {
+    Assertions.assertThrows(IllegalStateException::class.java) {
+      BmiCalculator.calculate(-1.0, 170.0)
+    }
   }
 
-  @Test(expected = IllegalStateException::class)
-  fun `when height is negative, then throw exception`() {
-    BmiCalculator.calculate(50.0, -150.0)
+  @Test fun `when height is negative, then throw exception`() {
+    Assertions.assertThrows(IllegalStateException::class.java) {
+      BmiCalculator.calculate(50.0, -150.0)
+    }
   }
 
   @Test fun `when weight is 50kg and height is 180cm, then BMI is 15dot4 (Underweight)`() {

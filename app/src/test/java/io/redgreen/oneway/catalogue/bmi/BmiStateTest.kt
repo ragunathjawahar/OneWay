@@ -5,53 +5,56 @@ import com.google.common.truth.Truth.assertThat
 import io.redgreen.oneway.catalogue.bmi.calculator.BmiCalculator
 import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem.IMPERIAL
 import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem.SI
-import org.junit.Test
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
+@DisplayName("BMI state")
 class BmiStateTest {
-  @Test fun `it grants access to bmi and category`() {
-    // given
-    val weightInKg = 80.0
-    val heightInCm = 180.0
+  private val weightInKg = 80.0
+  private val heightInCm = 180.0
 
-    // when
-    val bmiState = BmiState(weightInKg, heightInCm, SI)
+  @DisplayName("in metric system")
+  @Nested inner class InMetricSystem {
+    private val bmiState = BmiState(weightInKg, heightInCm, SI)
 
-    // then
-    val calculatedBmiResult = BmiCalculator.calculate(weightInKg, heightInCm)
-    assertThat(bmiState.bmi)
-        .isEqualTo(calculatedBmiResult.bmi)
+    @Test fun `provides weight and height in kg and cm`() {
+      assertThat(bmiState.weight)
+          .isEqualTo(weightInKg)
 
-    assertThat(bmiState.category)
-        .isEqualTo(calculatedBmiResult.category)
+      assertThat(bmiState.height)
+          .isEqualTo(heightInCm)
+    }
+
+    @Test fun `calculates BMI and category`() {
+      val calculatedBmiResult = BmiCalculator.calculate(weightInKg, heightInCm)
+
+      assertThat(bmiState.bmi)
+          .isEqualTo(calculatedBmiResult.bmi)
+      assertThat(bmiState.category)
+          .isEqualTo(calculatedBmiResult.category)
+    }
   }
 
-  @Test fun `it can provide weight and height in metric system`() {
-    // when
-    val weightInKg = 100.0
-    val heightInCm = 180.0
-    val bmiState = BmiState(weightInKg, heightInCm, SI)
+  @DisplayName("in imperial system")
+  @Nested inner class InImperialSystem {
+    private val bmiState = BmiState(weightInKg, heightInCm, IMPERIAL)
 
-    // then
-    assertThat(bmiState.weight)
-        .isEqualTo(weightInKg)
+    @Test fun `provides weight and height in lb and ft`() {
+      assertThat(bmiState.weight)
+          .isIn(Range.closed(176.3, 176.4))
 
-    assertThat(bmiState.height)
-        .isEqualTo(heightInCm)
-  }
+      assertThat(bmiState.height)
+          .isIn(Range.closed(5.9, 6.0))
+    }
 
-  @Test fun `it can provide weight and height in imperial system`() {
-    // given
-    val weightInKg = 100.0
-    val heightInCm = 180.0
+    @Test fun `calculates BMI and category`() {
+      val calculatedBmiResult = BmiCalculator.calculate(weightInKg, heightInCm)
 
-    // when
-    val bmiState = BmiState(weightInKg, heightInCm, IMPERIAL)
-
-    // then
-    assertThat(bmiState.weight)
-        .isIn(Range.closed(220.4, 220.5))
-
-    assertThat(bmiState.height)
-        .isIn(Range.closed(5.9, 6.0))
+      assertThat(bmiState.bmi)
+          .isEqualTo(calculatedBmiResult.bmi)
+      assertThat(bmiState.category)
+          .isEqualTo(calculatedBmiResult.category)
+    }
   }
 }
