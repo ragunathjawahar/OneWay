@@ -39,7 +39,7 @@ class SignUpModelTest {
   @Test fun `when the screen is restored, then the last known state is restored`() {
     // given
     val validPhoneNumberState = UNTOUCHED.phoneNumberUnmetConditions(emptySet())
-    testRule.startWith(validPhoneNumberState) {}
+    testRule.startWith(validPhoneNumberState)
     testRule.sourceIsDestroyed()
 
     // when
