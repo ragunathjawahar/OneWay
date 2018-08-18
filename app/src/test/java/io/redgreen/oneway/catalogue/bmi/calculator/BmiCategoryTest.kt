@@ -2,52 +2,37 @@ package io.redgreen.oneway.catalogue.bmi.calculator
 
 import com.google.common.truth.Truth.assertThat
 import io.redgreen.oneway.catalogue.bmi.calculator.BmiCategory.*
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.DynamicTest
+import org.junit.jupiter.api.TestFactory
 
-/** BMI values for tests were derived from - [Google's BMI Calculator](https://www.google.co.in/search?q=bmi+calculator). */
 class BmiCategoryTest {
-  @Test fun `BMI 0 is very severely underweight`() {
-    // when
-    val bmiResult = BmiCalculator.calculate(0.0, 90.0)
+  @TestFactory fun testCategories(): Iterable<DynamicTest> {
+    val weightHeightCategories = mapOf(
+        (30 to 220) to VERY_SEVERELY_UNDERWEIGHT,
+        (30 to 140) to SEVERELY_UNDERWEIGHT,
+        (30 to 136) to UNDERWEIGHT,
+        (30 to 126) to NORMAL,
+        (37 to 120) to OVERWEIGHT,
+        (44 to 120) to OBESE_CLASS_1,
+        (51 to 120) to OBESE_CLASS_2,
+        (59 to 120) to OBESE_CLASS_3,
+        (65 to 120) to OBESE_CLASS_4,
+        (73 to 120) to OBESE_CLASS_5,
+        (89 to 120) to OBESE_CLASS_6
+    )
 
-    // then
-    assertThat(bmiResult.category)
-        .isEqualTo(VERY_SEVERELY_UNDERWEIGHT)
-  }
+    return weightHeightCategories.entries
+        .map { (weightHeight, category) ->
+          val weight = weightHeight.first
+          val height = weightHeight.second
+          val displayName = "when weight is ${weight}kg and height is ${height}cm, then category is $category"
 
-  @Test fun `BMI 15 is very severely underweight`() {
-    // when
-    val bmiResult = BmiCalculator.calculate(49.0, 181.0)
-
-    // then
-    assertThat(bmiResult.category)
-        .isEqualTo(VERY_SEVERELY_UNDERWEIGHT)
-  }
-
-  @Test fun `BMI 15dot1 is severely underweight`() {
-    // when
-    val bmiResult = BmiCalculator.calculate(49.0, 180.0)
-
-    // then
-    assertThat(bmiResult.category)
-        .isEqualTo(SEVERELY_UNDERWEIGHT)
-  }
-
-  @Test fun `BMI 16 is severely underweight`() {
-    // when
-    val bmiResult = BmiCalculator.calculate(51.7, 180.0)
-
-    // then
-    assertThat(bmiResult.category)
-        .isEqualTo(SEVERELY_UNDERWEIGHT)
-  }
-
-  @Test fun `BMI 60 and above is obese class VI`() {
-    // when
-    val bmiResult = BmiCalculator.calculate(300.0, 180.0)
-
-    // then
-    assertThat(bmiResult.category)
-        .isEqualTo(OBESE_CLASS_6)
+          DynamicTest.dynamicTest(displayName) {
+            val bmiResult = BmiCalculator.calculate(weight.toDouble(), height.toDouble())
+            assertThat(bmiResult.category)
+                .isEqualTo(category)
+          }
+        }
+        .toList()
   }
 }
