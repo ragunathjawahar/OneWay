@@ -6,7 +6,7 @@ import io.redgreen.oneway.SourceEvent
 import io.redgreen.oneway.catalogue.budapest.BudapestState.Companion.STRANGER
 import io.redgreen.oneway.catalogue.budapest.usecases.BudapestUseCases
 import io.redgreen.oneway.test.MviTestRule
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class BudapestModelTest {
   private val intentions = PublishSubject.create<BudapestIntention>()
@@ -43,10 +43,14 @@ class BudapestModelTest {
 
     // when
     testRule.startWith(STRANGER) {
-      intentions.onNext(EnterNameIntention(name))
+      enterName(name)
     }
 
     // then
     testRule.assertStates(BudapestState(name))
+  }
+
+  private fun enterName(name: String) {
+    intentions.onNext(EnterNameIntention(name))
   }
 }

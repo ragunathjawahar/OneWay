@@ -6,8 +6,8 @@ import com.nhaarman.mockito_kotlin.verifyNoMoreInteractions
 import io.reactivex.subjects.PublishSubject
 import io.redgreen.oneway.catalogue.budapest.BudapestState
 import io.redgreen.oneway.catalogue.budapest.BudapestView
-import org.junit.After
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Test
 
 class BudapestViewDriverTest {
   private val statesSubject = PublishSubject.create<BudapestState>()
@@ -15,7 +15,7 @@ class BudapestViewDriverTest {
   private val viewDriver = BudapestViewDriver(view)
   private val disposable = viewDriver.render(statesSubject)
 
-  @After fun teardown() {
+  @AfterEach fun teardown() {
     disposable.dispose()
   }
 
