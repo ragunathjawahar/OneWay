@@ -6,7 +6,7 @@ import com.nhaarman.mockito_kotlin.verifyNoMoreInteractions
 import io.reactivex.subjects.PublishSubject
 import io.redgreen.oneway.catalogue.counter.CounterState
 import io.redgreen.oneway.catalogue.counter.CounterView
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class CounterViewDriverTest {
   @Test fun `it renders counter value`() {

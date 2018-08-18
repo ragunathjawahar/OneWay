@@ -4,7 +4,7 @@ import io.reactivex.subjects.PublishSubject
 import io.redgreen.oneway.catalogue.counter.CounterState.Companion.ZERO
 import io.redgreen.oneway.catalogue.counter.usecases.CounterUseCases
 import io.redgreen.oneway.test.MviTestRule
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class CounterModelTest {
   private val intentions = PublishSubject.create<CounterIntention>()
