@@ -5,6 +5,9 @@ ext {
       compileSdk: 27,
       targetSdk: 27,
 
+      // Java
+      java: JavaVersion.VERSION_1_8,
+
       // Leak Canary
       leakCanary: '1.6.1',
 
@@ -59,6 +62,7 @@ ext {
       // Test
       jUnit: "junit:junit:${versions.jUnit}",
       jUnit5: "org.junit.jupiter:junit-jupiter-api:${versions.jUnit5}",
+      jUnit5Params: "org.junit.jupiter:junit-jupiter-params:${versions.jUnit5}",
       jUnit5Runtime: "org.junit.jupiter:junit-jupiter-engine:${versions.jUnit5}",
       mockitoKotlin: "com.nhaarman:mockito-kotlin:${versions.mockitoKotlin}",
       truth: "com.google.truth:truth:${versions.truth}"

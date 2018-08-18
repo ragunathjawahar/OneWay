@@ -12,7 +12,7 @@ import io.redgreen.oneway.catalogue.signup.form.WhichField.PHONE_NUMBER
 import io.redgreen.oneway.catalogue.signup.form.WhichField.USERNAME
 import io.redgreen.oneway.catalogue.signup.usecases.SignUpUseCases
 import io.redgreen.oneway.test.MviTestRule
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class SignUpModelTest {
   private val intentionsSubject = PublishSubject.create<SignUpIntention>()

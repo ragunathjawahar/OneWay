@@ -1,7 +1,7 @@
 package io.redgreen.oneway.catalogue.signup.form
 
 import com.google.common.truth.Truth.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class UsernameConditionsTest {
   @Test fun `username cannot be empty`() {

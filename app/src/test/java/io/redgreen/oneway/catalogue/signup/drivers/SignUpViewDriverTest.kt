@@ -13,9 +13,9 @@ import io.redgreen.oneway.catalogue.signup.form.UsernameCondition
 import io.redgreen.oneway.catalogue.signup.form.UsernameCondition.MIN_LENGTH
 import io.redgreen.oneway.catalogue.signup.form.WhichField.PHONE_NUMBER
 import io.redgreen.oneway.catalogue.signup.form.WhichField.USERNAME
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
 class SignUpViewDriverTest {
@@ -30,11 +30,11 @@ class SignUpViewDriverTest {
   private val sourceSubject = PublishSubject.create<SignUpState>()
   private lateinit var disposable: Disposable
 
-  @Before fun setup() {
+  @BeforeEach fun setup() {
     disposable = viewDriver.render(sourceSubject)
   }
 
-  @After fun teardown() {
+  @AfterEach fun teardown() {
     disposable.dispose()
   }
 

@@ -22,6 +22,20 @@ android {
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
   }
+
+  compileOptions { // For JUnit 5
+    sourceCompatibility versions.java
+    targetCompatibility versions.java
+  }
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all { // For JUnit 5
+  sourceCompatibility = versions.java
+  targetCompatibility = versions.java
+
+  kotlinOptions {
+    jvmTarget = versions.java
+  }
 }
 
 androidExtensions {
@@ -51,8 +65,8 @@ dependencies {
   // Test
   testImplementation project(':core-test')
 
-  testImplementation testDependencies.jUnit
   testImplementation testDependencies.jUnit5
+  testImplementation testDependencies.jUnit5Params
   testRuntimeOnly testDependencies.jUnit5Runtime
   testImplementation testDependencies.mockitoKotlin
   testImplementation testDependencies.truth
