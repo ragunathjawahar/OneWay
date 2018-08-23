@@ -13,5 +13,8 @@ dependencies {
   testImplementation testDependencies.truth
 }
 
-sourceCompatibility = '1.7'
-targetCompatibility = '1.7'
+sourceCompatibility = versions.java
+targetCompatibility = versions.java
+
+apply from: '../gradle/bintray.gradle'
+apply from: '../gradle/install.gradle'

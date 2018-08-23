@@ -1,0 +1,84 @@
+apply plugin: 'com.jfrog.bintray'
+
+version = project.property("VERSION_NAME")
+
+ext {
+  bintrayRepo = project.property("BINTRAY_REPO")
+  bintrayName = project.property("BINTRAY_NAME")
+
+  publishedGroupId = project.property("GROUP")
+  artifact = project.property("POM_ARTIFACT_ID")
+
+  libraryName = project.property("POM_NAME")
+  libraryDescription = project.property("POM_DESCRIPTION")
+  libraryVersion = project.property("VERSION_NAME")
+
+  developerId = project.property("POM_DEVELOPER_ID")
+  developerName = project.property("POM_DEVELOPER_NAME")
+  developerEmail = project.property("POM_DEVELOPER_EMAIL")
+
+  siteUrl = project.property("POM_URL")
+  gitUrl = project.property("POM_SCM_URL")
+
+  allLicenses = project.property("BINTRAY_ALL_LICENSES")
+}
+
+if (project.hasProperty("android")) { // Android libraries
+  task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+  }
+
+  task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+  }
+} else { // Java libraries
+  task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+  }
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+  classifier = 'javadoc'
+  from javadoc.destinationDir
+}
+
+artifacts {
+  archives javadocJar
+  archives sourcesJar
+}
+
+// Bintray
+Properties properties = new Properties()
+File localPropertiesFile = project.rootProject.file('local.properties')
+// FIXME(rj) 23/Aug/18 - This is breaking CI builds due to missing file.
+// The proper way to do this is to use env. variables.
+if (localPropertiesFile.exists()) {
+  properties.load(localPropertiesFile.newDataInputStream())
+}
+
+bintray {
+  user = properties.getProperty("bintray.user")
+  key = properties.getProperty("bintray.apikey")
+
+  configurations = ['archives']
+  pkg {
+    repo = bintrayRepo
+    name = bintrayName
+    desc = libraryDescription
+    websiteUrl = siteUrl
+    vcsUrl = gitUrl
+    licenses = allLicenses
+    publish = true
+    publicDownloadNumbers = true
+    version {
+      desc = libraryDescription
+      gpg {
+        sign = true //Determines whether to GPG sign the files. The default is false
+        passphrase = properties.getProperty("bintray.gpg.password") //Optional. The passphrase for GPG signing'
+      }
+    }
+  }
+}

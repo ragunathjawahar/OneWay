@@ -41,3 +41,11 @@ dependencies {
   androidTestImplementation testDependencies.mockitoAndroid
   androidTestImplementation testDependencies.truth
 }
+
+// FIXME(rj) 23/Aug/18 - Generating JavaDoc fails in Android Kotlin library. Ignoring doc generation for now.
+tasks.withType(Javadoc).all {
+  enabled = false
+}
+
+apply from: '../gradle/bintray.gradle'
+apply from: '../gradle/install.gradle'
