@@ -12,8 +12,11 @@ class BudapestModelTest {
   private val intentions = PublishSubject.create<BudapestIntention>()
 
   private val sourceFunction = { sourceEvents: Observable<SourceEvent>, timeline: Observable<BudapestState> ->
-    val useCases = BudapestUseCases(STRANGER, timeline)
-    BudapestModel.createSource(intentions, sourceEvents, useCases)
+    BudapestModel.createSource(
+        intentions,
+        sourceEvents,
+        BudapestUseCases(STRANGER, timeline)
+    )
   }
 
   private val testRule = MviTestRule(sourceFunction)

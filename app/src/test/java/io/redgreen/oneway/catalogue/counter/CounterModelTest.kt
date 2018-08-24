@@ -4,60 +4,68 @@ import io.reactivex.subjects.PublishSubject
 import io.redgreen.oneway.catalogue.counter.CounterState.Companion.ZERO
 import io.redgreen.oneway.catalogue.counter.usecases.CounterUseCases
 import io.redgreen.oneway.test.MviTestRule
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 class CounterModelTest {
   private val intentions = PublishSubject.create<CounterIntention>()
+  private val initialState = ZERO
 
   private val mviTestRule = MviTestRule<CounterState> { sourceEvents, timeline ->
-    return@MviTestRule CounterModel.createSource(
+    CounterModel.createSource(
         intentions,
         sourceEvents,
-        CounterUseCases(CounterState.ZERO, timeline)
+        CounterUseCases(initialState, timeline)
     )
   }
 
-  @Test fun `creating the screen starts with a ZERO state`() {
+  @Test fun `creating the source starts with an initial state`() {
     // when
     mviTestRule.sourceIsCreated()
 
     // then
-    mviTestRule.assertStates(ZERO)
+    mviTestRule.assertStates(initialState)
   }
 
-  @Test fun `tapping on + increments the counter by 1`() {
-    // when
-    mviTestRule.startWith(ZERO) {
-      increment()
-    }
-
-    // then
-    val one = ZERO.add(1)
-    mviTestRule.assertStates(one)
-  }
-
-  @Test fun `tapping on - decrements the counter by 1`() {
-    // when
-    mviTestRule.startWith(ZERO) {
-      decrement()
-    }
-
-    // then
-    val minusOne = ZERO.add(-1)
-    mviTestRule.assertStates(minusOne)
-  }
-
-  @Test fun `restoring the screen restores the previous state`() {
+  @Test fun `restoring the source restores the last known state`() {
     // given
-    val three = CounterState(3)
+    val lastKnownState = CounterState(3)
 
     // when
-    mviTestRule.startWith(three) {
+    mviTestRule.startWith(lastKnownState) {
+      mviTestRule.sourceIsDestroyed()
       mviTestRule.sourceIsRestored()
     }
 
     // then
-    mviTestRule.assertStates(three)
+    mviTestRule.assertStates(lastKnownState)
+  }
+
+  @DisplayName("after source is created")
+  @Nested inner class AfterSourceIsCreated {
+    @BeforeEach fun setup() {
+      mviTestRule.startWith(initialState)
+    }
+
+    @Test fun `tapping on + increments the counter by +1`() {
+      // when
+      increment()
+
+      // then
+      val one = initialState.add(1)
+      mviTestRule.assertStates(one)
+    }
+
+    @Test fun `tapping on - decrements the counter by -1`() {
+      // when
+      decrement()
+
+      // then
+      val minusOne = initialState.add(-1)
+      mviTestRule.assertStates(minusOne)
+    }
   }
 
   private fun increment() {
