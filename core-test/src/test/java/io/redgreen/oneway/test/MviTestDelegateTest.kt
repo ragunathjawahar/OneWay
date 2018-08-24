@@ -10,17 +10,17 @@ import io.redgreen.oneway.SourceEvent
 import io.redgreen.oneway.SourceEvent.*
 import org.junit.Test
 
-class MviTestRuleTest {
-  private val testRule = MviTestRule<SomeState> { _, _ -> Observable.never() }
+class MviTestDelegateTest {
+  private val testDelegate = MviTestDelegate<SomeState> { _, _ -> Observable.never() }
 
   @Test fun `it emits CREATED when the screen is created`() {
     // given
     val sourceEventsTestObserver = TestObserver<SourceEvent>()
     var sourceEventsDisposable: Disposable? = null
 
-    val testRule = MviTestRule { sourceEvents: Observable<SourceEvent>, _: Observable<SomeState> ->
+    val testRule = MviTestDelegate { sourceEvents: Observable<SourceEvent>, _: Observable<SomeState> ->
       sourceEventsDisposable = sourceEvents.subscribeWith(sourceEventsTestObserver)
-      return@MviTestRule Observable.never()
+      return@MviTestDelegate Observable.never()
     }
 
     // when
@@ -40,9 +40,9 @@ class MviTestRuleTest {
     val sourceEventsTestObserver = TestObserver<SourceEvent>()
     var sourceEventsDisposable: Disposable? = null
 
-    val testRule = MviTestRule { sourceEvents: Observable<SourceEvent>, _: Observable<SomeState> ->
+    val testRule = MviTestDelegate { sourceEvents: Observable<SourceEvent>, _: Observable<SomeState> ->
       sourceEventsDisposable = sourceEvents.subscribeWith(sourceEventsTestObserver)
-      return@MviTestRule Observable.never()
+      return@MviTestDelegate Observable.never()
     }
 
     // when
@@ -62,9 +62,9 @@ class MviTestRuleTest {
     val sourceEventsTestObserver = TestObserver<SourceEvent>()
     var sourceEventsDisposable: Disposable? = null
 
-    val testRule = MviTestRule { sourceEvents: Observable<SourceEvent>, _: Observable<SomeState> ->
+    val testRule = MviTestDelegate { sourceEvents: Observable<SourceEvent>, _: Observable<SomeState> ->
       sourceEventsDisposable = sourceEvents.subscribeWith(sourceEventsTestObserver)
-      return@MviTestRule Observable.never()
+      return@MviTestDelegate Observable.never()
     }
 
     // when
@@ -86,9 +86,9 @@ class MviTestRuleTest {
     val timelineTestObserver = TestObserver<SomeState>()
     var timelineDisposable: Disposable? = null
 
-    val testRule = MviTestRule { _: Observable<SourceEvent>, timeline: Observable<SomeState> ->
+    val testRule = MviTestDelegate { _: Observable<SourceEvent>, timeline: Observable<SomeState> ->
       timelineDisposable = timeline.subscribeWith(timelineTestObserver)
-      return@MviTestRule Observable.never()
+      return@MviTestDelegate Observable.never()
     }
 
     // when
@@ -109,7 +109,7 @@ class MviTestRuleTest {
     val block = mock<() -> Unit>{}
 
     // when
-    testRule.startWith(startState, block)
+    testDelegate.startWith(startState, block)
 
     // then
     verify(block).invoke()
@@ -123,7 +123,7 @@ class MviTestRuleTest {
         .thenReturn(Observable.never())
 
     // when
-    MviTestRule(sourceFunction).testObserver.hasSubscription()
+    MviTestDelegate(sourceFunction).testObserver.hasSubscription()
 
     // then
     verify(sourceFunction).invoke(any(), any())
@@ -132,10 +132,10 @@ class MviTestRuleTest {
 
   @Test fun `it can setup subscription with a test observer`() {
     // then
-    val activeSubscription = testRule.testObserver.hasSubscription()
+    val activeSubscription = testDelegate.testObserver.hasSubscription()
     assertThat(activeSubscription)
         .isTrue()
-    assertThat(testRule.testObserver.isDisposed)
+    assertThat(testDelegate.testObserver.isDisposed)
         .isFalse()
   }
 
@@ -146,50 +146,50 @@ class MviTestRuleTest {
     val sourceFunction = { sourceEvents: Observable<SourceEvent>, _: Observable<SomeState> ->
       sourceEvents.flatMap { Observable.just(stateA, stateB) }
     }
-    val mviTestRule = MviTestRule(sourceFunction)
+    val mviTestDelegate = MviTestDelegate(sourceFunction)
 
     // when
-    mviTestRule.sourceIsCreated()
+    mviTestDelegate.sourceIsCreated()
 
     // then
-    mviTestRule.assertStates(stateA, stateB)
+    mviTestDelegate.assertStates(stateA, stateB)
   }
 
   // TODO(rj) 24/Jun/18 - Ensure no state emission happens after the subscription is disposed.
   @Test fun `it disposes subscriptions when the screen is destroyed`() {
     // when
-    testRule.sourceIsDestroyed()
+    testDelegate.sourceIsDestroyed()
 
     // then
-    assertThat(testRule.testObserver.isDisposed)
+    assertThat(testDelegate.testObserver.isDisposed)
         .isTrue()
   }
 
   @Test fun `it restores subscriptions when the screen is restored`() {
     // given
-    testRule.sourceIsDestroyed()
+    testDelegate.sourceIsDestroyed()
 
     // when
-    testRule.sourceIsRestored()
+    testDelegate.sourceIsRestored()
 
     // then
-    assertThat(testRule.testObserver.hasSubscription())
+    assertThat(testDelegate.testObserver.hasSubscription())
         .isTrue()
-    assertThat(testRule.testObserver.isDisposed)
+    assertThat(testDelegate.testObserver.isDisposed)
         .isFalse()
   }
 
   @Test fun `it restores subscriptions when the screen is created`() {
     // given
-    testRule.sourceIsDestroyed()
+    testDelegate.sourceIsDestroyed()
 
     // when
-    testRule.sourceIsCreated()
+    testDelegate.sourceIsCreated()
 
     // then
-    assertThat(testRule.testObserver.hasSubscription())
+    assertThat(testDelegate.testObserver.hasSubscription())
         .isTrue()
-    assertThat(testRule.testObserver.isDisposed)
+    assertThat(testDelegate.testObserver.isDisposed)
         .isFalse()
   }
 
@@ -208,19 +208,19 @@ class MviTestRuleTest {
 
       Observable.merge(sourceCreatedUseCaseStates, sourceRestoredUseCaseStates)
     }
-    val mviTestRule = MviTestRule(sourceFunction)
+    val mviTestDelegate = MviTestDelegate(sourceFunction)
 
     // when
-    mviTestRule.sourceIsCreated()
-    mviTestRule.assertStates(oneState)
-    val testObserverAfterCreated = mviTestRule.testObserver
+    mviTestDelegate.sourceIsCreated()
+    mviTestDelegate.assertStates(oneState)
+    val testObserverAfterCreated = mviTestDelegate.testObserver
 
-    mviTestRule.sourceIsDestroyed()
-    mviTestRule.sourceIsRestored()
-    val testObserverAfterRestored = mviTestRule.testObserver
+    mviTestDelegate.sourceIsDestroyed()
+    mviTestDelegate.sourceIsRestored()
+    val testObserverAfterRestored = mviTestDelegate.testObserver
 
     // then
-    mviTestRule.assertStates(oneState)
+    mviTestDelegate.assertStates(oneState)
     assertThat(testObserverAfterRestored)
         .isNotSameAs(testObserverAfterCreated)
   }

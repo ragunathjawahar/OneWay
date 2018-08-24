@@ -3,7 +3,7 @@ package io.redgreen.oneway.catalogue.counter
 import io.reactivex.subjects.PublishSubject
 import io.redgreen.oneway.catalogue.counter.CounterState.Companion.ZERO
 import io.redgreen.oneway.catalogue.counter.usecases.CounterUseCases
-import io.redgreen.oneway.test.MviTestRule
+import io.redgreen.oneway.test.MviTestDelegate
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -13,7 +13,7 @@ class CounterModelTest {
   private val intentions = PublishSubject.create<CounterIntention>()
   private val initialState = ZERO
 
-  private val mviTestRule = MviTestRule<CounterState> { sourceEvents, timeline ->
+  private val mviTestDelegate = MviTestDelegate<CounterState> { sourceEvents, timeline ->
     CounterModel.createSource(
         intentions,
         sourceEvents,
@@ -23,10 +23,10 @@ class CounterModelTest {
 
   @Test fun `creating the source starts with an initial state`() {
     // when
-    mviTestRule.sourceIsCreated()
+    mviTestDelegate.sourceIsCreated()
 
     // then
-    mviTestRule.assertStates(initialState)
+    mviTestDelegate.assertStates(initialState)
   }
 
   @Test fun `restoring the source restores the last known state`() {
@@ -34,19 +34,19 @@ class CounterModelTest {
     val lastKnownState = CounterState(3)
 
     // when
-    mviTestRule.startWith(lastKnownState) {
-      mviTestRule.sourceIsDestroyed()
-      mviTestRule.sourceIsRestored()
+    mviTestDelegate.startWith(lastKnownState) {
+      mviTestDelegate.sourceIsDestroyed()
+      mviTestDelegate.sourceIsRestored()
     }
 
     // then
-    mviTestRule.assertStates(lastKnownState)
+    mviTestDelegate.assertStates(lastKnownState)
   }
 
   @DisplayName("after source is created")
   @Nested inner class AfterSourceIsCreated {
     @BeforeEach fun setup() {
-      mviTestRule.startWith(initialState)
+      mviTestDelegate.startWith(initialState)
     }
 
     @Test fun `tapping on + increments the counter by +1`() {
@@ -55,7 +55,7 @@ class CounterModelTest {
 
       // then
       val one = initialState.add(1)
-      mviTestRule.assertStates(one)
+      mviTestDelegate.assertStates(one)
     }
 
     @Test fun `tapping on - decrements the counter by -1`() {
@@ -64,7 +64,7 @@ class CounterModelTest {
 
       // then
       val minusOne = initialState.add(-1)
-      mviTestRule.assertStates(minusOne)
+      mviTestDelegate.assertStates(minusOne)
     }
   }
 

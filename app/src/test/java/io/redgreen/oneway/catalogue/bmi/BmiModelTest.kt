@@ -7,7 +7,7 @@ import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem
 import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem.IMPERIAL
 import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem.SI
 import io.redgreen.oneway.catalogue.bmi.usecases.BmiUseCases
-import io.redgreen.oneway.test.MviTestRule
+import io.redgreen.oneway.test.MviTestDelegate
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test
 class BmiModelTest {
   private val initialState = BmiState(48.0, 160.0, SI)
   private val intentions = PublishSubject.create<BmiIntention>()
-  private val testRule = MviTestRule { sourceEvents: Observable<SourceEvent>, timeline: Observable<BmiState> ->
+  private val testDelegate = MviTestDelegate { sourceEvents: Observable<SourceEvent>, timeline: Observable<BmiState> ->
     BmiModel.createSource(
         intentions,
         sourceEvents,
@@ -26,10 +26,10 @@ class BmiModelTest {
 
   @Test fun `when source is created, then show initial state`() {
     // when
-    testRule.sourceIsCreated()
+    testDelegate.sourceIsCreated()
 
     // then
-    testRule.assertStates(initialState)
+    testDelegate.assertStates(initialState)
   }
 
   @Test fun `when source is restored, then show last known state`() {
@@ -37,19 +37,19 @@ class BmiModelTest {
     val lastKnownState = BmiState(70.0, 170.0, SI)
 
     // when
-    testRule.startWith(lastKnownState) {
-      testRule.sourceIsDestroyed()
-      testRule.sourceIsRestored()
+    testDelegate.startWith(lastKnownState) {
+      testDelegate.sourceIsDestroyed()
+      testDelegate.sourceIsRestored()
     }
 
     // then
-    testRule.assertStates(lastKnownState)
+    testDelegate.assertStates(lastKnownState)
   }
 
   @DisplayName("after source is created")
   @Nested inner class AfterSourceIsCreated {
     @BeforeEach fun setup() {
-      testRule.startWith(initialState)
+      testDelegate.startWith(initialState)
     }
 
     @Test fun `when user changes weight, then update weight`() {
@@ -61,7 +61,7 @@ class BmiModelTest {
 
       // then
       val updatedWeightState = initialState.updateWeight(updatedWeightInKg)
-      testRule.assertStates(updatedWeightState)
+      testDelegate.assertStates(updatedWeightState)
     }
 
     @Test fun `when user changes height, then update height`() {
@@ -73,7 +73,7 @@ class BmiModelTest {
 
       // then
       val updatedHeightState = initialState.updateHeight(updatedHeightInCm)
-      testRule.assertStates(updatedHeightState)
+      testDelegate.assertStates(updatedHeightState)
     }
 
     @Test fun `when user changes measurement system, then update measurement system`() {
@@ -85,7 +85,7 @@ class BmiModelTest {
 
       // then
       val updatedMeasurementSystemState = initialState.updateMeasurementSystem(updatedMeasurementSystem)
-      testRule.assertStates(updatedMeasurementSystemState)
+      testDelegate.assertStates(updatedMeasurementSystemState)
     }
   }
 

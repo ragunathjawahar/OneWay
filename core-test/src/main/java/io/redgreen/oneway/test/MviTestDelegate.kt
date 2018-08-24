@@ -14,7 +14,7 @@ import io.redgreen.oneway.SourceEvent.*
  * @param sourceFunction provides `sourceEvents` and `timeline` for the
  *                       model to create a source.
  */
-class MviTestRule<S>(
+class MviTestDelegate<S>(
     private val sourceFunction: (Observable<SourceEvent>, Observable<S>) -> Observable<S>
 ) {
   private val sourceEventsSubject = PublishSubject.create<SourceEvent>()

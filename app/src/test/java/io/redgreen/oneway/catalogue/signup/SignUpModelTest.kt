@@ -11,7 +11,7 @@ import io.redgreen.oneway.catalogue.signup.form.Validator
 import io.redgreen.oneway.catalogue.signup.form.WhichField.PHONE_NUMBER
 import io.redgreen.oneway.catalogue.signup.form.WhichField.USERNAME
 import io.redgreen.oneway.catalogue.signup.usecases.SignUpUseCases
-import io.redgreen.oneway.test.MviTestRule
+import io.redgreen.oneway.test.MviTestDelegate
 import org.junit.jupiter.api.Test
 
 class SignUpModelTest {
@@ -19,7 +19,7 @@ class SignUpModelTest {
   private val displayErrorEventsSubject = PublishSubject.create<DisplayErrorEvent>()
   private val validator = Validator()
 
-  private val testRule = MviTestRule<SignUpState> { sourceEvents, timeline ->
+  private val testDelegate = MviTestDelegate<SignUpState> { sourceEvents, timeline ->
     SignUpModel.createSource(
         intentionsSubject,
         displayErrorEventsSubject,
@@ -30,23 +30,23 @@ class SignUpModelTest {
 
   @Test fun `when the screen is created, then the fields are untouched`() {
     // when
-    testRule.sourceIsCreated()
+    testDelegate.sourceIsCreated()
 
     // then
-    testRule.assertStates(UNTOUCHED)
+    testDelegate.assertStates(UNTOUCHED)
   }
 
   @Test fun `when the screen is restored, then the last known state is restored`() {
     // given
     val validPhoneNumberState = UNTOUCHED.phoneNumberUnmetConditions(emptySet())
-    testRule.startWith(validPhoneNumberState)
-    testRule.sourceIsDestroyed()
+    testDelegate.startWith(validPhoneNumberState)
+    testDelegate.sourceIsDestroyed()
 
     // when
-    testRule.sourceIsRestored()
+    testDelegate.sourceIsRestored()
 
     // then
-    testRule.assertStates(validPhoneNumberState)
+    testDelegate.assertStates(validPhoneNumberState)
   }
 
   @Test fun `when a valid phone number is entered, then there are no unmet conditions`() {
@@ -54,13 +54,13 @@ class SignUpModelTest {
     val validPhoneNumber = "9876543210"
 
     // when
-    testRule.startWith(UNTOUCHED) {
+    testDelegate.startWith(UNTOUCHED) {
       typePhoneNumber(validPhoneNumber)
     }
 
     // then
     val validPhoneNumberState = UNTOUCHED.phoneNumberUnmetConditions(emptySet())
-    testRule.assertStates(validPhoneNumberState)
+    testDelegate.assertStates(validPhoneNumberState)
   }
 
   @Test fun `when an invalid phone number is entered, then the field has unmet conditions`() {
@@ -68,14 +68,14 @@ class SignUpModelTest {
     val invalidPhoneNumber = ""
 
     // when
-    testRule.startWith(UNTOUCHED) {
+    testDelegate.startWith(UNTOUCHED) {
       typePhoneNumber(invalidPhoneNumber)
     }
 
     // then
     val invalidPhoneNumberState = UNTOUCHED
         .phoneNumberUnmetConditions(PhoneNumberCondition.values().toSet())
-    testRule.assertStates(invalidPhoneNumberState)
+    testDelegate.assertStates(invalidPhoneNumberState)
   }
 
   @Test fun `when a valid username is entered, then there are no unmet conditions`() {
@@ -83,13 +83,13 @@ class SignUpModelTest {
     val validUsername = "spiderman"
 
     // when
-    testRule.startWith(UNTOUCHED) {
+    testDelegate.startWith(UNTOUCHED) {
       typeUsername(validUsername)
     }
 
     // then
     val validUsernameState = UNTOUCHED.usernameUnmetConditions(emptySet())
-    testRule.assertStates(validUsernameState)
+    testDelegate.assertStates(validUsernameState)
   }
 
   @Test fun `when an invalid username is entered, then the field has unmet conditions`() {
@@ -97,14 +97,14 @@ class SignUpModelTest {
     val invalidUsername = " "
 
     // when
-    testRule.startWith(UNTOUCHED) {
+    testDelegate.startWith(UNTOUCHED) {
       typeUsername(invalidUsername)
     }
 
     // then
     val invalidUsernameState = UNTOUCHED
         .usernameUnmetConditions(UsernameCondition.values().toSet())
-    testRule.assertStates(invalidUsernameState)
+    testDelegate.assertStates(invalidUsernameState)
   }
 
   @Test fun `when phone number has an error and error threshold elapses, then show error immediately`() {
@@ -113,14 +113,14 @@ class SignUpModelTest {
         .phoneNumberUnmetConditions(setOf(LENGTH))
 
     // when
-    testRule.startWith(invalidPhoneNumberState) {
+    testDelegate.startWith(invalidPhoneNumberState) {
       displayErrorEventsSubject.onNext(DisplayErrorEvent(PHONE_NUMBER, true))
     }
 
     // then
     val displayingPhoneNumberErrorState = invalidPhoneNumberState
         .phoneNumberDisplayError(true)
-    testRule.assertStates(displayingPhoneNumberErrorState)
+    testDelegate.assertStates(displayingPhoneNumberErrorState)
   }
 
   @Test fun `when phone number displays an error but becomes valid, then hide error immediately`() {
@@ -129,7 +129,7 @@ class SignUpModelTest {
         .phoneNumberUnmetConditions(setOf(LENGTH))
 
     // when
-    testRule.startWith(invalidPhoneNumberState) {
+    testDelegate.startWith(invalidPhoneNumberState) {
       typePhoneNumber("9876543210")
       displayErrorEventsSubject.onNext(DisplayErrorEvent(PHONE_NUMBER, false))
     }
@@ -140,7 +140,7 @@ class SignUpModelTest {
     val notDisplayingPhoneNumberErrorState = validPhoneNumberState
         .phoneNumberDisplayError(false)
 
-    testRule.assertStates(
+    testDelegate.assertStates(
         validPhoneNumberState,
         notDisplayingPhoneNumberErrorState
     )
@@ -152,14 +152,14 @@ class SignUpModelTest {
         .usernameUnmetConditions(setOf(MIN_LENGTH))
 
     // when
-    testRule.startWith(invalidUsernameState) {
+    testDelegate.startWith(invalidUsernameState) {
       displayErrorEventsSubject.onNext(DisplayErrorEvent(USERNAME, true))
     }
 
     // then
     val displayingUsernameErrorState = invalidUsernameState
         .usernameDisplayError(true)
-    testRule.assertStates(displayingUsernameErrorState)
+    testDelegate.assertStates(displayingUsernameErrorState)
   }
 
   @Test fun `when username displays an error but becomes valid, then hide error immediately`() {
@@ -168,7 +168,7 @@ class SignUpModelTest {
         .usernameUnmetConditions(setOf(MIN_LENGTH))
 
     // when
-    testRule.startWith(invalidUsernameState) {
+    testDelegate.startWith(invalidUsernameState) {
       typeUsername("groot")
       displayErrorEventsSubject.onNext(DisplayErrorEvent(USERNAME, false))
     }
@@ -179,7 +179,7 @@ class SignUpModelTest {
     val notDisplayingUsernameErrorState = validUsernameState
         .usernameDisplayError(false)
 
-    testRule.assertStates(
+    testDelegate.assertStates(
         validUsernameState,
         notDisplayingUsernameErrorState
     )
@@ -194,12 +194,12 @@ class SignUpModelTest {
         .phoneNumberDisplayError(true)
 
     // when
-    testRule.startWith(UNTOUCHED) {
+    testDelegate.startWith(UNTOUCHED) {
       loseFocusPhoneNumber(phoneNumber)
     }
 
     // then
-    testRule.assertStates(displayPhoneNumberErrorImmediateState)
+    testDelegate.assertStates(displayPhoneNumberErrorImmediateState)
   }
 
   @Test fun `when username loses focus, then validate and show validation result immediately`() {
@@ -211,12 +211,12 @@ class SignUpModelTest {
         .usernameDisplayError(true)
 
     // when
-    testRule.startWith(UNTOUCHED) {
+    testDelegate.startWith(UNTOUCHED) {
       loseFocusUsername(username)
     }
 
     // then
-    testRule.assertStates(displayUsernameErrorImmediateState)
+    testDelegate.assertStates(displayUsernameErrorImmediateState)
   }
 
   @Test fun `when sign up clicked, then validate all fields immediately`() {
@@ -227,7 +227,7 @@ class SignUpModelTest {
     val usernameUnmetConditions = validator.validate<UsernameCondition>(username)
 
     // when
-    testRule.startWith(UNTOUCHED) {
+    testDelegate.startWith(UNTOUCHED) {
       tapSignUp(phoneNumber, username)
     }
 
@@ -237,7 +237,7 @@ class SignUpModelTest {
         .phoneNumberDisplayError(true)
         .usernameUnmetConditions(usernameUnmetConditions)
         .usernameDisplayError(true)
-    testRule.assertStates(validatedAllFieldsState)
+    testDelegate.assertStates(validatedAllFieldsState)
   }
 
   private fun typePhoneNumber(phoneNumber: String) {
