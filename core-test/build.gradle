@@ -6,9 +6,8 @@ dependencies {
 
   implementation srcDependencies.kotlin
   implementation srcDependencies.rxJava
-  implementation testDependencies.jUnit
 
-  testImplementation testDependencies.jUnit
+  testImplementation testDependencies.jUnit5
   testImplementation testDependencies.mockitoKotlin
   testImplementation testDependencies.truth
 }

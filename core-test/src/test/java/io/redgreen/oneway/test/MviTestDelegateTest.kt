@@ -8,77 +8,53 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.observers.TestObserver
 import io.redgreen.oneway.SourceEvent
 import io.redgreen.oneway.SourceEvent.*
-import org.junit.Test
+import org.junit.jupiter.api.*
 
 class MviTestDelegateTest {
+  @DisplayName("when source")
+  @Nested inner class SourceEventTest {
+    private lateinit var testDelegate: MviTestDelegate<SomeState>
+    private val sourceEventsTestObserver = TestObserver<SourceEvent>()
+    private lateinit var sourceEventsDisposable: Disposable
+
+    @BeforeEach fun setUp() {
+      testDelegate = MviTestDelegate { sourceEvents: Observable<SourceEvent>, _: Observable<SomeState> ->
+        sourceEventsDisposable = sourceEvents.subscribeWith(sourceEventsTestObserver)
+        return@MviTestDelegate Observable.never()
+      }
+    }
+
+    @AfterEach fun tearDown() {
+      sourceEventsDisposable.dispose()
+      testDelegate.sourceIsDestroyed()
+    }
+
+    @Test fun `is created then emit CREATED`() {
+      // when
+      testDelegate.sourceIsCreated()
+
+      // then
+      assertValue(sourceEventsTestObserver, CREATED)
+    }
+
+    @Test fun `is restored then emit RESTORED`() {
+      // when
+      testDelegate.sourceIsRestored()
+
+      // then
+      assertValue(sourceEventsTestObserver, RESTORED)
+    }
+
+    @Test fun `is destroyed then emit DESTROYED`() {
+      // when
+      testDelegate.sourceIsDestroyed()
+
+      // then
+      assertValue(sourceEventsTestObserver, DESTROYED)
+    }
+  }
+
   private val testDelegate = MviTestDelegate<SomeState> { _, _ -> Observable.never() }
-
-  @Test fun `it emits CREATED when the screen is created`() {
-    // given
-    val sourceEventsTestObserver = TestObserver<SourceEvent>()
-    var sourceEventsDisposable: Disposable? = null
-
-    val testRule = MviTestDelegate { sourceEvents: Observable<SourceEvent>, _: Observable<SomeState> ->
-      sourceEventsDisposable = sourceEvents.subscribeWith(sourceEventsTestObserver)
-      return@MviTestDelegate Observable.never()
-    }
-
-    // when
-    testRule.sourceIsCreated()
-
-    // then
-    with(sourceEventsTestObserver) {
-      assertNoErrors()
-      assertValues(CREATED)
-      assertNotTerminated()
-    }
-
-    sourceEventsDisposable?.dispose()
-  }
-
-  @Test fun `it emits RESTORED when the screen is restored`() {
-    val sourceEventsTestObserver = TestObserver<SourceEvent>()
-    var sourceEventsDisposable: Disposable? = null
-
-    val testRule = MviTestDelegate { sourceEvents: Observable<SourceEvent>, _: Observable<SomeState> ->
-      sourceEventsDisposable = sourceEvents.subscribeWith(sourceEventsTestObserver)
-      return@MviTestDelegate Observable.never()
-    }
-
-    // when
-    testRule.sourceIsRestored()
-
-    // then
-    with(sourceEventsTestObserver) {
-      assertNoErrors()
-      assertValues(RESTORED)
-      assertNotTerminated()
-    }
-
-    sourceEventsDisposable?.dispose()
-  }
-
-  @Test fun `it emits DESTROYED when the screen is destroyed`() {
-    val sourceEventsTestObserver = TestObserver<SourceEvent>()
-    var sourceEventsDisposable: Disposable? = null
-
-    val testRule = MviTestDelegate { sourceEvents: Observable<SourceEvent>, _: Observable<SomeState> ->
-      sourceEventsDisposable = sourceEvents.subscribeWith(sourceEventsTestObserver)
-      return@MviTestDelegate Observable.never()
-    }
-
-    // when
-    testRule.sourceIsDestroyed()
-
-    // then
-    with(sourceEventsTestObserver) {
-      assertNoErrors()
-      assertValues(DESTROYED)
-      assertNotTerminated()
-    }
-
-    sourceEventsDisposable?.dispose()
-  }
 
   @Test fun `it can setup a start state`() {
     // given
@@ -86,20 +62,16 @@ class MviTestDelegateTest {
     val timelineTestObserver = TestObserver<SomeState>()
     var timelineDisposable: Disposable? = null
 
-    val testRule = MviTestDelegate { _: Observable<SourceEvent>, timeline: Observable<SomeState> ->
+    val testDelegate = MviTestDelegate { _: Observable<SourceEvent>, timeline: Observable<SomeState> ->
       timelineDisposable = timeline.subscribeWith(timelineTestObserver)
       return@MviTestDelegate Observable.never()
     }
 
     // when
-    testRule.startWith(startState) { /* this block is intentionally left blank */ }
+    testDelegate.startWith(startState) { /* this block is intentionally left blank */ }
 
     // then
-    with(timelineTestObserver) {
-      assertNoErrors()
-      assertValue(startState)
-      assertNotTerminated()
-    }
+    assertValue(timelineTestObserver, startState)
     timelineDisposable?.dispose()
   }
 
@@ -112,8 +84,7 @@ class MviTestDelegateTest {
     testDelegate.startWith(startState, block)
 
     // then
-    verify(block).invoke()
-    verifyNoMoreInteractions(block)
+    verify(block, times(1)).invoke()
   }
 
   @Test fun `it can invoke a source function to setup subscription`() {
@@ -156,7 +127,7 @@ class MviTestDelegateTest {
   }
 
   // TODO(rj) 24/Jun/18 - Ensure no state emission happens after the subscription is disposed.
-  @Test fun `it disposes subscriptions when the screen is destroyed`() {
+  @Test fun `it disposes subscriptions when the source is destroyed`() {
     // when
     testDelegate.sourceIsDestroyed()
 
@@ -165,7 +136,7 @@ class MviTestDelegateTest {
         .isTrue()
   }
 
-  @Test fun `it restores subscriptions when the screen is restored`() {
+  @Test fun `it restores subscriptions when the source is restored`() {
     // given
     testDelegate.sourceIsDestroyed()
 
@@ -173,13 +144,15 @@ class MviTestDelegateTest {
     testDelegate.sourceIsRestored()
 
     // then
-    assertThat(testDelegate.testObserver.hasSubscription())
+    val testObserver = testDelegate.testObserver
+
+    assertThat(testObserver.hasSubscription())
         .isTrue()
-    assertThat(testDelegate.testObserver.isDisposed)
+    assertThat(testObserver.isDisposed)
         .isFalse()
   }
 
-  @Test fun `it restores subscriptions when the screen is created`() {
+  @Test fun `it restores subscriptions when the source is created`() {
     // given
     testDelegate.sourceIsDestroyed()
 
@@ -187,13 +160,15 @@ class MviTestDelegateTest {
     testDelegate.sourceIsCreated()
 
     // then
-    assertThat(testDelegate.testObserver.hasSubscription())
+    val testObserver = testDelegate.testObserver
+
+    assertThat(testObserver.hasSubscription())
         .isTrue()
-    assertThat(testDelegate.testObserver.isDisposed)
+    assertThat(testObserver.isDisposed)
         .isFalse()
   }
 
-  @Test fun `it has access to the last known state after the screen is restored`() {
+  @Test fun `it has access to the last known state after the source is restored`() {
     // given
     val oneState = SomeState("ONE")
     val sourceFunction = { sourceEvents: Observable<SourceEvent>, timeline: Observable<SomeState> ->
@@ -223,6 +198,17 @@ class MviTestDelegateTest {
     mviTestDelegate.assertStates(oneState)
     assertThat(testObserverAfterRestored)
         .isNotSameAs(testObserverAfterCreated)
+  }
+
+  private fun <T> assertValue(
+      sourceEventsTestObserver: TestObserver<T>,
+      sourceEvent: T
+  ) {
+    with(sourceEventsTestObserver) {
+      assertNoErrors()
+      assertValues(sourceEvent)
+      assertNotTerminated()
+    }
   }
 }
 
