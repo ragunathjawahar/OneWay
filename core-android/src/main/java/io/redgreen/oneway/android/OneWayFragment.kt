@@ -27,5 +27,5 @@ abstract class OneWayFragment<S : Parcelable> : BareBonesOneWayFragment<S, S>() 
     get() = NoOpStateConverter()
 
   override val persister: Persister<S>
-    get() = ParcelablePersister()
+    get() = ParcelablePersister(this::class.java.name)
 }

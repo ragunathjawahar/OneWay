@@ -50,7 +50,7 @@ abstract class OneWayRelativeLayout<S : Parcelable> :
     get() = NoOpStateConverter()
 
   override val persister: Persister<S>
-    get() = ParcelablePersister()
+    get() = ParcelablePersister(this::class.java.name)
 
   private val mviDelegate: AndroidMviDelegate<S, S> by lazy(LazyThreadSafetyMode.NONE) {
     AndroidMviDelegate(this)

@@ -27,5 +27,5 @@ abstract class OneWayActivity<S : Parcelable> : BareBonesOneWayActivity<S, S>() 
     get() = NoOpStateConverter()
 
   override val persister: Persister<S>
-    get() = ParcelablePersister()
+    get() = ParcelablePersister(this::class.java.name)
 }

@@ -20,9 +20,9 @@ import android.os.Parcelable
 import io.redgreen.oneway.android.barebones.Persister
 
 /** [Persister] that can read and write a [Parcelable] from and to a [Bundle]. */
-class ParcelablePersister<P: Parcelable> : Persister<P> {
-  private val stateKey = "one_way_state"
-
+class ParcelablePersister<P: Parcelable>(
+    private val stateKey: String
+) : Persister<P> {
   /** Write a [Parcelable] state to the [Bundle]. */
   override fun write(persistableState: P, bundle: Bundle) =
       bundle.putParcelable(stateKey, persistableState)

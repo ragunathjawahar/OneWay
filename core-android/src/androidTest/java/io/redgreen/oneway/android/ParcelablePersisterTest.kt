@@ -9,7 +9,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class ParcelablePersisterTest {
-  private val persister = ParcelablePersister<Student>()
+  private val persister = ParcelablePersister<Student>("state_key")
   private val student = Student("For Life")
   private val bundle = Bundle(1)
 
