@@ -1,12 +1,10 @@
 package io.redgreen.oneway.catalogue.base.widget
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
-import android.support.annotation.RequiresApi
+import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
-import android.widget.RelativeLayout
 import io.reactivex.Observable
 import io.redgreen.oneway.NoOpStateConverter
 import io.redgreen.oneway.StateConverter
@@ -14,11 +12,12 @@ import io.redgreen.oneway.android.ParcelablePersister
 import io.redgreen.oneway.android.barebones.AndroidMviContract
 import io.redgreen.oneway.android.barebones.AndroidMviDelegate
 import io.redgreen.oneway.android.barebones.Persister
+import kotlin.LazyThreadSafetyMode.NONE
 
 private const val KEY_VIEW_STATE = "view_state"
 
-abstract class OneWayRelativeLayout<S : Parcelable> :
-    RelativeLayout,
+abstract class OneWayConstraintLayout<S : Parcelable> :
+    ConstraintLayout,
     AndroidMviContract<S, S> {
   constructor(
       context: Context
@@ -35,26 +34,19 @@ abstract class OneWayRelativeLayout<S : Parcelable> :
       defStyleAttr: Int
   ): super(context, attrs, defStyleAttr)
 
-  @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-  constructor(
-      context: Context,
-      attrs: AttributeSet,
-      defStyleAttr: Int,
-      defStyleRes: Int
-  ): super(context, attrs, defStyleAttr, defStyleRes)
-
-  override val timeline: Observable<S>
-    get() = mviDelegate.timeline
-
-  override val stateConverter: StateConverter<S, S>
-    get() = NoOpStateConverter()
-
-  override val persister: Persister<S>
-    get() = ParcelablePersister(this::class.java.name)
-
-  private val mviDelegate: AndroidMviDelegate<S, S> by lazy(LazyThreadSafetyMode.NONE) {
+  private val mviDelegate: AndroidMviDelegate<S, S> by lazy(NONE) {
     AndroidMviDelegate(this)
   }
+
+  override val stateConverter: StateConverter<S, S> =
+      NoOpStateConverter()
+
+  override val persister: Persister<S> by lazy(NONE) {
+    return@lazy ParcelablePersister<S>(this::class.java.name)
+  }
+
+  override val timeline: Observable<S> =
+      mviDelegate.timeline
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()

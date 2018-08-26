@@ -22,15 +22,13 @@ import io.redgreen.oneway.MviDelegate
 import io.redgreen.oneway.Sink
 import io.redgreen.oneway.Source
 import io.redgreen.oneway.SourceEvent
-import kotlin.LazyThreadSafetyMode.NONE
 
 /** A [MviDelegate] implementation for the Android platform. */
 class AndroidMviDelegate<S, P>(
     private val androidMviContract: AndroidMviContract<S, P>
 ) {
-  private val mviDelegate: MviDelegate<S, P> by lazy(NONE) {
-    MviDelegate(androidMviContract.stateConverter)
-  }
+  private val mviDelegate: MviDelegate<S, P> =
+      MviDelegate(androidMviContract.stateConverter)
 
   /**
    * Grants access to the latest state. Use cases should not use the

@@ -1,14 +1,12 @@
 package io.redgreen.oneway.catalogue.placards.counter
 
 import android.content.Context
-import android.os.Build.VERSION_CODES.LOLLIPOP
-import android.support.annotation.RequiresApi
 import android.util.AttributeSet
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.redgreen.oneway.SourceEvent
-import io.redgreen.oneway.catalogue.base.widget.OneWayRelativeLayout
+import io.redgreen.oneway.catalogue.base.widget.OneWayConstraintLayout
 import io.redgreen.oneway.catalogue.counter.CounterIntentionsGroup
 import io.redgreen.oneway.catalogue.counter.CounterModel
 import io.redgreen.oneway.catalogue.counter.CounterState
@@ -18,7 +16,7 @@ import io.redgreen.oneway.catalogue.counter.usecases.CounterUseCases
 import kotlinx.android.synthetic.main.counter_placard.view.*
 
 class CounterPlacardLayout :
-    OneWayRelativeLayout<CounterState>,
+    OneWayConstraintLayout<CounterState>,
     CounterView {
   constructor(
       context: Context
@@ -34,14 +32,6 @@ class CounterPlacardLayout :
       attrs: AttributeSet,
       defStyleAttr: Int
   ): super(context, attrs, defStyleAttr)
-
-  @RequiresApi(LOLLIPOP)
-  constructor(
-      context: Context,
-      attrs: AttributeSet,
-      defStyleAttr: Int,
-      defStyleRes: Int
-  ): super(context, attrs, defStyleAttr, defStyleRes)
 
   private val intentionsGroup: CounterIntentionsGroup
     get() = CounterIntentionsGroup(

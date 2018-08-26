@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <io.redgreen.oneway.catalogue.placards.bmi.BmiPlacardLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
@@ -10,6 +11,8 @@
     android:id="@+id/bmiTextView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
     tools:text="24.1"
     />
 
@@ -17,19 +20,22 @@
     android:id="@+id/bmiCategoryTextView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_toRightOf="@+id/bmiTextView"
+    android:layout_marginTop="8dp"
     android:layout_toEndOf="@+id/bmiTextView"
+    android:layout_toRightOf="@+id/bmiTextView"
+    app:layout_constraintTop_toBottomOf="@+id/bmiTextView"
     tools:text="Normal"
     />
 
   <Spinner
     android:id="@+id/weightSpinner"
-    android:layout_width="wrap_content"
+    android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_below="@+id/bmiTextView"
-    android:layout_marginRight="16sp"
-    android:layout_marginEnd="16sp"
-    android:layout_marginTop="8dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginStart="8dp"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/bmiCategoryTextView"
     />
 
   <Spinner
@@ -37,8 +43,13 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_alignTop="@+id/weightSpinner"
-    android:layout_toRightOf="@+id/weightSpinner"
+    android:layout_marginEnd="8dp"
+    android:layout_marginRight="8dp"
     android:layout_toEndOf="@+id/weightSpinner"
+    android:layout_toRightOf="@+id/weightSpinner"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toEndOf="@+id/weightSpinner"
+    app:layout_constraintTop_toTopOf="@+id/weightSpinner"
     />
 
   <Switch
@@ -46,6 +57,10 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_below="@+id/weightSpinner"
+    android:layout_marginEnd="8dp"
+    android:layout_marginRight="8dp"
     android:layout_marginTop="8dp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="@+id/bmiTextView"
     />
 </io.redgreen.oneway.catalogue.placards.bmi.BmiPlacardLayout>

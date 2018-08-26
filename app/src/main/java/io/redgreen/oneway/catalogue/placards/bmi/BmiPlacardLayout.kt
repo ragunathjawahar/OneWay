@@ -1,10 +1,8 @@
 package io.redgreen.oneway.catalogue.placards.bmi
 
 import android.content.Context
-import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Bundle
 import android.os.Parcelable
-import android.support.annotation.RequiresApi
 import android.util.AttributeSet
 import com.jakewharton.rxbinding2.widget.checkedChanges
 import com.jakewharton.rxbinding2.widget.itemSelections
@@ -12,7 +10,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.redgreen.oneway.SourceEvent
 import io.redgreen.oneway.catalogue.R
-import io.redgreen.oneway.catalogue.base.widget.OneWayRelativeLayout
+import io.redgreen.oneway.catalogue.base.widget.OneWayConstraintLayout
 import io.redgreen.oneway.catalogue.bmi.*
 import io.redgreen.oneway.catalogue.bmi.calculator.BmiCategory
 import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem
@@ -26,7 +24,7 @@ private const val KEY_WEIGHT_SELECTION = "weight_selection"
 private const val KEY_HEIGHT_SELECTION = "height_selection"
 
 class BmiPlacardLayout :
-    OneWayRelativeLayout<BmiState>,
+    OneWayConstraintLayout<BmiState>,
     BmiView {
   constructor(
       context: Context
@@ -42,14 +40,6 @@ class BmiPlacardLayout :
       attrs: AttributeSet,
       defStyleAttr: Int
   ): super(context, attrs, defStyleAttr)
-
-  @RequiresApi(LOLLIPOP)
-  constructor(
-      context: Context,
-      attrs: AttributeSet,
-      defStyleAttr: Int,
-      defStyleRes: Int
-  ): super(context, attrs, defStyleAttr, defStyleRes)
 
   private val minWeightInKg: Int
     get() = resources.getInteger(R.integer.min_weight_kg)
@@ -99,12 +89,12 @@ class BmiPlacardLayout :
     get() = BmiViewDriver(this)
 
   override fun onAttachedToWindow() {
-    super.onAttachedToWindow()
     weightSpinner.adapter = weightMeasurementAdapter
     heightSpinner.adapter = heightMeasurementAdapter
 
     weightSpinner.setSelection(weightSelection)
     heightSpinner.setSelection(heightSelection)
+    super.onAttachedToWindow()
   }
 
   override fun source(
