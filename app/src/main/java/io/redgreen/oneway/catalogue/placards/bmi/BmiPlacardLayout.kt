@@ -14,9 +14,12 @@ import io.redgreen.oneway.catalogue.base.widget.OneWayConstraintLayout
 import io.redgreen.oneway.catalogue.bmi.*
 import io.redgreen.oneway.catalogue.bmi.calculator.BmiCategory
 import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem
+import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem.SI
 import io.redgreen.oneway.catalogue.bmi.drivers.BmiViewDriver
 import io.redgreen.oneway.catalogue.bmi.text.BmiTextFormatter
 import io.redgreen.oneway.catalogue.bmi.usecases.BmiUseCases
+import io.redgreen.oneway.catalogue.placards.bmi.MeasurementAdapter.Quantity.LENGTH
+import io.redgreen.oneway.catalogue.placards.bmi.MeasurementAdapter.Quantity.WEIGHT
 import kotlinx.android.synthetic.main.bmi_placard.view.*
 import kotlin.LazyThreadSafetyMode.NONE
 
@@ -57,11 +60,11 @@ class BmiPlacardLayout :
   private var heightSelection = 0
 
   private val weightMeasurementAdapter: MeasurementAdapter by lazy(NONE) {
-    MeasurementAdapter(context, minWeightInKg, "kg")
+    MeasurementAdapter(context, minWeightInKg, WEIGHT, SI)
   }
 
   private val heightMeasurementAdapter: MeasurementAdapter by lazy(NONE) {
-    MeasurementAdapter(context, minHeightInCm, "cm")
+    MeasurementAdapter(context, minHeightInCm, LENGTH, SI)
   }
 
   private val intentionsGroup
@@ -76,7 +79,7 @@ class BmiPlacardLayout :
     get() = BmiState(
         resources.getInteger(R.integer.default_weight_kg).toDouble(),
         resources.getInteger(R.integer.default_height_cm).toDouble(),
-        MeasurementSystem.SI
+        SI
     )
 
   private val useCases
@@ -87,15 +90,6 @@ class BmiPlacardLayout :
 
   private val viewDriver
     get() = BmiViewDriver(this)
-
-  override fun onAttachedToWindow() {
-    weightSpinner.adapter = weightMeasurementAdapter
-    heightSpinner.adapter = heightMeasurementAdapter
-
-    weightSpinner.setSelection(weightSelection)
-    heightSpinner.setSelection(heightSelection)
-    super.onAttachedToWindow()
-  }
 
   override fun source(
       sourceEvents: Observable<SourceEvent>,
@@ -121,6 +115,17 @@ class BmiPlacardLayout :
   override fun showMeasurementSystem(measurementSystem: MeasurementSystem) {
     measurementSystemSwitch.text = BmiTextFormatter
         .getMeasurementSystemText(context, measurementSystem)
+
+    updateAdapters(measurementSystem)
+  }
+
+  override fun onAttachedToWindow() {
+    weightSpinner.adapter = weightMeasurementAdapter
+    heightSpinner.adapter = heightMeasurementAdapter
+
+    weightSpinner.setSelection(weightSelection)
+    heightSpinner.setSelection(heightSelection)
+    super.onAttachedToWindow()
   }
 
   override fun onSaveInstanceState(): Parcelable {
@@ -139,5 +144,10 @@ class BmiPlacardLayout :
     weightSelection = instanceState[KEY_WEIGHT_SELECTION] as Int
     heightSelection = instanceState[KEY_HEIGHT_SELECTION] as Int
     super.onRestoreInstanceState(state)
+  }
+
+  private fun updateAdapters(measurementSystem: MeasurementSystem) {
+    weightMeasurementAdapter.measurementSystem = measurementSystem
+    heightMeasurementAdapter.measurementSystem = measurementSystem
   }
 }

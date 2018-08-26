@@ -4,7 +4,10 @@ import android.content.Context
 import android.support.annotation.StringRes
 import io.redgreen.oneway.catalogue.R
 import io.redgreen.oneway.catalogue.bmi.calculator.BmiCategory
+import io.redgreen.oneway.catalogue.bmi.calculator.BmiCategory.*
 import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem
+import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem.IMPERIAL
+import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem.SI
 
 object BmiTextFormatter {
   fun getBmiText(
@@ -18,17 +21,17 @@ object BmiTextFormatter {
       category: BmiCategory
   ): String {
     val categoryTextRes = when(category) {
-      BmiCategory.VERY_SEVERELY_UNDERWEIGHT -> R.string.very_severely_underweight
-      BmiCategory.SEVERELY_UNDERWEIGHT -> R.string.severely_underweight
-      BmiCategory.UNDERWEIGHT -> R.string.underweight
-      BmiCategory.NORMAL -> R.string.normal
-      BmiCategory.OVERWEIGHT -> R.string.overweight
-      BmiCategory.OBESE_CLASS_1 -> R.string.obese_class_1
-      BmiCategory.OBESE_CLASS_2 -> R.string.obese_class_2
-      BmiCategory.OBESE_CLASS_3 -> R.string.obese_class_3
-      BmiCategory.OBESE_CLASS_4 -> R.string.obese_class_4
-      BmiCategory.OBESE_CLASS_5 -> R.string.obese_class_5
-      BmiCategory.OBESE_CLASS_6 -> R.string.obese_class_6
+      VERY_SEVERELY_UNDERWEIGHT -> R.string.very_severely_underweight
+      SEVERELY_UNDERWEIGHT -> R.string.severely_underweight
+      UNDERWEIGHT -> R.string.underweight
+      NORMAL -> R.string.normal
+      OVERWEIGHT -> R.string.overweight
+      OBESE_CLASS_1 -> R.string.obese_class_1
+      OBESE_CLASS_2 -> R.string.obese_class_2
+      OBESE_CLASS_3 -> R.string.obese_class_3
+      OBESE_CLASS_4 -> R.string.obese_class_4
+      OBESE_CLASS_5 -> R.string.obese_class_5
+      OBESE_CLASS_6 -> R.string.obese_class_6
     }
     return context.getString(categoryTextRes)
   }
@@ -38,9 +41,33 @@ object BmiTextFormatter {
       measurementSystem: MeasurementSystem
   ): String {
     @StringRes val measurementSystemRes = when (measurementSystem) {
-      MeasurementSystem.SI -> R.string.si_units
-      MeasurementSystem.IMPERIAL -> R.string.imperial_units
+      SI -> R.string.si_units
+      IMPERIAL -> R.string.imperial_units
     }
     return context.getString(measurementSystemRes)
+  }
+
+  fun getWeightText(
+      context: Context,
+      weight: Double,
+      measurementSystem: MeasurementSystem
+  ): String {
+    @StringRes val weightTemplateStringRes = when (measurementSystem) {
+      SI -> R.string.template_weight_si
+      IMPERIAL -> R.string.template_weight_imperial
+    }
+    return context.getString(weightTemplateStringRes, weight)
+  }
+
+  fun getHeightText(
+      context: Context,
+      height: Double,
+      measurementSystem: MeasurementSystem
+  ): String {
+    @StringRes val heightTemplateStringRes = when (measurementSystem) {
+      SI -> R.string.template_height_si
+      IMPERIAL -> R.string.template_height_imperial
+    }
+    return context.getString(heightTemplateStringRes, height)
   }
 }

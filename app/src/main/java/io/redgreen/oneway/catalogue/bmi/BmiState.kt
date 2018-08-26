@@ -3,6 +3,7 @@ package io.redgreen.oneway.catalogue.bmi
 import android.os.Parcelable
 import io.redgreen.oneway.catalogue.bmi.calculator.BmiCalculator
 import io.redgreen.oneway.catalogue.bmi.calculator.BmiCategory
+import io.redgreen.oneway.catalogue.bmi.calculator.ImperialUnitConverter
 import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem
 import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem.IMPERIAL
 import kotlinx.android.parcel.Parcelize
@@ -14,13 +15,13 @@ import kotlinx.android.parcel.Parcelize
 ) : Parcelable {
   val weight: Double
     get() = if (measurementSystem == IMPERIAL)
-      toPounds(weightInKg)
+      ImperialUnitConverter.toPounds(weightInKg)
     else
       weightInKg
 
   val height: Double
     get() = if (measurementSystem == IMPERIAL)
-      toFoot(heightInCm)
+      ImperialUnitConverter.toFoot(heightInCm)
     else
       heightInCm
 
@@ -41,10 +42,4 @@ import kotlinx.android.parcel.Parcelize
 
   fun updateMeasurementSystem(measurementSystem: MeasurementSystem) =
       copy(measurementSystem = measurementSystem)
-
-  private fun toPounds(weightInKg: Double): Double =
-      weightInKg * 2.2046226218
-
-  private fun toFoot(heightInCm: Double): Double =
-      heightInCm / 30.48
 }

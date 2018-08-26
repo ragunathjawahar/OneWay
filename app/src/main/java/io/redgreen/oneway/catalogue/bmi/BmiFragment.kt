@@ -1,7 +1,6 @@
 package io.redgreen.oneway.catalogue.bmi
 
 import android.os.Bundle
-import android.support.annotation.StringRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,6 @@ import io.redgreen.oneway.android.OneWayFragment
 import io.redgreen.oneway.catalogue.R
 import io.redgreen.oneway.catalogue.bmi.calculator.BmiCategory
 import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem
-import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem.IMPERIAL
 import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem.SI
 import io.redgreen.oneway.catalogue.bmi.drivers.BmiViewDriver
 import io.redgreen.oneway.catalogue.bmi.text.BmiTextFormatter
@@ -77,19 +75,11 @@ class BmiFragment : OneWayFragment<BmiState>(), BmiView {
   }
 
   override fun showWeight(weight: Double, measurementSystem: MeasurementSystem) {
-    @StringRes val weightTemplateStringRes = when (measurementSystem) {
-      SI       -> R.string.template_weight_si
-      IMPERIAL -> R.string.template_weight_imperial
-    }
-    weightTextView.text = getString(weightTemplateStringRes, weight)
+    weightTextView.text = BmiTextFormatter.getWeightText(context!!, weight, measurementSystem)
   }
 
   override fun showHeight(height: Double, measurementSystem: MeasurementSystem) {
-    @StringRes val heightTemplateStringRes = when (measurementSystem) {
-      SI       -> R.string.template_height_si
-      IMPERIAL -> R.string.template_height_imperial
-    }
-    heightTextView.text = getString(heightTemplateStringRes, height)
+    heightTextView.text = BmiTextFormatter.getHeightText(context!!, height, measurementSystem)
   }
 
   override fun showMeasurementSystem(measurementSystem: MeasurementSystem) {
