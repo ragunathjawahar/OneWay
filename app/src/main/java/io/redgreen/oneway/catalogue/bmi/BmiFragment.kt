@@ -13,11 +13,11 @@ import io.redgreen.oneway.SourceEvent
 import io.redgreen.oneway.android.OneWayFragment
 import io.redgreen.oneway.catalogue.R
 import io.redgreen.oneway.catalogue.bmi.calculator.BmiCategory
-import io.redgreen.oneway.catalogue.bmi.calculator.BmiCategory.*
 import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem
 import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem.IMPERIAL
 import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem.SI
 import io.redgreen.oneway.catalogue.bmi.drivers.BmiViewDriver
+import io.redgreen.oneway.catalogue.bmi.text.BmiTextFormatter
 import io.redgreen.oneway.catalogue.bmi.usecases.BmiUseCases
 import kotlinx.android.synthetic.main.bmi_fragment.*
 
@@ -69,11 +69,11 @@ class BmiFragment : OneWayFragment<BmiState>(), BmiView {
       viewDriver.render(source)
 
   override fun showBmi(bmi: Double) {
-    bmiTextView.text = getString(R.string.template_bmi, bmi)
+    bmiTextView.text = BmiTextFormatter.getBmiText(context!!, bmi)
   }
 
   override fun showCategory(category: BmiCategory) {
-    bmiCategoryTextView.text = getHumanizedCategoryText(category)
+    bmiCategoryTextView.text = BmiTextFormatter.getBmiCategoryText(context!!, category)
   }
 
   override fun showWeight(weight: Double, measurementSystem: MeasurementSystem) {
@@ -93,27 +93,6 @@ class BmiFragment : OneWayFragment<BmiState>(), BmiView {
   }
 
   override fun showMeasurementSystem(measurementSystem: MeasurementSystem) {
-    @StringRes val measurementSystemRes = when (measurementSystem) {
-      SI       -> R.string.si_units
-      IMPERIAL -> R.string.imperial_units
-    }
-    measurementSystemSwitch.text = getString(measurementSystemRes)
-  }
-
-  private fun getHumanizedCategoryText(category: BmiCategory): String {
-    val categoryTextRes = when(category) {
-      VERY_SEVERELY_UNDERWEIGHT -> R.string.very_severely_underweight
-      SEVERELY_UNDERWEIGHT -> R.string.severely_underweight
-      UNDERWEIGHT -> R.string.underweight
-      NORMAL -> R.string.normal
-      OVERWEIGHT -> R.string.overweight
-      OBESE_CLASS_1 -> R.string.obese_class_1
-      OBESE_CLASS_2 -> R.string.obese_class_2
-      OBESE_CLASS_3 -> R.string.obese_class_3
-      OBESE_CLASS_4 -> R.string.obese_class_4
-      OBESE_CLASS_5 -> R.string.obese_class_5
-      OBESE_CLASS_6 -> R.string.obese_class_6
-    }
-    return getString(categoryTextRes)
+    measurementSystemSwitch.text = BmiTextFormatter.getMeasurementSystemText(context!!, measurementSystem)
   }
 }

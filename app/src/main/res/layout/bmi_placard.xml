@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<io.redgreen.oneway.catalogue.placards.bmi.BmiPlacardLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  >
+
+  <TextView
+    android:id="@+id/bmiTextView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:text="24.1"
+    />
+
+  <TextView
+    android:id="@+id/bmiCategoryTextView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_toRightOf="@+id/bmiTextView"
+    android:layout_toEndOf="@+id/bmiTextView"
+    tools:text="Normal"
+    />
+
+  <Spinner
+    android:id="@+id/weightSpinner"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/bmiTextView"
+    android:layout_marginRight="16sp"
+    android:layout_marginEnd="16sp"
+    android:layout_marginTop="8dp"
+    />
+
+  <Spinner
+    android:id="@+id/heightSpinner"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignTop="@+id/weightSpinner"
+    android:layout_toRightOf="@+id/weightSpinner"
+    android:layout_toEndOf="@+id/weightSpinner"
+    />
+
+  <Switch
+    android:id="@+id/measurementSystemSwitch"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/weightSpinner"
+    android:layout_marginTop="8dp"
+    />
+</io.redgreen.oneway.catalogue.placards.bmi.BmiPlacardLayout>

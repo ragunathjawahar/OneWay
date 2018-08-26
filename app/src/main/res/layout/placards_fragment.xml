@@ -22,5 +22,12 @@
       android:layout_height="wrap_content"
       layout="@layout/counter_placard"
       />
+
+    <include
+      android:id="@+id/bmiPlacardLayout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      layout="@layout/bmi_placard"
+      />
   </LinearLayout>
 </ScrollView>
