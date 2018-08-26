@@ -26,9 +26,9 @@
   <string name="obese_class_6">Obese Class VI</string>
   <string name="template_bmi">%.1f</string>
   <string name="template_weight_si">%.1f kg</string>
-  <string name="template_weight_imperial">%.1f lb</string>
   <string name="template_height_si">%.1f cm</string>
-  <string name="template_height_imperial">%.1f ft</string>
+  <string name="template_weight_imperial">%.2f lb</string>
+  <string name="template_height_imperial">%.2f ft</string>
   <string name="si_units">SI Units</string>
   <string name="imperial_units">Imperial Units</string>
 

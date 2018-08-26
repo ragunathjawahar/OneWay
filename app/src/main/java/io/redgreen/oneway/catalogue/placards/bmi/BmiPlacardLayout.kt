@@ -23,6 +23,7 @@ import io.redgreen.oneway.catalogue.placards.bmi.MeasurementAdapter.Quantity.WEI
 import kotlinx.android.synthetic.main.bmi_placard.view.*
 import kotlin.LazyThreadSafetyMode.NONE
 
+private const val UNINITIALIZED_SELECTION = -1
 private const val KEY_WEIGHT_SELECTION = "weight_selection"
 private const val KEY_HEIGHT_SELECTION = "height_selection"
 
@@ -56,8 +57,8 @@ class BmiPlacardLayout :
         minHeightInCm.toDouble()
     )
 
-  private var weightSelection = 0
-  private var heightSelection = 0
+  private var weightSelection: Int = UNINITIALIZED_SELECTION
+  private var heightSelection: Int = UNINITIALIZED_SELECTION
 
   private val weightMeasurementAdapter: MeasurementAdapter by lazy(NONE) {
     MeasurementAdapter(context, minWeightInKg, WEIGHT, SI)
@@ -120,11 +121,7 @@ class BmiPlacardLayout :
   }
 
   override fun onAttachedToWindow() {
-    weightSpinner.adapter = weightMeasurementAdapter
-    heightSpinner.adapter = heightMeasurementAdapter
-
-    weightSpinner.setSelection(weightSelection)
-    heightSpinner.setSelection(heightSelection)
+    setupAdapters()
     super.onAttachedToWindow()
   }
 
@@ -144,6 +141,22 @@ class BmiPlacardLayout :
     weightSelection = instanceState[KEY_WEIGHT_SELECTION] as Int
     heightSelection = instanceState[KEY_HEIGHT_SELECTION] as Int
     super.onRestoreInstanceState(state)
+  }
+
+  private fun setupAdapters() {
+    if (weightSelection == UNINITIALIZED_SELECTION) {
+      weightSelection = context.resources.getInteger(R.integer.default_weight_progress)
+    }
+
+    if (heightSelection == UNINITIALIZED_SELECTION) {
+      heightSelection = context.resources.getInteger(R.integer.default_height_progress)
+    }
+
+    weightSpinner.adapter = weightMeasurementAdapter
+    heightSpinner.adapter = heightMeasurementAdapter
+
+    weightSpinner.setSelection(weightSelection)
+    heightSpinner.setSelection(heightSelection)
   }
 
   private fun updateAdapters(measurementSystem: MeasurementSystem) {
