@@ -18,7 +18,12 @@ Then, include the dependencies in your module's build script.
       implementation 'io.redgreen.oneway:core:(latest-version)'
       implementation 'io.redgreen.oneway:core-android:(latest-version)@aar'
 
-      testImplementation 'io.redgreen.oneway:core-test:(latest-version)' // Recommended
+      // Needed only if you want to use custom ViewGroup classes
+      implementation 'io.redgreen.oneway:annotations:(latest-version)' 
+      kapt 'io.redgreen.oneway:compiler:(latest-version)'
+
+      // Recommended
+      testImplementation 'io.redgreen.oneway:core-test:(latest-version)'
     }
 
 RxJava 2 and RxAndroid are not transitively resolved, hence they have to be included explicitly.
