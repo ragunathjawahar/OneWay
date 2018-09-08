@@ -8,7 +8,7 @@ import io.redgreen.oneway.drivers.ViewDriver
 
 class BudapestViewDriver(
     private val view: BudapestView
-) : ViewDriver<BudapestState> {
+) : ViewDriver<BudapestView, BudapestState>(view) {
   override fun render(source: Observable<BudapestState>): Disposable {
     return source
         .distinctUntilChanged()

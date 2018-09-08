@@ -17,7 +17,7 @@ class SignUpViewDriver(
     private val view: SignUpView,
     private val schedulersProvider: SchedulersProvider,
     private val errorThresholdMillis: Long
-) : ViewDriver<SignUpState> {
+) : ViewDriver<SignUpView, SignUpState>(view) {
   private val displayErrorEventsSubject = PublishSubject.create<DisplayErrorEvent>()
 
   private val showPhoneNumberErrorUiEffect: (Set<PhoneNumberCondition>) -> Unit =

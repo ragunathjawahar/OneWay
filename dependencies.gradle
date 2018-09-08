@@ -5,8 +5,14 @@ ext {
       compileSdk: 27,
       targetSdk: 27,
 
+      // Android Stub
+      androidStub: '4.0.1.2',
+
       // Java
       java: JavaVersion.VERSION_1_8,
+
+      // Java Poet
+      javaPoet: '1.11.1',
 
       // Leak Canary
       leakCanary: '1.6.1',
@@ -26,6 +32,7 @@ ext {
       espresso: '3.0.2',
 
       // Test
+      compileTesting: '0.15',
       jUnit: '4.12',
       jUnit5: '5.2.0',
       truth: '0.40', // Not using latest version because of - https://github.com/google/truth/issues/472
@@ -33,7 +40,13 @@ ext {
       mockitoKotlin: '1.6.0'
   ]
 
-  srcDependencies = [
+  deps = [
+      // Android Stub
+      androidStub: "com.google.android:android:${versions.androidStub}",
+
+      // Java Poet
+      javaPoet: "com.squareup:javapoet:${versions.javaPoet}",
+
       // Leak Canary
       leakCanary: "com.squareup.leakcanary:leakcanary-android:${versions.leakCanary}",
       leakCanaryNoOp: "com.squareup.leakcanary:leakcanary-android-no-op:${versions.leakCanary}",
@@ -53,13 +66,14 @@ ext {
       kotlin: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion",
   ]
 
-  testDependencies = [
+  testDeps = [
       // Android Test
       androidTestRunner: "com.android.support.test:runner:${versions.androidTestRunner}",
       espresso: "com.android.support.test.espresso:espresso-core:${versions.espresso}",
       mockitoAndroid: "org.mockito:mockito-android:${versions.mockitoAndroid}",
 
       // Test
+      compileTesting: "com.google.testing.compile:compile-testing:${versions.compileTesting}",
       jUnit: "junit:junit:${versions.jUnit}",
       jUnit5: "org.junit.jupiter:junit-jupiter-api:${versions.jUnit5}",
       jUnit5Params: "org.junit.jupiter:junit-jupiter-params:${versions.jUnit5}",

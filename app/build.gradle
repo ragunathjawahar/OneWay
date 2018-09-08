@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'de.mannodermaus.android-junit5'
 
 android {
@@ -11,7 +12,7 @@ android {
     minSdkVersion    versions.minSdk
     targetSdkVersion versions.targetSdk
     versionCode      1
-    versionName     '1.0'
+    versionName     '0.1'
 
     testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
   }
@@ -45,34 +46,38 @@ androidExtensions {
 dependencies {
   implementation project(':core-android')
 
+  // View Groups
+  implementation project(':annotations')
+  kapt project(":compiler")
+
   // Kotlin
-  implementation srcDependencies.kotlin
+  implementation deps.kotlin
 
   // Leak Canary
-  debugImplementation srcDependencies.leakCanary
-  releaseImplementation srcDependencies.leakCanaryNoOp
+  debugImplementation deps.leakCanary
+  releaseImplementation deps.leakCanaryNoOp
 
   // Rx
-  implementation srcDependencies.rxBindingKotlin
-  implementation srcDependencies.rxJava
-  implementation srcDependencies.rxKotlin
+  implementation deps.rxBindingKotlin
+  implementation deps.rxJava
+  implementation deps.rxKotlin
 
   // Support libraries
-  implementation srcDependencies.appCompat
-  implementation srcDependencies.constraintLayout
-  implementation srcDependencies.design
+  implementation deps.appCompat
+  implementation deps.constraintLayout
+  implementation deps.design
 
   // Test
   testImplementation project(':core-test')
 
-  testImplementation testDependencies.jUnit5
-  testImplementation testDependencies.jUnit5Params
-  testRuntimeOnly testDependencies.jUnit5Runtime
-  testImplementation testDependencies.mockitoKotlin
-  testImplementation testDependencies.truth
+  testImplementation testDeps.jUnit5
+  testImplementation testDeps.jUnit5Params
+  testRuntimeOnly testDeps.jUnit5Runtime
+  testImplementation testDeps.mockitoKotlin
+  testImplementation testDeps.truth
 
   // Android Test
-  androidTestImplementation testDependencies.androidTestRunner
-  androidTestImplementation testDependencies.espresso
-  androidTestImplementation testDependencies.truth
+  androidTestImplementation testDeps.androidTestRunner
+  androidTestImplementation testDeps.espresso
+  androidTestImplementation testDeps.truth
 }

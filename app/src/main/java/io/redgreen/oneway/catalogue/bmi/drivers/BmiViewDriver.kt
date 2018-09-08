@@ -7,7 +7,7 @@ import io.redgreen.oneway.catalogue.bmi.BmiState
 import io.redgreen.oneway.catalogue.bmi.BmiView
 import io.redgreen.oneway.drivers.ViewDriver
 
-class BmiViewDriver(private val view: BmiView) : ViewDriver<BmiState> {
+class BmiViewDriver(private val view: BmiView) : ViewDriver<BmiView, BmiState>(view) {
   override fun render(source: Observable<BmiState>): Disposable {
     val compositeDisposable = CompositeDisposable()
     val connectableStates = source.publish()

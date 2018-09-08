@@ -27,19 +27,19 @@ dependencies {
   api project(':core')
 
   // Kotlin
-  implementation srcDependencies.kotlin
+  implementation deps.kotlin
 
   // Rx
-  implementation srcDependencies.rxJava
+  implementation deps.rxJava
 
   // Support
-  implementation srcDependencies.appCompat
+  implementation deps.appCompat
 
   // Android Test
-  androidTestImplementation testDependencies.androidTestRunner
-  androidTestImplementation testDependencies.espresso
-  androidTestImplementation testDependencies.mockitoAndroid
-  androidTestImplementation testDependencies.truth
+  androidTestImplementation testDeps.androidTestRunner
+  androidTestImplementation testDeps.espresso
+  androidTestImplementation testDeps.mockitoAndroid
+  androidTestImplementation testDeps.truth
 }
 
 // FIXME(rj) 23/Aug/18 - Generating JavaDoc fails in Android Kotlin library. Ignoring doc generation for now.

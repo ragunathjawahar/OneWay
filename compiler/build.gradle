@@ -2,13 +2,15 @@ apply plugin: 'java-library'
 apply plugin: 'kotlin'
 
 dependencies {
-  implementation project(':core')
+  compileOnly deps.androidStub
 
+  implementation project(':annotations')
+
+  implementation deps.javaPoet
   implementation deps.kotlin
-  implementation deps.rxJava
 
+  testImplementation testDeps.compileTesting
   testImplementation testDeps.jUnit5
-  testImplementation testDeps.mockitoKotlin
   testImplementation testDeps.truth
 }
 

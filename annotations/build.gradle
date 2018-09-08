@@ -1,12 +1,7 @@
 apply plugin: 'java-library'
-apply plugin: 'kotlin'
 
 dependencies {
-  implementation deps.kotlin
-  implementation deps.rxJava
-
-  testImplementation testDeps.jUnit
-  testImplementation testDeps.truth
+  compileOnly deps.androidStub
 }
 
 sourceCompatibility = versions.java

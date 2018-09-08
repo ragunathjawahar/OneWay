@@ -6,7 +6,7 @@ import io.redgreen.oneway.catalogue.counter.CounterState
 import io.redgreen.oneway.catalogue.counter.CounterView
 import io.redgreen.oneway.drivers.ViewDriver
 
-class CounterViewDriver(private val view: CounterView) : ViewDriver<CounterState> {
+class CounterViewDriver(private val view: CounterView) : ViewDriver<CounterView, CounterState>(view) {
   override fun render(source: Observable<CounterState>): Disposable =
       source
           .map { it.counter }

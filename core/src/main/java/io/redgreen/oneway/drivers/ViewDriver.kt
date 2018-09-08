@@ -22,9 +22,10 @@ import io.reactivex.disposables.Disposable
  * The [ViewDriver] contains business logic for rendering the state on the
  * view. The driver implementation should not contain mutable state.
  *
- * @param S the state to render.
+ * @param V the view.
+ * @param S state to render.
  */
-interface ViewDriver<S> {
+abstract class ViewDriver<V, S>(private val view: V) {
   /**
    * Updates the view whenever the `source` stream emits a state. View updates
    * can be optimized by filtering state properties and subscribing to those
@@ -36,5 +37,5 @@ interface ViewDriver<S> {
    * @return a [Disposable] for managing the subscription(s). It is also not
    *         unusual to return a [io.reactivex.disposables.CompositeDisposable].
    */
-  fun render(source: Observable<S>): Disposable
+  abstract fun render(source: Observable<S>): Disposable
 }
