@@ -34,7 +34,7 @@ class CounterModelTest {
     val lastKnownState = CounterState(3)
 
     // when
-    mviTestDelegate.startWith(lastKnownState) {
+    mviTestDelegate.setState(lastKnownState) {
       mviTestDelegate.sourceIsDestroyed()
       mviTestDelegate.sourceIsRestored()
     }
@@ -46,7 +46,7 @@ class CounterModelTest {
   @DisplayName("after source is created")
   @Nested inner class AfterSourceIsCreated {
     @BeforeEach fun setup() {
-      mviTestDelegate.startWith(initialState)
+      mviTestDelegate.setState(initialState)
     }
 
     @Test fun `tapping on + increments the counter by +1`() {

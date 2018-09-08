@@ -68,7 +68,7 @@ class MviTestDelegateTest {
     }
 
     // when
-    testDelegate.startWith(startState) { /* this block is intentionally left blank */ }
+    testDelegate.setState(startState) { /* this block is intentionally left blank */ }
 
     // then
     assertValue(timelineTestObserver, startState)
@@ -81,7 +81,7 @@ class MviTestDelegateTest {
     val block = mock<() -> Unit>{}
 
     // when
-    testDelegate.startWith(startState, block)
+    testDelegate.setState(startState, block)
 
     // then
     verify(block, times(1)).invoke()

@@ -37,7 +37,7 @@ class BmiModelTest {
     val lastKnownState = BmiState(70.0, 170.0, SI)
 
     // when
-    testDelegate.startWith(lastKnownState) {
+    testDelegate.setState(lastKnownState) {
       testDelegate.sourceIsDestroyed()
       testDelegate.sourceIsRestored()
     }
@@ -49,7 +49,7 @@ class BmiModelTest {
   @DisplayName("after source is created")
   @Nested inner class AfterSourceIsCreated {
     @BeforeEach fun setup() {
-      testDelegate.startWith(initialState)
+      testDelegate.setState(initialState)
     }
 
     @Test fun `when user changes weight, then update weight`() {

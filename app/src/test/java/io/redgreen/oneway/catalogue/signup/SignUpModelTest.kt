@@ -39,7 +39,7 @@ class SignUpModelTest {
   @Test fun `when the screen is restored, then the last known state is restored`() {
     // given
     val validPhoneNumberState = UNTOUCHED.phoneNumberUnmetConditions(emptySet())
-    testDelegate.startWith(validPhoneNumberState)
+    testDelegate.setState(validPhoneNumberState)
     testDelegate.sourceIsDestroyed()
 
     // when
@@ -54,7 +54,7 @@ class SignUpModelTest {
     val validPhoneNumber = "9876543210"
 
     // when
-    testDelegate.startWith(UNTOUCHED) {
+    testDelegate.setState(UNTOUCHED) {
       typePhoneNumber(validPhoneNumber)
     }
 
@@ -68,7 +68,7 @@ class SignUpModelTest {
     val invalidPhoneNumber = ""
 
     // when
-    testDelegate.startWith(UNTOUCHED) {
+    testDelegate.setState(UNTOUCHED) {
       typePhoneNumber(invalidPhoneNumber)
     }
 
@@ -83,7 +83,7 @@ class SignUpModelTest {
     val validUsername = "spiderman"
 
     // when
-    testDelegate.startWith(UNTOUCHED) {
+    testDelegate.setState(UNTOUCHED) {
       typeUsername(validUsername)
     }
 
@@ -97,7 +97,7 @@ class SignUpModelTest {
     val invalidUsername = " "
 
     // when
-    testDelegate.startWith(UNTOUCHED) {
+    testDelegate.setState(UNTOUCHED) {
       typeUsername(invalidUsername)
     }
 
@@ -113,7 +113,7 @@ class SignUpModelTest {
         .phoneNumberUnmetConditions(setOf(LENGTH))
 
     // when
-    testDelegate.startWith(invalidPhoneNumberState) {
+    testDelegate.setState(invalidPhoneNumberState) {
       displayErrorEventsSubject.onNext(DisplayErrorEvent(PHONE_NUMBER, true))
     }
 
@@ -129,7 +129,7 @@ class SignUpModelTest {
         .phoneNumberUnmetConditions(setOf(LENGTH))
 
     // when
-    testDelegate.startWith(invalidPhoneNumberState) {
+    testDelegate.setState(invalidPhoneNumberState) {
       typePhoneNumber("9876543210")
       displayErrorEventsSubject.onNext(DisplayErrorEvent(PHONE_NUMBER, false))
     }
@@ -152,7 +152,7 @@ class SignUpModelTest {
         .usernameUnmetConditions(setOf(MIN_LENGTH))
 
     // when
-    testDelegate.startWith(invalidUsernameState) {
+    testDelegate.setState(invalidUsernameState) {
       displayErrorEventsSubject.onNext(DisplayErrorEvent(USERNAME, true))
     }
 
@@ -168,7 +168,7 @@ class SignUpModelTest {
         .usernameUnmetConditions(setOf(MIN_LENGTH))
 
     // when
-    testDelegate.startWith(invalidUsernameState) {
+    testDelegate.setState(invalidUsernameState) {
       typeUsername("groot")
       displayErrorEventsSubject.onNext(DisplayErrorEvent(USERNAME, false))
     }
@@ -194,7 +194,7 @@ class SignUpModelTest {
         .phoneNumberDisplayError(true)
 
     // when
-    testDelegate.startWith(UNTOUCHED) {
+    testDelegate.setState(UNTOUCHED) {
       loseFocusPhoneNumber(phoneNumber)
     }
 
@@ -211,7 +211,7 @@ class SignUpModelTest {
         .usernameDisplayError(true)
 
     // when
-    testDelegate.startWith(UNTOUCHED) {
+    testDelegate.setState(UNTOUCHED) {
       loseFocusUsername(username)
     }
 
@@ -227,7 +227,7 @@ class SignUpModelTest {
     val usernameUnmetConditions = validator.validate<UsernameCondition>(username)
 
     // when
-    testDelegate.startWith(UNTOUCHED) {
+    testDelegate.setState(UNTOUCHED) {
       tapSignUp(phoneNumber, username)
     }
 

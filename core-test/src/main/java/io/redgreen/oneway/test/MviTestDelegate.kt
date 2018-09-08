@@ -54,7 +54,7 @@ class MviTestDelegate<S>(
   }
 
   /** Starts with the given [startState] and then executes the following [block]. */
-  fun startWith(startState: S, block: () -> Unit = {}) {
+  fun setState(startState: S, block: () -> Unit = {}) {
     timelineSubject.onNext(startState)
     block()
   }

@@ -32,7 +32,7 @@ class BudapestModelTest {
   @Test fun `restoring the screen restores the last known state`() {
     // when
     val spiderManState = BudapestState("Spider-Man")
-    testDelegate.startWith(spiderManState) {
+    testDelegate.setState(spiderManState) {
       testDelegate.sourceIsRestored()
     }
 
@@ -45,7 +45,7 @@ class BudapestModelTest {
     val name = "Goundamani"
 
     // when
-    testDelegate.startWith(STRANGER) {
+    testDelegate.setState(STRANGER) {
       enterName(name)
     }
 
