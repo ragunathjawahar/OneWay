@@ -38,6 +38,7 @@ class OneWayViewGroupClassTest {
               import android.content.Context;
               import android.os.Bundle;
               import android.os.Parcelable;
+              import android.support.annotation.CallSuper;
               import android.support.annotation.NonNull;
               import android.support.annotation.Nullable;
               import android.support.constraint.ConstraintLayout;
@@ -81,16 +82,18 @@ class OneWayViewGroupClassTest {
 
                 @NonNull
                 @Override
-                public Observable<S> getTimeline() {
+                public final Observable<S> getTimeline() {
                   return androidMviDelegate.getTimeline();
                 }
 
+                @CallSuper
                 @Override
                 protected void onAttachedToWindow() {
                   super.onAttachedToWindow();
                   androidMviDelegate.bind();
                 }
 
+                @CallSuper
                 @Override
                 protected void onDetachedFromWindow() {
                   androidMviDelegate.unbind();
@@ -98,6 +101,7 @@ class OneWayViewGroupClassTest {
                 }
 
                 @Nullable
+                @CallSuper
                 @Override
                 protected Parcelable onSaveInstanceState() {
                   Parcelable viewState = super.onSaveInstanceState();
@@ -107,6 +111,7 @@ class OneWayViewGroupClassTest {
                   return outState;
                 }
 
+                @CallSuper
                 @Override
                 protected void onRestoreInstanceState(Parcelable state) {
                   androidMviDelegate.restoreState((Bundle) state);

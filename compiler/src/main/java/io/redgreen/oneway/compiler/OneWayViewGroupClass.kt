@@ -26,6 +26,7 @@ class OneWayViewGroupClass(
     private const val FQCN_ANDROID_MVI_CONTRACT = "io.redgreen.oneway.android.barebones.AndroidMviContract"
     private const val FQCN_ANDROID_MVI_DELEGATE = "io.redgreen.oneway.android.barebones.AndroidMviDelegate"
     private const val FQCN_ATTRIBUTE_SET = "android.util.AttributeSet"
+    private const val FQCN_CALL_SUPER = "android.support.annotation.CallSuper"
     private const val FQCN_CONTEXT = "android.content.Context"
     private const val FQCN_NO_OP_STATE_CONVERTER = "io.redgreen.oneway.NoOpStateConverter"
     private const val FQCN_NON_NULL = "android.support.annotation.NonNull"
@@ -58,6 +59,10 @@ class OneWayViewGroupClass(
       .builder(ClassName.bestGuess(FQCN_OVERRIDE))
       .build()
 
+  private val callSuperAnnotationSpec = AnnotationSpec
+      .builder(ClassName.bestGuess(FQCN_CALL_SUPER))
+      .build()
+
   private val nonNullAnnotationSpec = AnnotationSpec
       .builder(ClassName.bestGuess(FQCN_NON_NULL))
       .build()
@@ -73,8 +78,8 @@ class OneWayViewGroupClass(
         .addMethod(getStateConverterMethodSpec(stateTypeVariableName))
         .addMethod(getPersisterMethodSpec(stateTypeVariableName))
         .addMethod(getTimelineMethodSpec(stateTypeVariableName))
-        .addMethod(getOnAttachedToWindowMethodSpec(overrideAnnotationSpec))
-        .addMethod(getOnDetachedFromWindowMethodSpec(overrideAnnotationSpec))
+        .addMethod(getOnAttachedToWindowMethodSpec())
+        .addMethod(getOnDetachedFromWindowMethodSpec())
         .addMethod(getOnSaveInstanceStateMethodSpec())
         .addMethod(getOnRestoreInstanceStateMethodSpec())
         .build()
@@ -208,19 +213,18 @@ class OneWayViewGroupClass(
         .returns(observableTypeName)
         .addAnnotation(nonNullAnnotationSpec)
         .addAnnotation(overrideAnnotationSpec)
-        .addModifiers(PUBLIC)
+        .addModifiers(PUBLIC, FINAL)
         .addStatement("return \u0024L.\u0024L()", FIELD_NAME_ANDROID_MVI_DELEGATE, methodName)
         .build()
   }
 
-  private fun getOnAttachedToWindowMethodSpec(
-      overrideAnnotationSpec: AnnotationSpec
-  ): MethodSpec {
+  private fun getOnAttachedToWindowMethodSpec(): MethodSpec {
     val methodName = "onAttachedToWindow"
 
     return MethodSpec
         .methodBuilder(methodName)
         .addModifiers(PROTECTED)
+        .addAnnotation(callSuperAnnotationSpec)
         .addAnnotation(overrideAnnotationSpec)
         .addStatement("super.\u0024L()", methodName)
         .addStatement(
@@ -230,13 +234,12 @@ class OneWayViewGroupClass(
         .build()
   }
 
-  private fun getOnDetachedFromWindowMethodSpec(
-      overrideAnnotationSpec: AnnotationSpec
-  ): MethodSpec {
+  private fun getOnDetachedFromWindowMethodSpec(): MethodSpec {
     val methodName = "onDetachedFromWindow"
     return MethodSpec
         .methodBuilder(methodName)
         .addModifiers(PROTECTED)
+        .addAnnotation(callSuperAnnotationSpec)
         .addAnnotation(overrideAnnotationSpec)
         .addStatement("\u0024L.unbind()", FIELD_NAME_ANDROID_MVI_DELEGATE)
         .addStatement("super.\u0024L()", methodName)
@@ -256,6 +259,7 @@ class OneWayViewGroupClass(
         .addModifiers(PROTECTED)
         .returns(parcelableClassName)
         .addAnnotation(nullableAnnotationSpec)
+        .addAnnotation(callSuperAnnotationSpec)
         .addAnnotation(overrideAnnotationSpec)
         .addStatement("\u0024T \u0024L = super.\u0024L()", parcelableClassName, viewStateVariableName, methodName)
         .addStatement("\u0024T \u0024L = new \u0024T()", bundleClassName, outStateVariableName, bundleClassName)
@@ -273,6 +277,7 @@ class OneWayViewGroupClass(
         .methodBuilder(methodName)
         .addModifiers(PROTECTED)
         .addParameter(parcelableClassName, stateParameterName)
+        .addAnnotation(callSuperAnnotationSpec)
         .addAnnotation(overrideAnnotationSpec)
         .addStatement(
             "\u0024L.restoreState((\u0024T) \u0024L)",
