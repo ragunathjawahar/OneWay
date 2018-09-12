@@ -72,7 +72,8 @@ class BmiCalculatorTest {
           DynamicTest.dynamicTest(displayName) {
             val bmiResult = BmiCalculator.calculate(weight.toDouble(), height.toDouble())
             assertThat(bmiResult.bmi)
-                .isIn(Range.closed(bmi - 0.1, bmi + 0.1))
+                .isWithin(0.1)
+                .of(bmi)
           }
         }
         .toList()
