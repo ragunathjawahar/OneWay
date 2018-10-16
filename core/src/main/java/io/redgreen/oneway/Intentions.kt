@@ -18,11 +18,11 @@ package io.redgreen.oneway
 import io.reactivex.Observable
 
 /**
- * Creates and group intentions. The ideal way to make use of this interface
- * is to have a sealed intention class for the feature and subclass it for
- * each intention.
+ * Groups intentions and exposes them as a stream. The ideal way to
+ * make use of this interface is to have a sealed intention class for
+ * the feature and subclasses (preferably data classes) for each intention.
  */
-interface IntentionsGroup<I> {
+interface Intentions<I> {
   /** Merges and exposes all intentions as an [Observable]. */
-  fun intentions(): Observable<I>
+  fun stream(): Observable<I>
 }

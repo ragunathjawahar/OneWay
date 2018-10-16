@@ -1,13 +1,13 @@
 package io.redgreen.oneway.catalogue.counter
 
 import io.reactivex.Observable
-import io.redgreen.oneway.IntentionsGroup
+import io.redgreen.oneway.Intentions
 
-class CounterIntentionsGroup(
+class CounterIntentions(
     private val incrementClicks: Observable<Unit>,
     private val decrementClicks: Observable<Unit>
-) : IntentionsGroup<CounterIntention> {
-  override fun intentions(): Observable<CounterIntention> =
+) : Intentions<CounterIntention> {
+  override fun stream(): Observable<CounterIntention> =
       Observable.merge(
           increment().share(),
           decrement().share()

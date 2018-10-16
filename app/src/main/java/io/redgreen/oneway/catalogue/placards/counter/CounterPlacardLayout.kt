@@ -7,7 +7,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.redgreen.oneway.SourceEvent
 import io.redgreen.oneway.catalogue.base.widget.OneWayConstraintLayout
-import io.redgreen.oneway.catalogue.counter.CounterIntentionsGroup
+import io.redgreen.oneway.catalogue.counter.CounterIntentions
 import io.redgreen.oneway.catalogue.counter.CounterModel
 import io.redgreen.oneway.catalogue.counter.CounterState
 import io.redgreen.oneway.catalogue.counter.CounterView
@@ -33,8 +33,8 @@ class CounterPlacardLayout :
       defStyleAttr: Int
   ): super(context, attrs, defStyleAttr)
 
-  private val intentionsGroup: CounterIntentionsGroup
-    get() = CounterIntentionsGroup(
+  private val intentions: CounterIntentions
+    get() = CounterIntentions(
         incrementButton.clicks(),
         decrementButton.clicks()
     )
@@ -49,7 +49,7 @@ class CounterPlacardLayout :
       sourceEvents: Observable<SourceEvent>,
       sourceCopy: Observable<CounterState>
   ): Observable<CounterState> =
-      CounterModel.createSource(intentionsGroup.intentions(), sourceEvents, useCases)
+      CounterModel.createSource(intentions.stream(), sourceEvents, useCases)
 
   override fun sink(source: Observable<CounterState>): Disposable =
       viewDriver.render(source)

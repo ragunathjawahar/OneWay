@@ -15,8 +15,8 @@ import io.redgreen.oneway.catalogue.budapest.usecases.BudapestUseCases
 import kotlinx.android.synthetic.main.budapest_fragment.*
 
 class BudapestFragment : OneWayFragment<BudapestState>(), BudapestView {
-  private val intentionsGroup: BudapestIntentionsGroup
-    get() = BudapestIntentionsGroup(
+  private val intentions: BudapestIntentions
+    get() = BudapestIntentions(
         nameEditText.textChanges().skipInitialValue()
     )
 
@@ -37,7 +37,7 @@ class BudapestFragment : OneWayFragment<BudapestState>(), BudapestView {
       sourceEvents: Observable<SourceEvent>,
       sourceCopy: Observable<BudapestState>
   ): Observable<BudapestState> =
-      BudapestModel.createSource(intentionsGroup.intentions(), sourceEvents, useCases)
+      BudapestModel.createSource(intentions.stream(), sourceEvents, useCases)
 
   override fun sink(source: Observable<BudapestState>): Disposable =
       viewDriver.render(source)

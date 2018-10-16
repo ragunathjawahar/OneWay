@@ -26,8 +26,8 @@ class BmiFragment : OneWayFragment<BmiState>(), BmiView {
         resources.getInteger(R.integer.min_height_cm).toDouble()
     )
 
-  private val intentionsGroup
-    get() = BmiIntentionsGroup(
+  private val intentions
+    get() = BmiIntentions(
         weightSeekBar.changes().skipInitialValue(),
         heightSeekBar.changes().skipInitialValue(),
         measurementSystemSwitch.checkedChanges().skipInitialValue(),
@@ -61,7 +61,7 @@ class BmiFragment : OneWayFragment<BmiState>(), BmiView {
       sourceEvents: Observable<SourceEvent>,
       sourceCopy: Observable<BmiState>
   ): Observable<BmiState> =
-    BmiModel.createSource(intentionsGroup.intentions(), sourceEvents, useCases)
+    BmiModel.createSource(intentions.stream(), sourceEvents, useCases)
 
   override fun sink(source: Observable<BmiState>): Disposable =
       viewDriver.render(source)

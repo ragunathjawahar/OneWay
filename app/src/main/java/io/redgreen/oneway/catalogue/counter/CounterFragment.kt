@@ -15,8 +15,8 @@ import io.redgreen.oneway.catalogue.counter.usecases.CounterUseCases
 import kotlinx.android.synthetic.main.counter_fragment.*
 
 class CounterFragment : OneWayFragment<CounterState>(), CounterView {
-  private val intentionsGroup: CounterIntentionsGroup
-    get() = CounterIntentionsGroup(
+  private val intentions: CounterIntentions
+    get() = CounterIntentions(
         incrementButton.clicks(),
         decrementButton.clicks()
     )
@@ -38,7 +38,7 @@ class CounterFragment : OneWayFragment<CounterState>(), CounterView {
       sourceEvents: Observable<SourceEvent>,
       sourceCopy: Observable<CounterState>
   ): Observable<CounterState> =
-      CounterModel.createSource(intentionsGroup.intentions(), sourceEvents, useCases)
+      CounterModel.createSource(intentions.stream(), sourceEvents, useCases)
 
   override fun sink(source: Observable<CounterState>): Disposable =
       viewDriver.render(source)

@@ -68,8 +68,8 @@ class BmiPlacardLayout :
     MeasurementAdapter(context, minHeightInCm, LENGTH, SI)
   }
 
-  private val intentionsGroup
-    get() = BmiIntentionsGroup(
+  private val intentions
+    get() = BmiIntentions(
         weightSpinner.itemSelections().skipInitialValue(),
         heightSpinner.itemSelections().skipInitialValue(),
         measurementSystemSwitch.checkedChanges().skipInitialValue(),
@@ -96,7 +96,7 @@ class BmiPlacardLayout :
       sourceEvents: Observable<SourceEvent>,
       sourceCopy: Observable<BmiState>
   ): Observable<BmiState> =
-      BmiModel.createSource(intentionsGroup.intentions(), sourceEvents, useCases)
+      BmiModel.createSource(intentions.stream(), sourceEvents, useCases)
 
   override fun sink(source: Observable<BmiState>): Disposable =
       viewDriver.render(source)

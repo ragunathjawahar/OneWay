@@ -23,8 +23,8 @@ import kotlinx.android.synthetic.main.sign_up_fragment.*
 import kotlin.LazyThreadSafetyMode.NONE
 
 class SignUpFragment : OneWayFragment<SignUpState>(), SignUpView {
-  private val intentionsGroup: SignUpIntentionsGroup
-    get() = SignUpIntentionsGroup(
+  private val intentions: SignUpIntentions
+    get() = SignUpIntentions(
         this,
         phoneNumberEditText.textChanges().skipInitialValue(),
         phoneNumberEditText.focusChanges().skipInitialValue(),
@@ -68,7 +68,7 @@ class SignUpFragment : OneWayFragment<SignUpState>(), SignUpView {
   ): Observable<SignUpState> {
     return SignUpModel
         .createSource(
-            intentionsGroup.intentions(),
+            intentions.stream(),
             viewDriver.displayErrorEvents(),
             sourceEvents,
             useCases

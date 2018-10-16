@@ -1,12 +1,12 @@
 package io.redgreen.oneway.catalogue.budapest
 
 import io.reactivex.Observable
-import io.redgreen.oneway.IntentionsGroup
+import io.redgreen.oneway.Intentions
 
-class BudapestIntentionsGroup(
+class BudapestIntentions(
     private val nameTextChanges: Observable<CharSequence>
-) : IntentionsGroup<BudapestIntention> {
-  override fun intentions(): Observable<BudapestIntention> =
+) : Intentions<BudapestIntention> {
+  override fun stream(): Observable<BudapestIntention> =
     enterName().share().cast(BudapestIntention::class.java)
 
   private fun enterName(): Observable<EnterNameIntention> =

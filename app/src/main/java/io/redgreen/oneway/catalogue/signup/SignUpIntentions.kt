@@ -1,17 +1,17 @@
 package io.redgreen.oneway.catalogue.signup
 
 import io.reactivex.Observable
-import io.redgreen.oneway.IntentionsGroup
+import io.redgreen.oneway.Intentions
 
-class SignUpIntentionsGroup(
+class SignUpIntentions(
     private val view: SignUpView,
     private val phoneNumberTextChanges: Observable<CharSequence>,
     private val phoneNumberFocusChanges: Observable<Boolean>,
     private val usernameTextChanges: Observable<CharSequence>,
     private val usernameFocusChanges: Observable<Boolean>,
     private val signUpClicks: Observable<Unit>
-) : IntentionsGroup<SignUpIntention> {
-  override fun intentions(): Observable<SignUpIntention> =
+) : Intentions<SignUpIntention> {
+  override fun stream(): Observable<SignUpIntention> =
       Observable.mergeArray(
           enterPhoneNumber().share(),
           loseFocusPhoneNumber().share(),

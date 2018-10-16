@@ -1,17 +1,17 @@
 package io.redgreen.oneway.catalogue.bmi
 
 import io.reactivex.Observable
-import io.redgreen.oneway.IntentionsGroup
+import io.redgreen.oneway.Intentions
 import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem.IMPERIAL
 import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem.SI
 
-class BmiIntentionsGroup(
+class BmiIntentions(
     private val weightChanges: Observable<Int>,
     private val heightChanges: Observable<Int>,
     private val measurementSystemCheckedChanges: Observable<Boolean>,
     private val bmiOffset: BmiOffset
-) : IntentionsGroup<BmiIntention> {
-  override fun intentions(): Observable<BmiIntention> {
+) : Intentions<BmiIntention> {
+  override fun stream(): Observable<BmiIntention> {
     return Observable.merge(
         changeWeight().share(),
         changeHeight().share(),
