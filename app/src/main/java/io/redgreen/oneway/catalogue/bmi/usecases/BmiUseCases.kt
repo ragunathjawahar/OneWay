@@ -7,11 +7,11 @@ import io.redgreen.oneway.usecases.SourceRestoredUseCase
 
 class BmiUseCases(
     initialState: BmiState,
-    val timeline: Observable<BmiState>
+    val sourceCopy: Observable<BmiState>
 ) {
   val sourceCreatedUseCase = SourceCreatedUseCase(initialState)
-  val sourceRestoredUseCase = SourceRestoredUseCase(timeline)
-  val changeWeightUseCase = ChangeWeightUseCase(timeline)
-  val changeHeightUseCase = ChangeHeightUseCase(timeline)
-  val changeMeasurementSystemUseCase = ChangeMeasurementSystemUseCase(timeline)
+  val sourceRestoredUseCase = SourceRestoredUseCase(sourceCopy)
+  val changeWeightUseCase = ChangeWeightUseCase(sourceCopy)
+  val changeHeightUseCase = ChangeHeightUseCase(sourceCopy)
+  val changeMeasurementSystemUseCase = ChangeMeasurementSystemUseCase(sourceCopy)
 }

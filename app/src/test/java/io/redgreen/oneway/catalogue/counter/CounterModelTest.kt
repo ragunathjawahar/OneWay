@@ -13,11 +13,11 @@ class CounterModelTest {
   private val intentions = PublishSubject.create<CounterIntention>()
   private val initialState = ZERO
 
-  private val mviTestDelegate = MviTestDelegate<CounterState> { sourceEvents, timeline ->
+  private val mviTestDelegate = MviTestDelegate<CounterState> { sourceEvents, sourceCopy ->
     CounterModel.createSource(
         intentions,
         sourceEvents,
-        CounterUseCases(initialState, timeline)
+        CounterUseCases(initialState, sourceCopy)
     )
   }
 

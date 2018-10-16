@@ -77,7 +77,7 @@ class OneWayViewGroupClass(
         .addMethods(getConstructors())
         .addMethod(getStateConverterMethodSpec(stateTypeVariableName))
         .addMethod(getPersisterMethodSpec(stateTypeVariableName))
-        .addMethod(getTimelineMethodSpec(stateTypeVariableName))
+        .addMethod(getSourceCopyMethodSpec(stateTypeVariableName))
         .addMethod(getOnAttachedToWindowMethodSpec())
         .addMethod(getOnDetachedFromWindowMethodSpec())
         .addMethod(getOnSaveInstanceStateMethodSpec())
@@ -201,12 +201,12 @@ class OneWayViewGroupClass(
         .build()
   }
 
-  private fun getTimelineMethodSpec(
+  private fun getSourceCopyMethodSpec(
       stateTypeVariableName: TypeVariableName
   ): MethodSpec {
     val observableTypeName = ParameterizedTypeName
         .get(ClassName.bestGuess(FQCN_OBSERVABLE), stateTypeVariableName)
-    val methodName = "getTimeline"
+    val methodName = "getSourceCopy"
 
     return MethodSpec
         .methodBuilder(methodName)

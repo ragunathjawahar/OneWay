@@ -25,7 +25,7 @@ enum class SourceEvent {
 
   /**
    * The source is being restored after it was destroyed, it also denotes
-   * that a saved state is available via the `timeline`.
+   * that a saved state is available via `sourceCopy`.
    */
   RESTORED,
 

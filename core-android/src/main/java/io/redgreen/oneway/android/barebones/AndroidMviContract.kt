@@ -37,7 +37,7 @@ interface AndroidMviContract<S, P> {
    * Provides access to the current state. This property should delegated to
    * the `MviDelegate` provided by the [AndroidMviDelegate].
    */
-  val timeline: Observable<S>
+  val sourceCopy: Observable<S>
 
   /**
    * Converting the state into a representation suitable for persistence.
@@ -47,10 +47,10 @@ interface AndroidMviContract<S, P> {
   /** Used to save and restore the persistable state object. */
   val persister: Persister<P>
 
-  /** Creates a source, provides access to [sourceEvents] and the [timeline]. */
+  /** Creates a source, provides access to [sourceEvents] and the [sourceCopy]. */
   fun source(
       sourceEvents: Observable<SourceEvent>,
-      timeline: Observable<S>
+      sourceCopy: Observable<S>
   ): Observable<S>
 
   /**

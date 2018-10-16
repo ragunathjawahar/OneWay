@@ -40,14 +40,14 @@ class CounterPlacardLayout :
     )
 
   private val useCases: CounterUseCases
-    get() = CounterUseCases(CounterState.ZERO, timeline)
+    get() = CounterUseCases(CounterState.ZERO, sourceCopy)
 
   private val viewDriver: CounterViewDriver
     get() = CounterViewDriver(this)
 
   override fun source(
       sourceEvents: Observable<SourceEvent>,
-      timeline: Observable<CounterState>
+      sourceCopy: Observable<CounterState>
   ): Observable<CounterState> =
       CounterModel.createSource(intentionsGroup.intentions(), sourceEvents, useCases)
 

@@ -16,11 +16,11 @@ import org.junit.jupiter.api.Test
 class BmiModelTest {
   private val initialState = BmiState(48.0, 160.0, SI)
   private val intentions = PublishSubject.create<BmiIntention>()
-  private val testDelegate = MviTestDelegate { sourceEvents: Observable<SourceEvent>, timeline: Observable<BmiState> ->
+  private val testDelegate = MviTestDelegate { sourceEvents: Observable<SourceEvent>, sourceCopy: Observable<BmiState> ->
     BmiModel.createSource(
         intentions,
         sourceEvents,
-        BmiUseCases(initialState, timeline)
+        BmiUseCases(initialState, sourceCopy)
     )
   }
 

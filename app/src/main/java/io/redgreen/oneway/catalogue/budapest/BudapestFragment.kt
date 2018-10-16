@@ -22,7 +22,7 @@ class BudapestFragment : OneWayFragment<BudapestState>(), BudapestView {
     )
 
   private val useCases: BudapestUseCases
-    get() = BudapestUseCases(STRANGER, timeline)
+    get() = BudapestUseCases(STRANGER, sourceCopy)
 
   private val viewDriver: BudapestViewDriver
     get() = BudapestViewDriver(this)
@@ -36,7 +36,7 @@ class BudapestFragment : OneWayFragment<BudapestState>(), BudapestView {
 
   override fun source(
       sourceEvents: Observable<SourceEvent>,
-      timeline: Observable<BudapestState>
+      sourceCopy: Observable<BudapestState>
   ): Observable<BudapestState> =
       BudapestModel.createSource(intentionsGroup.intentions(), sourceEvents, useCases)
 

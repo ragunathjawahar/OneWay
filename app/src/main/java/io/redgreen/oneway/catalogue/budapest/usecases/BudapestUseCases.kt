@@ -7,9 +7,9 @@ import io.redgreen.oneway.usecases.SourceRestoredUseCase
 
 class BudapestUseCases(
     initialState: BudapestState,
-    timeline: Observable<BudapestState>
+    sourceCopy: Observable<BudapestState>
 ) {
   val sourceCreatedUseCase = SourceCreatedUseCase(initialState)
-  val sourceRestoredUseCase = SourceRestoredUseCase(timeline)
+  val sourceRestoredUseCase = SourceRestoredUseCase(sourceCopy)
   val enterNameUseCase = EnterNameUseCase()
 }

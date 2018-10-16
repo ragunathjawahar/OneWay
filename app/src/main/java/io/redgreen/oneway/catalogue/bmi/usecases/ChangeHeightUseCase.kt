@@ -8,11 +8,11 @@ import io.redgreen.oneway.catalogue.bmi.BmiState
 import io.redgreen.oneway.catalogue.bmi.ChangeHeightIntention
 
 class ChangeHeightUseCase(
-    private val timeline: Observable<BmiState>
+    private val sourceCopy: Observable<BmiState>
 ) : ObservableTransformer<ChangeHeightIntention, BmiState> {
   override fun apply(changeHeightIntentions: Observable<ChangeHeightIntention>): ObservableSource<BmiState> {
     return changeHeightIntentions
-        .withLatestFrom(timeline) { changeHeightIntention, bmiState ->
+        .withLatestFrom(sourceCopy) { changeHeightIntention, bmiState ->
           bmiState.updateHeight(changeHeightIntention.heightInCm)
         }
   }

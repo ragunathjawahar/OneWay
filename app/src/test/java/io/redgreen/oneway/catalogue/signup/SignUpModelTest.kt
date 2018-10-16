@@ -19,12 +19,12 @@ class SignUpModelTest {
   private val displayErrorEventsSubject = PublishSubject.create<DisplayErrorEvent>()
   private val validator = Validator()
 
-  private val testDelegate = MviTestDelegate<SignUpState> { sourceEvents, timeline ->
+  private val testDelegate = MviTestDelegate<SignUpState> { sourceEvents, sourceCopy ->
     SignUpModel.createSource(
         intentionsSubject,
         displayErrorEventsSubject,
         sourceEvents,
-        SignUpUseCases(UNTOUCHED, timeline, validator)
+        SignUpUseCases(UNTOUCHED, sourceCopy, validator)
     )
   }
 

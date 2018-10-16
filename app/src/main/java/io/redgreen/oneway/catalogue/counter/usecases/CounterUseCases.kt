@@ -7,10 +7,10 @@ import io.redgreen.oneway.usecases.SourceRestoredUseCase
 
 class CounterUseCases(
     initialState: CounterState,
-    timeline: Observable<CounterState>
+    sourceCopy: Observable<CounterState>
 ) {
   val sourceCreatedUseCase = SourceCreatedUseCase(initialState)
-  val sourceRestoredUseCase = SourceRestoredUseCase(timeline)
-  val incrementUseCase = AddDeltaUseCase(timeline, +1)
-  val decrementUseCase = AddDeltaUseCase(timeline, -1)
+  val sourceRestoredUseCase = SourceRestoredUseCase(sourceCopy)
+  val incrementUseCase = AddDeltaUseCase(sourceCopy, +1)
+  val decrementUseCase = AddDeltaUseCase(sourceCopy, -1)
 }

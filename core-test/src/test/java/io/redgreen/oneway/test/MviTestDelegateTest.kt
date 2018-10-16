@@ -59,11 +59,11 @@ class MviTestDelegateTest {
   @Test fun `it can setup a start state`() {
     // given
     val startState = SomeState("Start")
-    val timelineTestObserver = TestObserver<SomeState>()
-    var timelineDisposable: Disposable? = null
+    val sourceCopyTestObserver = TestObserver<SomeState>()
+    var sourceCopyDisposable: Disposable? = null
 
-    val testDelegate = MviTestDelegate { _: Observable<SourceEvent>, timeline: Observable<SomeState> ->
-      timelineDisposable = timeline.subscribeWith(timelineTestObserver)
+    val testDelegate = MviTestDelegate { _: Observable<SourceEvent>, sourceCopy: Observable<SomeState> ->
+      sourceCopyDisposable = sourceCopy.subscribeWith(sourceCopyTestObserver)
       return@MviTestDelegate Observable.never()
     }
 
@@ -71,8 +71,8 @@ class MviTestDelegateTest {
     testDelegate.setState(startState) { /* this block is intentionally left blank */ }
 
     // then
-    assertValue(timelineTestObserver, startState)
-    timelineDisposable?.dispose()
+    assertValue(sourceCopyTestObserver, startState)
+    sourceCopyDisposable?.dispose()
   }
 
   @Test fun `it can invoke a block after setting up a start state`() {
@@ -171,7 +171,7 @@ class MviTestDelegateTest {
   @Test fun `it has access to the last known state after the source is restored`() {
     // given
     val oneState = SomeState("ONE")
-    val sourceFunction = { sourceEvents: Observable<SourceEvent>, timeline: Observable<SomeState> ->
+    val sourceFunction = { sourceEvents: Observable<SourceEvent>, sourceCopy: Observable<SomeState> ->
       val sourceCreatedUseCaseStates = sourceEvents
           .filter { it == CREATED }
           .map { oneState }
@@ -179,7 +179,7 @@ class MviTestDelegateTest {
       val combiner = BiFunction<SourceEvent, SomeState, SomeState> { _, state -> state }
       val sourceRestoredUseCaseStates = sourceEvents
           .filter { it == RESTORED }
-          .withLatestFrom(timeline, combiner)
+          .withLatestFrom(sourceCopy, combiner)
 
       Observable.merge(sourceCreatedUseCaseStates, sourceRestoredUseCaseStates)
     }

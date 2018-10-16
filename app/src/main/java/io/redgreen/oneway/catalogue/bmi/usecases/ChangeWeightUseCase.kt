@@ -8,11 +8,11 @@ import io.redgreen.oneway.catalogue.bmi.BmiState
 import io.redgreen.oneway.catalogue.bmi.ChangeWeightIntention
 
 class ChangeWeightUseCase(
-    val timeline: Observable<BmiState>
+    val sourceCopy: Observable<BmiState>
 ) : ObservableTransformer<ChangeWeightIntention, BmiState> {
   override fun apply(changeWeightIntentions: Observable<ChangeWeightIntention>): ObservableSource<BmiState> {
     return changeWeightIntentions
-        .withLatestFrom(timeline) { changeWeightIntention: ChangeWeightIntention, state ->
+        .withLatestFrom(sourceCopy) { changeWeightIntention: ChangeWeightIntention, state ->
           state.updateWeight(changeWeightIntention.weightInKg)
         }
   }

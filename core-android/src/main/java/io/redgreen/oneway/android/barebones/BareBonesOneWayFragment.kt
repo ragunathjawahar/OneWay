@@ -34,8 +34,8 @@ abstract class BareBonesOneWayFragment<S, P> :
     AndroidMviDelegate(this)
   }
 
-  override val timeline: Observable<S>
-    get() = androidMviDelegate.timeline
+  override val sourceCopy: Observable<S>
+    get() = androidMviDelegate.sourceCopy
 
   @CallSuper override fun onStart() {
     super.onStart()

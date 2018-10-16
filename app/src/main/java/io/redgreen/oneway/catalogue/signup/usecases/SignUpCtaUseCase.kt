@@ -11,14 +11,14 @@ import io.redgreen.oneway.catalogue.signup.form.UsernameCondition
 import io.redgreen.oneway.catalogue.signup.form.Validator
 
 class SignUpCtaUseCase(
-    private val timeline: Observable<SignUpState>,
+    private val sourceCopy: Observable<SignUpState>,
     private val validator: Validator
 ) : ObservableTransformer<SignUpCtaIntention, SignUpState> {
   override fun apply(
       signUpCtaIntentions: Observable<SignUpCtaIntention>
   ): ObservableSource<SignUpState> {
     return signUpCtaIntentions
-        .withLatestFrom(timeline) { signUpCtaIntention, state ->
+        .withLatestFrom(sourceCopy) { signUpCtaIntention, state ->
           val usernameUnmetConditions = validator.validate<UsernameCondition>(signUpCtaIntention.username)
           val phoneNumberUnmetConditions = validator.validate<PhoneNumberCondition>(signUpCtaIntention.phoneNumber)
           state

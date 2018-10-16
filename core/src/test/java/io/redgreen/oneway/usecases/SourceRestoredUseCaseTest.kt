@@ -7,14 +7,14 @@ import org.junit.Test
 
 class SourceRestoredUseCaseTest {
   private val sourceEventsSubject = PublishSubject.create<SourceEvent>()
-  private val timeline = PublishSubject.create<String>()
-  private val sourceRestoredUseCase = SourceRestoredUseCase(timeline)
+  private val sourceCopy = PublishSubject.create<String>()
+  private val sourceRestoredUseCase = SourceRestoredUseCase(sourceCopy)
   private val testObserver = sourceEventsSubject.compose(sourceRestoredUseCase).test()
 
   @Test fun `it emits the last known state for RESTORED`() {
     // given
     val lastKnownCat = "Schrodinger's Cat"
-    timeline.onNext(lastKnownCat)
+    sourceCopy.onNext(lastKnownCat)
 
     // when
     sourceEventsSubject.onNext(RESTORED)

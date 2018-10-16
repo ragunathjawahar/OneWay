@@ -11,11 +11,11 @@ import org.junit.jupiter.api.Test
 class BudapestModelTest {
   private val intentions = PublishSubject.create<BudapestIntention>()
 
-  private val sourceFunction = { sourceEvents: Observable<SourceEvent>, timeline: Observable<BudapestState> ->
+  private val sourceFunction = { sourceEvents: Observable<SourceEvent>, sourceCopy: Observable<BudapestState> ->
     BudapestModel.createSource(
         intentions,
         sourceEvents,
-        BudapestUseCases(STRANGER, timeline)
+        BudapestUseCases(STRANGER, sourceCopy)
     )
   }
 

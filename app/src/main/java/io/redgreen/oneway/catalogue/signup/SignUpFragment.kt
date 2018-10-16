@@ -40,7 +40,7 @@ class SignUpFragment : OneWayFragment<SignUpState>(), SignUpView {
   private val useCases: SignUpUseCases
     get() = SignUpUseCases(
         SignUpState.UNTOUCHED,
-        timeline,
+        sourceCopy,
         validator
     )
 
@@ -65,7 +65,7 @@ class SignUpFragment : OneWayFragment<SignUpState>(), SignUpView {
 
   override fun source(
       sourceEvents: Observable<SourceEvent>,
-      timeline: Observable<SignUpState>
+      sourceCopy: Observable<SignUpState>
   ): Observable<SignUpState> {
     return SignUpModel
         .createSource(

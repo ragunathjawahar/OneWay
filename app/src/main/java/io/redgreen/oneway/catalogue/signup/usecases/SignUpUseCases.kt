@@ -8,12 +8,12 @@ import io.redgreen.oneway.usecases.SourceRestoredUseCase
 
 class SignUpUseCases(
     initialState: SignUpState,
-    timeline: Observable<SignUpState>,
+    sourceCopy: Observable<SignUpState>,
     validator: Validator
 ) {
   val sourceCreatedUseCase = SourceCreatedUseCase(initialState)
-  val sourceRestoredUseCase = SourceRestoredUseCase(timeline)
-  val validateInputUseCase = ValidateInputUseCase(timeline, validator)
-  val displayErrorEventsUseCase = DisplayErrorEventsUseCase(timeline)
-  val signUpCtaUseCase = SignUpCtaUseCase(timeline, validator)
+  val sourceRestoredUseCase = SourceRestoredUseCase(sourceCopy)
+  val validateInputUseCase = ValidateInputUseCase(sourceCopy, validator)
+  val displayErrorEventsUseCase = DisplayErrorEventsUseCase(sourceCopy)
+  val signUpCtaUseCase = SignUpCtaUseCase(sourceCopy, validator)
 }

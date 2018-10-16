@@ -82,8 +82,8 @@ class OneWayViewGroupClassTest {
 
                 @NonNull
                 @Override
-                public final Observable<S> getTimeline() {
-                  return androidMviDelegate.getTimeline();
+                public final Observable<S> getSourceCopy() {
+                  return androidMviDelegate.getSourceCopy();
                 }
 
                 @CallSuper

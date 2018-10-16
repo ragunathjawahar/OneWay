@@ -34,8 +34,8 @@ abstract class BareBonesOneWayActivity<S, P> :
     AndroidMviDelegate(this)
   }
 
-  override val timeline: Observable<S>
-    get() = androidMviDelegate.timeline
+  override val sourceCopy: Observable<S>
+    get() = androidMviDelegate.sourceCopy
 
   @CallSuper override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

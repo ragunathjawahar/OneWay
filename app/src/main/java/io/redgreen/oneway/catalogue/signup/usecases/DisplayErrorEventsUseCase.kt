@@ -10,13 +10,13 @@ import io.redgreen.oneway.catalogue.signup.form.WhichField.PHONE_NUMBER
 import io.redgreen.oneway.catalogue.signup.form.WhichField.USERNAME
 
 class DisplayErrorEventsUseCase(
-    private val timeline: Observable<SignUpState>
+    private val sourceCopy: Observable<SignUpState>
 ) : ObservableTransformer<DisplayErrorEvent, SignUpState> {
   override fun apply(
       displayErrorEvents: Observable<DisplayErrorEvent>
   ): ObservableSource<SignUpState> {
     return displayErrorEvents
-        .withLatestFrom(timeline) { errorEvent, state ->
+        .withLatestFrom(sourceCopy) { errorEvent, state ->
           when (errorEvent.whichField) {
             PHONE_NUMBER -> state.phoneNumberDisplayError(errorEvent.display)
             USERNAME -> state.usernameDisplayError(errorEvent.display)

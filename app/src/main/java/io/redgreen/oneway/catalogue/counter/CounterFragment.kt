@@ -23,7 +23,7 @@ class CounterFragment : OneWayFragment<CounterState>(), CounterView {
     )
 
   private val useCases: CounterUseCases
-    get() = CounterUseCases(ZERO, timeline)
+    get() = CounterUseCases(ZERO, sourceCopy)
 
   private val viewDriver: CounterViewDriver
     get() = CounterViewDriver(this)
@@ -37,7 +37,7 @@ class CounterFragment : OneWayFragment<CounterState>(), CounterView {
 
   override fun source(
       sourceEvents: Observable<SourceEvent>,
-      timeline: Observable<CounterState>
+      sourceCopy: Observable<CounterState>
   ): Observable<CounterState> =
       CounterModel.createSource(intentionsGroup.intentions(), sourceEvents, useCases)
 

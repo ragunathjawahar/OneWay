@@ -14,7 +14,7 @@ class MviDelegateTest {
   private val source = object : Source<String> {
     override fun produce(
         sourceEvents: Observable<SourceEvent>,
-        timeline: Observable<String>
+        sourceCopy: Observable<String>
     ): Observable<String> =
         publisher
   }
@@ -43,7 +43,7 @@ class MviDelegateTest {
     val source = object : Source<String> {
       override fun produce(
           sourceEvents: Observable<SourceEvent>,
-          timeline: Observable<String>
+          sourceCopy: Observable<String>
       ): Observable<String> =
           Observable.merge(Observable.just(theValue), Observable.never())
     }
@@ -90,18 +90,18 @@ class MviDelegateTest {
     }
   }
 
-  @Test fun `it has a timeline that provides access to the latest state`() {
+  @Test fun `it has a sourceCopy that provides access to the latest state`() {
     // given
-    val timelineTestObserver = TestObserver<String>()
+    val sourceCopyTestObserver = TestObserver<String>()
     val events = arrayOf("ஒன்று", "இரண்டு", "மூன்று")
 
     // when
-    mviDelegate.timeline.subscribe(timelineTestObserver)
+    mviDelegate.sourceCopy.subscribe(sourceCopyTestObserver)
     mviDelegate.bind(source, sink)
     events.forEach { publisher.onNext(it) }
 
     // then
-    with(timelineTestObserver) {
+    with(sourceCopyTestObserver) {
       assertNoErrors()
       assertValues(*events)
       assertNotTerminated()
@@ -147,15 +147,15 @@ class MviDelegateTest {
     // given
     val arrow = "Arrow"
     val persistentState = arrow.toByteArray()
-    val timelineTestObserver = TestObserver<String>()
-    mviDelegate.timeline.subscribe(timelineTestObserver)
+    val sourceCopyTestObserver = TestObserver<String>()
+    mviDelegate.sourceCopy.subscribe(sourceCopyTestObserver)
 
     // when
     mviDelegate.putState(persistentState)
     val currentState = mviDelegate.getState()
 
     // then
-    with(timelineTestObserver) {
+    with(sourceCopyTestObserver) {
       assertNoErrors()
       assertValue(arrow)
       assertNotTerminated()

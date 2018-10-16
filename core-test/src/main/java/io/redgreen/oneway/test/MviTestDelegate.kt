@@ -11,7 +11,7 @@ import io.redgreen.oneway.SourceEvent.*
 /**
  * A test rule that makes isolated testing MVI models more enjoyable.
  *
- * @param sourceFunction provides `sourceEvents` and `timeline` for the
+ * @param sourceFunction provides `sourceEvents` and `sourceCopy` for the
  *                       model to create a source.
  */
 class MviTestDelegate<S>(
@@ -20,8 +20,8 @@ class MviTestDelegate<S>(
   private val sourceEventsSubject = PublishSubject.create<SourceEvent>()
   private val sourceEvents: Observable<SourceEvent> = sourceEventsSubject.hide()
 
-  private val timelineSubject = BehaviorSubject.create<S>()
-  private val timeline: Observable<S> = timelineSubject.hide()
+  private val sourceCopySubject = BehaviorSubject.create<S>()
+  private val sourceCopy: Observable<S> = sourceCopySubject.hide()
 
   private lateinit var internalTestObserver: TestObserver<S>
 
@@ -55,7 +55,7 @@ class MviTestDelegate<S>(
 
   /** Starts with the given [startState] and then executes the following [block]. */
   fun setState(startState: S, block: () -> Unit = {}) {
-    timelineSubject.onNext(startState)
+    sourceCopySubject.onNext(startState)
     block()
   }
 
@@ -76,9 +76,9 @@ class MviTestDelegate<S>(
     }
 
     internalTestObserver = TestObserver()
-    val sharedStates = sourceFunction(sourceEvents, timeline).share()
+    val sharedStates = sourceFunction(sourceEvents, sourceCopy).share()
     compositeDisposable.addAll(
-        sharedStates.subscribe { timelineSubject.onNext(it) },
+        sharedStates.subscribe { sourceCopySubject.onNext(it) },
         sharedStates.subscribeWith(internalTestObserver)
     )
   }

@@ -29,7 +29,7 @@ import kotlin.LazyThreadSafetyMode.NONE
 class MviDelegate<S, P>(private val stateConverter: StateConverter<S, P>) {
   private val compositeDisposable = CompositeDisposable()
   private val sourceEventsSubject = PublishSubject.create<SourceEvent>()
-  private val timelineSubject = BehaviorSubject.create<S>()
+  private val sourceCopySubject = BehaviorSubject.create<S>()
 
   /** The lifecycle stream. */
   val sourceEvents: Observable<SourceEvent> by lazy(NONE) {
@@ -41,8 +41,8 @@ class MviDelegate<S, P>(private val stateConverter: StateConverter<S, P>) {
    * should not be used as a primary stream from within the model. Using it as a primary
    * stream may cause an infinite loop within the system.
    */
-  val timeline: Observable<S> by lazy(NONE) {
-    timelineSubject.hide().share()
+  val sourceCopy: Observable<S> by lazy(NONE) {
+    sourceCopySubject.hide().share()
   }
 
   /**
@@ -51,13 +51,13 @@ class MviDelegate<S, P>(private val stateConverter: StateConverter<S, P>) {
    * [SourceEvent.RESTORED] event depending upon the state of the system.
    */
   fun bind(source: Source<S>, sink: Sink<S>) {
-    val sharedStates = source.produce(sourceEvents, timeline).publish()
+    val sharedStates = source.produce(sourceEvents, sourceCopy).publish()
     compositeDisposable.addAll(
         sink.consume(sharedStates),
-        sharedStates.subscribe { timelineSubject.onNext(it) },
+        sharedStates.subscribe { sourceCopySubject.onNext(it) },
         sharedStates.connect()
     )
-    val sourceEvent = if (timelineSubject.value == null) CREATED else RESTORED
+    val sourceEvent = if (sourceCopySubject.value == null) CREATED else RESTORED
     sourceEventsSubject.onNext(sourceEvent)
   }
 
@@ -77,16 +77,16 @@ class MviDelegate<S, P>(private val stateConverter: StateConverter<S, P>) {
    * subscription between the [Source] and the [Sink] has been disposed.
    */
   fun getState(): P? {
-    val state = timelineSubject.value
+    val state = sourceCopySubject.value
     return state?.let { stateConverter.to(state) }
   }
 
   /**
-   * Puts a state into the [timeline]. This function is usually called before
+   * Puts a state into the [sourceCopy]. This function is usually called before
    * re-establishing the subscription between the [Source] and the [Sink] after an
    * [unbind].
    */
   fun putState(persistentState: P?) {
-    persistentState?.let { timelineSubject.onNext(stateConverter.from(it)) }
+    persistentState?.let { sourceCopySubject.onNext(stateConverter.from(it)) }
   }
 }

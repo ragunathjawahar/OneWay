@@ -44,7 +44,7 @@ class BmiFragment : OneWayFragment<BmiState>(), BmiView {
   private val useCases
     get() = BmiUseCases(
         initialState,
-        timeline
+        sourceCopy
     )
 
   private val viewDriver
@@ -59,7 +59,7 @@ class BmiFragment : OneWayFragment<BmiState>(), BmiView {
 
   override fun source(
       sourceEvents: Observable<SourceEvent>,
-      timeline: Observable<BmiState>
+      sourceCopy: Observable<BmiState>
   ): Observable<BmiState> =
     BmiModel.createSource(intentionsGroup.intentions(), sourceEvents, useCases)
 

@@ -86,7 +86,7 @@ class BmiPlacardLayout :
   private val useCases
     get() = BmiUseCases(
         initialState,
-        timeline
+        sourceCopy
     )
 
   private val viewDriver
@@ -94,7 +94,7 @@ class BmiPlacardLayout :
 
   override fun source(
       sourceEvents: Observable<SourceEvent>,
-      timeline: Observable<BmiState>
+      sourceCopy: Observable<BmiState>
   ): Observable<BmiState> =
       BmiModel.createSource(intentionsGroup.intentions(), sourceEvents, useCases)
 

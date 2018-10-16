@@ -22,7 +22,7 @@ class AndroidMviDelegateTest {
   private val spiedPersister = spy(ByteArrayPersister())
 
   private val androidMviContract = object : AndroidMviContract<String, ByteArray> {
-    override val timeline: Observable<String>
+    override val sourceCopy: Observable<String>
       get() = PublishSubject.create() // Unused in tests, hence using a dummy.
 
     override val stateConverter: StateConverter<String, ByteArray>
@@ -33,7 +33,7 @@ class AndroidMviDelegateTest {
 
     override fun source(
         sourceEvents: Observable<SourceEvent>,
-        timeline: Observable<String>
+        sourceCopy: Observable<String>
     ): Observable<String> =
         sourceSubject.hide()
 

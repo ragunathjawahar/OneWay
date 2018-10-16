@@ -31,11 +31,11 @@ class AndroidMviDelegate<S, P>(
       MviDelegate(androidMviContract.stateConverter)
 
   /**
-   * Grants access to the latest state. Use cases should not use the
-   * `timeline` stream as a primary stream.
+   * Mirror of the source stream. Using this as a primary stream
+   * will cause an infinite loop (yeah, it's a very bad idea).
    */
-  val timeline: Observable<S> =
-      mviDelegate.timeline
+  val sourceCopy: Observable<S> =
+      mviDelegate.sourceCopy
 
   /** Sets up the subscription between the source and the sink. */
   fun bind() {
@@ -65,9 +65,9 @@ class AndroidMviDelegate<S, P>(
     return object : Source<S> {
       override fun produce(
           sourceEvents: Observable<SourceEvent>,
-          timeline: Observable<S>
+          sourceCopy: Observable<S>
       ): Observable<S> =
-          androidMviContract.source(sourceEvents, timeline)
+          androidMviContract.source(sourceEvents, sourceCopy)
     }
   }
 

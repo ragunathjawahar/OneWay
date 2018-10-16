@@ -13,7 +13,7 @@ import io.redgreen.oneway.catalogue.signup.form.WhichField.PHONE_NUMBER
 import io.redgreen.oneway.catalogue.signup.form.WhichField.USERNAME
 
 class ValidateInputUseCase(
-    private val timeline: Observable<SignUpState>,
+    private val sourceCopy: Observable<SignUpState>,
     private val validator: Validator
 ) : ObservableTransformer<SignUpIntention, SignUpState> {
   override fun apply(
@@ -68,7 +68,7 @@ class ValidateInputUseCase(
     return enterInputIntentions
         .filter { it.first == field }
         .map { validator.validate<T>(it.second) }
-        .withLatestFrom(timeline) { unmetConditions, state ->
+        .withLatestFrom(sourceCopy) { unmetConditions, state ->
           stateReducer(state, unmetConditions)
         }
   }

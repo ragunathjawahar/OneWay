@@ -7,10 +7,10 @@ import io.reactivex.rxkotlin.withLatestFrom
 import io.redgreen.oneway.catalogue.counter.CounterState
 
 class AddDeltaUseCase(
-    private val timeline: Observable<CounterState>,
+    private val sourceCopy: Observable<CounterState>,
     private val delta: Int
 ) : ObservableTransformer<Unit, CounterState> {
   override fun apply(deltaEvents: Observable<Unit>): ObservableSource<CounterState> =
       deltaEvents
-          .withLatestFrom(timeline) { _, state -> state.add(delta) }
+          .withLatestFrom(sourceCopy) { _, state -> state.add(delta) }
 }

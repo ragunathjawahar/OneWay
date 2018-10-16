@@ -22,16 +22,16 @@ import io.redgreen.oneway.SourceEvent
 import io.redgreen.oneway.SourceEvent.RESTORED
 
 /**
- * Convenience class that emits the last known state from the `timeline` when
+ * Convenience class that emits the last known state from the `sourceCopy` when
  * it receives a [SourceEvent.RESTORED] event.
  */
 class SourceRestoredUseCase<S>(
-    private val timeline: Observable<S>
+    private val sourceCopy: Observable<S>
 ) : ObservableTransformer<SourceEvent, S> {
   override fun apply(sourceEvents: Observable<SourceEvent>): Observable<S> {
     val selectStateFunction = BiFunction<SourceEvent, S, S> { _, state -> state }
     return sourceEvents
         .filter { it == RESTORED }
-        .withLatestFrom(timeline, selectStateFunction)
+        .withLatestFrom(sourceCopy, selectStateFunction)
   }
 }
