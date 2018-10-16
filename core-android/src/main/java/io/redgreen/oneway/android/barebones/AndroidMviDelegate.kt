@@ -21,7 +21,7 @@ import io.reactivex.disposables.Disposable
 import io.redgreen.oneway.MviDelegate
 import io.redgreen.oneway.Sink
 import io.redgreen.oneway.Source
-import io.redgreen.oneway.SourceEvent
+import io.redgreen.oneway.SourceLifecycleEvent
 
 /** A [MviDelegate] implementation for the Android platform. */
 class AndroidMviDelegate<S, P>(
@@ -64,10 +64,10 @@ class AndroidMviDelegate<S, P>(
   private fun createSource(): Source<S> {
     return object : Source<S> {
       override fun produce(
-          sourceEvents: Observable<SourceEvent>,
+          sourceLifecycleEvents: Observable<SourceLifecycleEvent>,
           sourceCopy: Observable<S>
       ): Observable<S> =
-          androidMviContract.source(sourceEvents, sourceCopy)
+          androidMviContract.source(sourceLifecycleEvents, sourceCopy)
     }
   }
 

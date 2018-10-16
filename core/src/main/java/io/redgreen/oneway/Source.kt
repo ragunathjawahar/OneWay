@@ -22,14 +22,14 @@ interface Source<S> {
   /**
    * Produces a state stream that is handed over to a [Sink], the consumer.
    *
-   * @param sourceEvents a stream of lifecycle events.
+   * @param sourceLifecycleEvents a stream of lifecycle events.
    * @param sourceCopy a mirror of the source stream itself, use this to
    *                   gain access to the current state.
    *
    * @return a state stream.
    */
   fun produce(
-      sourceEvents: Observable<SourceEvent>,
+      sourceLifecycleEvents: Observable<SourceLifecycleEvent>,
       sourceCopy: Observable<S>
   ): Observable<S>
 }

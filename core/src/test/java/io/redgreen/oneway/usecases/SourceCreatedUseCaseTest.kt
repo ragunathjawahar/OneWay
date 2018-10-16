@@ -1,19 +1,20 @@
 package io.redgreen.oneway.usecases
 
 import io.reactivex.subjects.PublishSubject
-import io.redgreen.oneway.SourceEvent
-import io.redgreen.oneway.SourceEvent.*
+import io.redgreen.oneway.SourceLifecycleEvent
+import io.redgreen.oneway.SourceLifecycleEvent.CREATED
+import io.redgreen.oneway.SourceLifecycleEvent.RESTORED
 import org.junit.Test
 
 class SourceCreatedUseCaseTest {
-  private val sourceEventsSubject = PublishSubject.create<SourceEvent>()
+  private val sourceLifecycleEventsSubject = PublishSubject.create<SourceLifecycleEvent>()
   private val initialState = "Idli & Chutney"
   private val sourceCreatedUseCase = SourceCreatedUseCase(initialState)
-  private val testObserver = sourceEventsSubject.compose(sourceCreatedUseCase).test()
+  private val testObserver = sourceLifecycleEventsSubject.compose(sourceCreatedUseCase).test()
 
   @Test fun `it emits the initial state for CREATED`() {
     // when
-    sourceEventsSubject.onNext(CREATED)
+    sourceLifecycleEventsSubject.onNext(CREATED)
 
     // then
     with(testObserver) {
@@ -24,7 +25,7 @@ class SourceCreatedUseCaseTest {
 
   @Test fun `it does not emit an state for RESTORED`() {
     // when
-    sourceEventsSubject.onNext(RESTORED)
+    sourceLifecycleEventsSubject.onNext(RESTORED)
 
     // then
     with(testObserver) {

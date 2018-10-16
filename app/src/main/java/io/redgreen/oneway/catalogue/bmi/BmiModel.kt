@@ -1,13 +1,13 @@
 package io.redgreen.oneway.catalogue.bmi
 
 import io.reactivex.Observable
-import io.redgreen.oneway.SourceEvent
+import io.redgreen.oneway.SourceLifecycleEvent
 import io.redgreen.oneway.catalogue.bmi.usecases.BmiUseCases
 
 object BmiModel {
   fun createSource(
       intentions: Observable<BmiIntention>,
-      sourceEvents: Observable<SourceEvent>,
+      sourceLifecycleEvents: Observable<SourceLifecycleEvent>,
       useCases: BmiUseCases
   ): Observable<BmiState> {
     val changeWeightIntentions = intentions
@@ -18,8 +18,8 @@ object BmiModel {
         .ofType(ChangeMeasurementSystemIntention::class.java)
 
     return Observable.mergeArray(
-        sourceEvents.compose(useCases.sourceCreatedUseCase),
-        sourceEvents.compose(useCases.sourceRestoredUseCase),
+        sourceLifecycleEvents.compose(useCases.sourceCreatedUseCase),
+        sourceLifecycleEvents.compose(useCases.sourceRestoredUseCase),
         changeWeightIntentions.compose(useCases.changeWeightUseCase),
         changeHeightIntentions.compose(useCases.changeHeightUseCase),
         changeMeasurementIntentions.compose(useCases.changeMeasurementSystemUseCase)

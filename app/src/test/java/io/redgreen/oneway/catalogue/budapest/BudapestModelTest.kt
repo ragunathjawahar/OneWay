@@ -2,7 +2,7 @@ package io.redgreen.oneway.catalogue.budapest
 
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import io.redgreen.oneway.SourceEvent
+import io.redgreen.oneway.SourceLifecycleEvent
 import io.redgreen.oneway.catalogue.budapest.BudapestState.Companion.STRANGER
 import io.redgreen.oneway.catalogue.budapest.usecases.BudapestUseCases
 import io.redgreen.oneway.test.MviTestHelper
@@ -12,11 +12,11 @@ class BudapestModelTest {
   private val intentions = PublishSubject.create<BudapestIntention>()
 
   private val testHelper = MviTestHelper {
-    sourceEvents: Observable<SourceEvent>, sourceCopy: Observable<BudapestState> ->
+    sourceLifecycleEvents: Observable<SourceLifecycleEvent>, sourceCopy: Observable<BudapestState> ->
 
     BudapestModel.createSource(
         intentions,
-        sourceEvents,
+        sourceLifecycleEvents,
         BudapestUseCases(sourceCopy)
     )
   }

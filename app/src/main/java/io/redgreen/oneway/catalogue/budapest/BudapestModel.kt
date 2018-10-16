@@ -1,7 +1,7 @@
 package io.redgreen.oneway.catalogue.budapest
 
 import io.reactivex.Observable
-import io.redgreen.oneway.SourceEvent
+import io.redgreen.oneway.SourceLifecycleEvent
 import io.redgreen.oneway.catalogue.budapest.usecases.BudapestUseCases
 
 /**
@@ -11,12 +11,12 @@ import io.redgreen.oneway.catalogue.budapest.usecases.BudapestUseCases
 object BudapestModel {
   fun createSource(
       intentions: Observable<BudapestIntention>,
-      sourceEvents: Observable<SourceEvent>,
+      sourceLifecycleEvents: Observable<SourceLifecycleEvent>,
       useCases: BudapestUseCases
   ): Observable<BudapestState> {
     return Observable.merge(
-        sourceEvents.compose(useCases.sourceCreatedUseCase),
-        sourceEvents.compose(useCases.sourceRestoredUseCase),
+        sourceLifecycleEvents.compose(useCases.sourceCreatedUseCase),
+        sourceLifecycleEvents.compose(useCases.sourceRestoredUseCase),
         intentions.ofType(EnterNameIntention::class.java).compose(useCases.enterNameUseCase)
     )
   }

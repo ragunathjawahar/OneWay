@@ -2,7 +2,7 @@ package io.redgreen.oneway.catalogue.bmi
 
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import io.redgreen.oneway.SourceEvent
+import io.redgreen.oneway.SourceLifecycleEvent
 import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem
 import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem.IMPERIAL
 import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem.SI
@@ -16,10 +16,10 @@ import org.junit.jupiter.api.Test
 class BmiModelTest {
   private val initialState = BmiState(48.0, 160.0, SI)
   private val intentions = PublishSubject.create<BmiIntention>()
-  private val testHelper = MviTestHelper { sourceEvents: Observable<SourceEvent>, sourceCopy: Observable<BmiState> ->
+  private val testHelper = MviTestHelper { sourceLifecycleEvents: Observable<SourceLifecycleEvent>, sourceCopy: Observable<BmiState> ->
     BmiModel.createSource(
         intentions,
-        sourceEvents,
+        sourceLifecycleEvents,
         BmiUseCases(initialState, sourceCopy)
     )
   }

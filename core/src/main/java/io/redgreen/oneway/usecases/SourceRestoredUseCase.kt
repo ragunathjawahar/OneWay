@@ -18,19 +18,19 @@ package io.redgreen.oneway.usecases
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import io.reactivex.functions.BiFunction
-import io.redgreen.oneway.SourceEvent
-import io.redgreen.oneway.SourceEvent.RESTORED
+import io.redgreen.oneway.SourceLifecycleEvent
+import io.redgreen.oneway.SourceLifecycleEvent.RESTORED
 
 /**
  * Convenience class that emits the last known state from the `sourceCopy` when
- * it receives a [SourceEvent.RESTORED] event.
+ * it receives a [SourceLifecycleEvent.RESTORED] event.
  */
 class SourceRestoredUseCase<S>(
     private val sourceCopy: Observable<S>
-) : ObservableTransformer<SourceEvent, S> {
-  override fun apply(sourceEvents: Observable<SourceEvent>): Observable<S> {
-    val selectStateFunction = BiFunction<SourceEvent, S, S> { _, state -> state }
-    return sourceEvents
+) : ObservableTransformer<SourceLifecycleEvent, S> {
+  override fun apply(sourceLifecycleEvents: Observable<SourceLifecycleEvent>): Observable<S> {
+    val selectStateFunction = BiFunction<SourceLifecycleEvent, S, S> { _, state -> state }
+    return sourceLifecycleEvents
         .filter { it == RESTORED }
         .withLatestFrom(sourceCopy, selectStateFunction)
   }

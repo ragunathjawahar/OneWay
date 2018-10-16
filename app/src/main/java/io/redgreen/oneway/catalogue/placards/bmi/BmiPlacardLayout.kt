@@ -8,7 +8,7 @@ import com.jakewharton.rxbinding2.widget.checkedChanges
 import com.jakewharton.rxbinding2.widget.itemSelections
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
-import io.redgreen.oneway.SourceEvent
+import io.redgreen.oneway.SourceLifecycleEvent
 import io.redgreen.oneway.catalogue.R
 import io.redgreen.oneway.catalogue.base.widget.OneWayConstraintLayout
 import io.redgreen.oneway.catalogue.bmi.*
@@ -93,10 +93,10 @@ class BmiPlacardLayout :
     get() = BmiViewDriver(this)
 
   override fun source(
-      sourceEvents: Observable<SourceEvent>,
+      sourceLifecycleEvents: Observable<SourceLifecycleEvent>,
       sourceCopy: Observable<BmiState>
   ): Observable<BmiState> =
-      BmiModel.createSource(intentions.stream(), sourceEvents, useCases)
+      BmiModel.createSource(intentions.stream(), sourceLifecycleEvents, useCases)
 
   override fun sink(source: Observable<BmiState>): Disposable =
       viewDriver.render(source)

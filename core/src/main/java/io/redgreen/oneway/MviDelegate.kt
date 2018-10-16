@@ -19,7 +19,8 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import io.redgreen.oneway.SourceEvent.*
+import io.redgreen.oneway.SourceLifecycleEvent.CREATED
+import io.redgreen.oneway.SourceLifecycleEvent.RESTORED
 import kotlin.LazyThreadSafetyMode.NONE
 
 /**
@@ -28,12 +29,12 @@ import kotlin.LazyThreadSafetyMode.NONE
  */
 class MviDelegate<S, P>(private val stateConverter: StateConverter<S, P>) {
   private val compositeDisposable = CompositeDisposable()
-  private val sourceEventsSubject = PublishSubject.create<SourceEvent>()
+  private val sourceLifecycleEventsSubject = PublishSubject.create<SourceLifecycleEvent>()
   private val sourceCopySubject = BehaviorSubject.create<S>()
 
   /** The lifecycle stream. */
-  val sourceEvents: Observable<SourceEvent> by lazy(NONE) {
-    sourceEventsSubject.hide()
+  val sourceLifecycleEvents: Observable<SourceLifecycleEvent> by lazy(NONE) {
+    sourceLifecycleEventsSubject.hide()
   }
 
   /**
@@ -47,18 +48,18 @@ class MviDelegate<S, P>(private val stateConverter: StateConverter<S, P>) {
 
   /**
    * Creates a subscription between the [Source] and the [Sink]. After the subscription
-   * has been established, it also dispatches either a [SourceEvent.CREATED] or a
-   * [SourceEvent.RESTORED] event depending upon the state of the system.
+   * has been established, it also dispatches either a [SourceLifecycleEvent.CREATED] or a
+   * [SourceLifecycleEvent.RESTORED] event depending upon the state of the system.
    */
   fun bind(source: Source<S>, sink: Sink<S>) {
-    val sharedStates = source.produce(sourceEvents, sourceCopy).publish()
+    val sharedStates = source.produce(sourceLifecycleEvents, sourceCopy).publish()
     compositeDisposable.addAll(
         sink.consume(sharedStates),
         sharedStates.subscribe { sourceCopySubject.onNext(it) },
         sharedStates.connect()
     )
     val sourceEvent = if (sourceCopySubject.value == null) CREATED else RESTORED
-    sourceEventsSubject.onNext(sourceEvent)
+    sourceLifecycleEventsSubject.onNext(sourceEvent)
   }
 
   /**

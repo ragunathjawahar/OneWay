@@ -5,20 +5,21 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import io.redgreen.oneway.SourceEvent
-import io.redgreen.oneway.SourceEvent.*
+import io.redgreen.oneway.SourceLifecycleEvent
+import io.redgreen.oneway.SourceLifecycleEvent.CREATED
+import io.redgreen.oneway.SourceLifecycleEvent.RESTORED
 
 /**
  * A test rule that makes isolated testing MVI models more enjoyable.
  *
- * @param sourceFunction provides `sourceEvents` and `sourceCopy` for the
+ * @param sourceFunction provides `sourceLifecycleEvents` and `sourceCopy` for the
  *                       model to create a source.
  */
 class MviTestHelper<S>(
-    private val sourceFunction: (Observable<SourceEvent>, Observable<S>) -> Observable<S>
+    private val sourceFunction: (Observable<SourceLifecycleEvent>, Observable<S>) -> Observable<S>
 ) {
-  private val sourceEventsSubject = PublishSubject.create<SourceEvent>()
-  private val sourceEvents: Observable<SourceEvent> = sourceEventsSubject.hide()
+  private val sourceLifecycleEventsSubject = PublishSubject.create<SourceLifecycleEvent>()
+  private val sourceLifecycleEvents: Observable<SourceLifecycleEvent> = sourceLifecycleEventsSubject.hide()
 
   private val sourceCopySubject = BehaviorSubject.create<S>()
   private val sourceCopy: Observable<S> = sourceCopySubject.hide()
@@ -35,10 +36,10 @@ class MviTestHelper<S>(
     createSource(sourceFunction)
   }
 
-  /** Simulates the [SourceEvent.CREATED] event. */
+  /** Simulates the [SourceLifecycleEvent.CREATED] event. */
   fun sourceIsCreated() {
     createSource(sourceFunction)
-    sourceEventsSubject.onNext(CREATED)
+    sourceLifecycleEventsSubject.onNext(CREATED)
   }
 
   /** Destroys the source by disposing underlying subscriptions. */
@@ -46,10 +47,10 @@ class MviTestHelper<S>(
     compositeDisposable.clear()
   }
 
-  /** Simulates the [SourceEvent.RESTORED] event. */
+  /** Simulates the [SourceLifecycleEvent.RESTORED] event. */
   fun sourceIsRestored() {
     createSource(sourceFunction)
-    sourceEventsSubject.onNext(RESTORED)
+    sourceLifecycleEventsSubject.onNext(RESTORED)
   }
 
   /** Starts with the given [startState] and then executes the following [block]. */
@@ -67,7 +68,7 @@ class MviTestHelper<S>(
     }
   }
 
-  private fun createSource(sourceFunction: (Observable<SourceEvent>, Observable<S>) -> Observable<S>) {
+  private fun createSource(sourceFunction: (Observable<SourceLifecycleEvent>, Observable<S>) -> Observable<S>) {
     val subscriptionExists = ::internalTestObserver.isInitialized
         && !internalTestObserver.isDisposed
     if (subscriptionExists) {
@@ -75,7 +76,7 @@ class MviTestHelper<S>(
     }
 
     internalTestObserver = TestObserver()
-    val sharedStates = sourceFunction(sourceEvents, sourceCopy).share()
+    val sharedStates = sourceFunction(sourceLifecycleEvents, sourceCopy).share()
     compositeDisposable.addAll(
         sharedStates.subscribe { sourceCopySubject.onNext(it) },
         sharedStates.subscribeWith(internalTestObserver)

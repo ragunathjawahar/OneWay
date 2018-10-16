@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.jakewharton.rxbinding2.widget.textChanges
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
-import io.redgreen.oneway.SourceEvent
+import io.redgreen.oneway.SourceLifecycleEvent
 import io.redgreen.oneway.android.OneWayFragment
 import io.redgreen.oneway.catalogue.R
 import io.redgreen.oneway.catalogue.budapest.drivers.BudapestViewDriver
@@ -34,10 +34,10 @@ class BudapestFragment : OneWayFragment<BudapestState>(), BudapestView {
       inflater.inflate(R.layout.budapest_fragment, container, false)
 
   override fun source(
-      sourceEvents: Observable<SourceEvent>,
+      sourceLifecycleEvents: Observable<SourceLifecycleEvent>,
       sourceCopy: Observable<BudapestState>
   ): Observable<BudapestState> =
-      BudapestModel.createSource(intentions.stream(), sourceEvents, useCases)
+      BudapestModel.createSource(intentions.stream(), sourceLifecycleEvents, useCases)
 
   override fun sink(source: Observable<BudapestState>): Disposable =
       viewDriver.render(source)

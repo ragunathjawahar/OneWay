@@ -18,18 +18,18 @@ package io.redgreen.oneway.usecases
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
 import io.reactivex.ObservableTransformer
-import io.redgreen.oneway.SourceEvent
-import io.redgreen.oneway.SourceEvent.CREATED
+import io.redgreen.oneway.SourceLifecycleEvent
+import io.redgreen.oneway.SourceLifecycleEvent.CREATED
 
 /**
  * Convenience class that emits an initial state when it receives a
- * [SourceEvent.CREATED] event.
+ * [SourceLifecycleEvent.CREATED] event.
  */
 class SourceCreatedUseCase<S>(
     private val initialState: S
-) : ObservableTransformer<SourceEvent, S> {
-  override fun apply(sourceEvents: Observable<SourceEvent>): ObservableSource<S> {
-    return sourceEvents
+) : ObservableTransformer<SourceLifecycleEvent, S> {
+  override fun apply(sourceLifecycleEvents: Observable<SourceLifecycleEvent>): ObservableSource<S> {
+    return sourceLifecycleEvents
         .filter { it == CREATED }
         .map { initialState }
   }

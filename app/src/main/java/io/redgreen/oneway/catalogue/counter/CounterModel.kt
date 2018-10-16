@@ -1,13 +1,13 @@
 package io.redgreen.oneway.catalogue.counter
 
 import io.reactivex.Observable
-import io.redgreen.oneway.SourceEvent
+import io.redgreen.oneway.SourceLifecycleEvent
 import io.redgreen.oneway.catalogue.counter.usecases.CounterUseCases
 
 object CounterModel {
   fun createSource(
       intentions: Observable<CounterIntention>,
-      sourceEvents: Observable<SourceEvent>,
+      sourceLifecycleEvents: Observable<SourceLifecycleEvent>,
       useCases: CounterUseCases
   ): Observable<CounterState> {
     val incrementIntentions = intentions
@@ -19,8 +19,8 @@ object CounterModel {
         .map { Unit }
 
     return Observable.merge(
-        sourceEvents.compose(useCases.sourceCreatedUseCase),
-        sourceEvents.compose(useCases.sourceRestoredUseCase),
+        sourceLifecycleEvents.compose(useCases.sourceCreatedUseCase),
+        sourceLifecycleEvents.compose(useCases.sourceRestoredUseCase),
         incrementIntentions.compose(useCases.incrementUseCase),
         decrementIntentions.compose(useCases.decrementUseCase)
     )

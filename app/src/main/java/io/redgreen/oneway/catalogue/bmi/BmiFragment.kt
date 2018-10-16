@@ -8,7 +8,7 @@ import com.jakewharton.rxbinding2.widget.changes
 import com.jakewharton.rxbinding2.widget.checkedChanges
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
-import io.redgreen.oneway.SourceEvent
+import io.redgreen.oneway.SourceLifecycleEvent
 import io.redgreen.oneway.android.OneWayFragment
 import io.redgreen.oneway.catalogue.R
 import io.redgreen.oneway.catalogue.bmi.calculator.BmiCategory
@@ -58,10 +58,10 @@ class BmiFragment : OneWayFragment<BmiState>(), BmiView {
       inflater.inflate(R.layout.bmi_fragment, container, false)
 
   override fun source(
-      sourceEvents: Observable<SourceEvent>,
+      sourceLifecycleEvents: Observable<SourceLifecycleEvent>,
       sourceCopy: Observable<BmiState>
   ): Observable<BmiState> =
-    BmiModel.createSource(intentions.stream(), sourceEvents, useCases)
+    BmiModel.createSource(intentions.stream(), sourceLifecycleEvents, useCases)
 
   override fun sink(source: Observable<BmiState>): Disposable =
       viewDriver.render(source)

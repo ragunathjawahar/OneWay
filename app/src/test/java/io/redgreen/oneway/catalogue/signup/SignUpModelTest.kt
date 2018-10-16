@@ -19,11 +19,11 @@ class SignUpModelTest {
   private val displayErrorEventsSubject = PublishSubject.create<DisplayErrorEvent>()
   private val validator = Validator()
 
-  private val testHelper = MviTestHelper<SignUpState> { sourceEvents, sourceCopy ->
+  private val testHelper = MviTestHelper<SignUpState> { sourceLifecycleEvents, sourceCopy ->
     SignUpModel.createSource(
         intentionsSubject,
         displayErrorEventsSubject,
-        sourceEvents,
+        sourceLifecycleEvents,
         SignUpUseCases(sourceCopy, validator)
     )
   }

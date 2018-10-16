@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
-import io.redgreen.oneway.SourceEvent
+import io.redgreen.oneway.SourceLifecycleEvent
 import io.redgreen.oneway.catalogue.base.widget.OneWayConstraintLayout
 import io.redgreen.oneway.catalogue.counter.CounterIntentions
 import io.redgreen.oneway.catalogue.counter.CounterModel
@@ -46,10 +46,10 @@ class CounterPlacardLayout :
     get() = CounterViewDriver(this)
 
   override fun source(
-      sourceEvents: Observable<SourceEvent>,
+      sourceLifecycleEvents: Observable<SourceLifecycleEvent>,
       sourceCopy: Observable<CounterState>
   ): Observable<CounterState> =
-      CounterModel.createSource(intentions.stream(), sourceEvents, useCases)
+      CounterModel.createSource(intentions.stream(), sourceLifecycleEvents, useCases)
 
   override fun sink(source: Observable<CounterState>): Disposable =
       viewDriver.render(source)

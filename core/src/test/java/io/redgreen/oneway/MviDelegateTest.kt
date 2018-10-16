@@ -5,8 +5,8 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
-import io.redgreen.oneway.SourceEvent.CREATED
-import io.redgreen.oneway.SourceEvent.RESTORED
+import io.redgreen.oneway.SourceLifecycleEvent.CREATED
+import io.redgreen.oneway.SourceLifecycleEvent.RESTORED
 import org.junit.Test
 
 class MviDelegateTest {
@@ -14,14 +14,14 @@ class MviDelegateTest {
 
   private val source = object : Source<String> {
     override fun produce(
-        sourceEvents: Observable<SourceEvent>,
+        sourceLifecycleEvents: Observable<SourceLifecycleEvent>,
         sourceCopy: Observable<String>
     ): Observable<String> =
         publisher
   }
 
   private val testObserver = TestObserver<String>()
-  private val sourceEventsTestObserver = TestObserver<SourceEvent>()
+  private val sourceLifecycleEventsTestObserver = TestObserver<SourceLifecycleEvent>()
 
   private val sink = object : Sink<String> {
     override fun consume(source: Observable<String>): Disposable =
@@ -43,7 +43,7 @@ class MviDelegateTest {
     val theValue = "One Way!"
     val source = object : Source<String> {
       override fun produce(
-          sourceEvents: Observable<SourceEvent>,
+          sourceLifecycleEvents: Observable<SourceLifecycleEvent>,
           sourceCopy: Observable<String>
       ): Observable<String> =
           Observable.merge(Observable.just(theValue), Observable.never())
@@ -61,17 +61,17 @@ class MviDelegateTest {
 
   @Test fun `it signals a CREATED source event when the subscription happens for the first time`() {
     // when
-    mviDelegate.sourceEvents.subscribe(sourceEventsTestObserver)
+    mviDelegate.sourceLifecycleEvents.subscribe(sourceLifecycleEventsTestObserver)
     mviDelegate.bind(source, sink)
 
     // then
-    with(sourceEventsTestObserver) {
+    with(sourceLifecycleEventsTestObserver) {
       assertNoErrors()
       assertValue(CREATED)
       assertNotTerminated()
     }
 
-    assertThat(sourceEventsTestObserver.hasSubscription())
+    assertThat(sourceLifecycleEventsTestObserver.hasSubscription())
         .isTrue()
   }
 
@@ -153,14 +153,14 @@ class MviDelegateTest {
   @Test fun `it signals a RESTORED source event when state is restored`() {
     // given
     val persistentState = "Arrow".toByteArray()
-    mviDelegate.sourceEvents.subscribe(sourceEventsTestObserver)
+    mviDelegate.sourceLifecycleEvents.subscribe(sourceLifecycleEventsTestObserver)
 
     // when
     mviDelegate.putState(persistentState)
     mviDelegate.bind(source, sink)
 
     // then
-    with(sourceEventsTestObserver) {
+    with(sourceLifecycleEventsTestObserver) {
       assertNoErrors()
       assertValue(RESTORED)
       assertNotTerminated()
@@ -169,7 +169,7 @@ class MviDelegateTest {
 
   @Test fun `it signals a CREATED source event if the restored state is null`() {
     // given
-    mviDelegate.sourceEvents.subscribe(sourceEventsTestObserver)
+    mviDelegate.sourceLifecycleEvents.subscribe(sourceLifecycleEventsTestObserver)
 
     // when
     mviDelegate.bind(source, sink)
@@ -178,7 +178,7 @@ class MviDelegateTest {
     mviDelegate.bind(source, sink)
 
     // then
-    with(sourceEventsTestObserver) {
+    with(sourceLifecycleEventsTestObserver) {
       assertNoErrors()
       assertValues(CREATED, CREATED)
       assertNotTerminated()
@@ -221,13 +221,13 @@ class MviDelegateTest {
 
   @Test fun `it does not blow up if unbind is called before bind`() {
     // given
-    mviDelegate.sourceEvents.subscribe(sourceEventsTestObserver)
+    mviDelegate.sourceLifecycleEvents.subscribe(sourceLifecycleEventsTestObserver)
 
     // when
     mviDelegate.unbind()
 
     // then
-    with(sourceEventsTestObserver) {
+    with(sourceLifecycleEventsTestObserver) {
       assertNoErrors()
       assertNoValues()
       assertNotTerminated()

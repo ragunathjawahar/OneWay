@@ -6,27 +6,27 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.observers.TestObserver
-import io.redgreen.oneway.SourceEvent
-import io.redgreen.oneway.SourceEvent.CREATED
-import io.redgreen.oneway.SourceEvent.RESTORED
+import io.redgreen.oneway.SourceLifecycleEvent
+import io.redgreen.oneway.SourceLifecycleEvent.CREATED
+import io.redgreen.oneway.SourceLifecycleEvent.RESTORED
 import org.junit.jupiter.api.*
 
 class MviTestHelperTest {
   @DisplayName("when source")
-  @Nested inner class SourceEventTest {
+  @Nested inner class SourceLifecycleEventTest {
     private lateinit var testHelper: MviTestHelper<SomeState>
-    private val sourceEventsTestObserver = TestObserver<SourceEvent>()
-    private lateinit var sourceEventsDisposable: Disposable
+    private val sourceLifecycleEventsTestObserver = TestObserver<SourceLifecycleEvent>()
+    private lateinit var sourceLifecycleEventsDisposable: Disposable
 
     @BeforeEach fun setUp() {
-      testHelper = MviTestHelper { sourceEvents: Observable<SourceEvent>, _: Observable<SomeState> ->
-        sourceEventsDisposable = sourceEvents.subscribeWith(sourceEventsTestObserver)
+      testHelper = MviTestHelper { sourceLifecycleEvents: Observable<SourceLifecycleEvent>, _: Observable<SomeState> ->
+        sourceLifecycleEventsDisposable = sourceLifecycleEvents.subscribeWith(sourceLifecycleEventsTestObserver)
         return@MviTestHelper Observable.never()
       }
     }
 
     @AfterEach fun tearDown() {
-      sourceEventsDisposable.dispose()
+      sourceLifecycleEventsDisposable.dispose()
       testHelper.sourceIsDestroyed()
     }
 
@@ -35,7 +35,7 @@ class MviTestHelperTest {
       testHelper.sourceIsCreated()
 
       // then
-      assertValue(sourceEventsTestObserver, CREATED)
+      assertValue(sourceLifecycleEventsTestObserver, CREATED)
     }
 
     @Test fun `is restored then emit RESTORED`() {
@@ -43,7 +43,7 @@ class MviTestHelperTest {
       testHelper.sourceIsRestored()
 
       // then
-      assertValue(sourceEventsTestObserver, RESTORED)
+      assertValue(sourceLifecycleEventsTestObserver, RESTORED)
     }
   }
 
@@ -55,7 +55,7 @@ class MviTestHelperTest {
     val sourceCopyTestObserver = TestObserver<SomeState>()
     var sourceCopyDisposable: Disposable? = null
 
-    val testHelper = MviTestHelper { _: Observable<SourceEvent>, sourceCopy: Observable<SomeState> ->
+    val testHelper = MviTestHelper { _: Observable<SourceLifecycleEvent>, sourceCopy: Observable<SomeState> ->
       sourceCopyDisposable = sourceCopy.subscribeWith(sourceCopyTestObserver)
       return@MviTestHelper Observable.never()
     }
@@ -82,7 +82,7 @@ class MviTestHelperTest {
 
   @Test fun `it can invoke a source function to setup subscription`() {
     // given
-    val sourceFunction = mock<(Observable<SourceEvent>, Observable<SomeState>) -> Observable<SomeState>>()
+    val sourceFunction = mock<(Observable<SourceLifecycleEvent>, Observable<SomeState>) -> Observable<SomeState>>()
     whenever(sourceFunction(any(), any()))
         .thenReturn(Observable.never())
 
@@ -107,8 +107,8 @@ class MviTestHelperTest {
     // given
     val stateA = SomeState("A")
     val stateB = SomeState("B")
-    val sourceFunction = { sourceEvents: Observable<SourceEvent>, _: Observable<SomeState> ->
-      sourceEvents.flatMap { Observable.just(stateA, stateB) }
+    val sourceFunction = { sourceLifecycleEvents: Observable<SourceLifecycleEvent>, _: Observable<SomeState> ->
+      sourceLifecycleEvents.flatMap { Observable.just(stateA, stateB) }
     }
     val mviTestDelegate = MviTestHelper(sourceFunction)
 
@@ -164,13 +164,13 @@ class MviTestHelperTest {
   @Test fun `it has access to the last known state after the source is restored`() {
     // given
     val oneState = SomeState("ONE")
-    val sourceFunction = { sourceEvents: Observable<SourceEvent>, sourceCopy: Observable<SomeState> ->
-      val sourceCreatedUseCaseStates = sourceEvents
+    val sourceFunction = { sourceLifecycleEvents: Observable<SourceLifecycleEvent>, sourceCopy: Observable<SomeState> ->
+      val sourceCreatedUseCaseStates = sourceLifecycleEvents
           .filter { it == CREATED }
           .map { oneState }
 
-      val combiner = BiFunction<SourceEvent, SomeState, SomeState> { _, state -> state }
-      val sourceRestoredUseCaseStates = sourceEvents
+      val combiner = BiFunction<SourceLifecycleEvent, SomeState, SomeState> { _, state -> state }
+      val sourceRestoredUseCaseStates = sourceLifecycleEvents
           .filter { it == RESTORED }
           .withLatestFrom(sourceCopy, combiner)
 
@@ -194,10 +194,10 @@ class MviTestHelperTest {
   }
 
   private fun <T> assertValue(
-      sourceEventsTestObserver: TestObserver<T>,
+      sourceLifecycleEventsTestObserver: TestObserver<T>,
       sourceEvent: T
   ) {
-    with(sourceEventsTestObserver) {
+    with(sourceLifecycleEventsTestObserver) {
       assertNoErrors()
       assertValues(sourceEvent)
       assertNotTerminated()

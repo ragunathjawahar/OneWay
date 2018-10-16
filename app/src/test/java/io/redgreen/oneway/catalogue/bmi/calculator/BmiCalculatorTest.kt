@@ -1,6 +1,5 @@
 package io.redgreen.oneway.catalogue.bmi.calculator
 
-import com.google.common.collect.Range
 import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DynamicTest

@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
-import io.redgreen.oneway.SourceEvent
+import io.redgreen.oneway.SourceLifecycleEvent
 import io.redgreen.oneway.android.OneWayFragment
 import io.redgreen.oneway.catalogue.R
 import io.redgreen.oneway.catalogue.counter.drivers.CounterViewDriver
@@ -35,10 +35,10 @@ class CounterFragment : OneWayFragment<CounterState>(), CounterView {
       inflater.inflate(R.layout.counter_fragment, container, false)
 
   override fun source(
-      sourceEvents: Observable<SourceEvent>,
+      sourceLifecycleEvents: Observable<SourceLifecycleEvent>,
       sourceCopy: Observable<CounterState>
   ): Observable<CounterState> =
-      CounterModel.createSource(intentions.stream(), sourceEvents, useCases)
+      CounterModel.createSource(intentions.stream(), sourceLifecycleEvents, useCases)
 
   override fun sink(source: Observable<CounterState>): Disposable =
       viewDriver.render(source)

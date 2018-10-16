@@ -16,7 +16,7 @@
 package io.redgreen.oneway
 
 /** Represents the various lifecycle events of the state source. */
-enum class SourceEvent {
+enum class SourceLifecycleEvent {
   /**
    * The source has been created for the first time, it also denotes that
    * a previous state does not exist.

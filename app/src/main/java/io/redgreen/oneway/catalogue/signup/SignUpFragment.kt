@@ -9,7 +9,7 @@ import com.jakewharton.rxbinding2.view.focusChanges
 import com.jakewharton.rxbinding2.widget.textChanges
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
-import io.redgreen.oneway.SourceEvent
+import io.redgreen.oneway.SourceLifecycleEvent
 import io.redgreen.oneway.android.OneWayFragment
 import io.redgreen.oneway.catalogue.R
 import io.redgreen.oneway.catalogue.base.DefaultSchedulersProvider
@@ -63,14 +63,14 @@ class SignUpFragment : OneWayFragment<SignUpState>(), SignUpView {
   }
 
   override fun source(
-      sourceEvents: Observable<SourceEvent>,
+      sourceLifecycleEvents: Observable<SourceLifecycleEvent>,
       sourceCopy: Observable<SignUpState>
   ): Observable<SignUpState> {
     return SignUpModel
         .createSource(
             intentions.stream(),
             viewDriver.displayErrorEvents(),
-            sourceEvents,
+            sourceLifecycleEvents,
             useCases
         )
   }

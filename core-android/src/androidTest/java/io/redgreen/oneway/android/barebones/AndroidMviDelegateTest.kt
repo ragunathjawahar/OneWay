@@ -6,7 +6,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
-import io.redgreen.oneway.SourceEvent
+import io.redgreen.oneway.SourceLifecycleEvent
 import io.redgreen.oneway.StateConverter
 import io.redgreen.oneway.android.fixtures.ByteArrayPersister
 import io.redgreen.oneway.android.fixtures.ByteArrayStateConverter
@@ -32,7 +32,7 @@ class AndroidMviDelegateTest {
       get() = spiedPersister
 
     override fun source(
-        sourceEvents: Observable<SourceEvent>,
+        sourceLifecycleEvents: Observable<SourceLifecycleEvent>,
         sourceCopy: Observable<String>
     ): Observable<String> =
         sourceSubject.hide()

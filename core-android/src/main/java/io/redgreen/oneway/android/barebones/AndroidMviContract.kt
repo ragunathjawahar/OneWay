@@ -17,7 +17,7 @@ package io.redgreen.oneway.android.barebones
 
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
-import io.redgreen.oneway.SourceEvent
+import io.redgreen.oneway.SourceLifecycleEvent
 import io.redgreen.oneway.StateConverter
 
 /**
@@ -47,9 +47,9 @@ interface AndroidMviContract<S, P> {
   /** Used to save and restore the persistable state object. */
   val persister: Persister<P>
 
-  /** Creates a source, provides access to [sourceEvents] and the [sourceCopy]. */
+  /** Creates a source, provides access to [sourceLifecycleEvents] and the [sourceCopy]. */
   fun source(
-      sourceEvents: Observable<SourceEvent>,
+      sourceLifecycleEvents: Observable<SourceLifecycleEvent>,
       sourceCopy: Observable<S>
   ): Observable<S>
 
