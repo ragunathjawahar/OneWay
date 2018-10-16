@@ -22,9 +22,8 @@ class SourceCreatedUseCaseTest {
     }
   }
 
-  @Test fun `it does nothing for DESTROYED and RESTORED`() {
+  @Test fun `it does not emit an state for RESTORED`() {
     // when
-    sourceEventsSubject.onNext(DESTROYED)
     sourceEventsSubject.onNext(RESTORED)
 
     // then

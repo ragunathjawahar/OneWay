@@ -5,7 +5,8 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
-import io.redgreen.oneway.SourceEvent.*
+import io.redgreen.oneway.SourceEvent.CREATED
+import io.redgreen.oneway.SourceEvent.RESTORED
 import org.junit.Test
 
 class MviDelegateTest {
@@ -72,22 +73,6 @@ class MviDelegateTest {
 
     assertThat(sourceEventsTestObserver.hasSubscription())
         .isTrue()
-  }
-
-  @Test fun `it signals a DESTROYED source event on unbind`() {
-    // given
-    mviDelegate.sourceEvents.subscribe(sourceEventsTestObserver)
-
-    // when
-    mviDelegate.bind(source, sink)
-    mviDelegate.unbind()
-
-    // then
-    with(sourceEventsTestObserver) {
-      assertNoErrors()
-      assertValues(CREATED, DESTROYED)
-      assertNotTerminated()
-    }
   }
 
   @Test fun `it has a sourceCopy that provides access to the latest state`() {
@@ -195,7 +180,7 @@ class MviDelegateTest {
     // then
     with(sourceEventsTestObserver) {
       assertNoErrors()
-      assertValues(CREATED, DESTROYED, CREATED)
+      assertValues(CREATED, CREATED)
       assertNotTerminated()
     }
   }

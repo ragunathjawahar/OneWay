@@ -62,12 +62,10 @@ class MviDelegate<S, P>(private val stateConverter: StateConverter<S, P>) {
   }
 
   /**
-   * Disposes the subscription between the [Source] and the [Sink]. It also dispatches
-   * a [SourceEvent.DESTROYED] event before the subscription is cleared.
+   * Disposes the subscription between the [Source] and the [Sink].
    */
   fun unbind() {
     if (compositeDisposable.size() > 0) {
-      sourceEventsSubject.onNext(DESTROYED)
       compositeDisposable.clear()
     }
   }

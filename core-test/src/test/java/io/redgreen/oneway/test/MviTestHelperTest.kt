@@ -7,7 +7,8 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.observers.TestObserver
 import io.redgreen.oneway.SourceEvent
-import io.redgreen.oneway.SourceEvent.*
+import io.redgreen.oneway.SourceEvent.CREATED
+import io.redgreen.oneway.SourceEvent.RESTORED
 import org.junit.jupiter.api.*
 
 class MviTestHelperTest {
@@ -43,14 +44,6 @@ class MviTestHelperTest {
 
       // then
       assertValue(sourceEventsTestObserver, RESTORED)
-    }
-
-    @Test fun `is destroyed then emit DESTROYED`() {
-      // when
-      testHelper.sourceIsDestroyed()
-
-      // then
-      assertValue(sourceEventsTestObserver, DESTROYED)
     }
   }
 

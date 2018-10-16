@@ -27,11 +27,5 @@ enum class SourceEvent {
    * The source is being restored after it was destroyed, it also denotes
    * that a saved state is available via `sourceCopy`.
    */
-  RESTORED,
-
-  /**
-   * The source is about to be disposed. This event is emitted just before
-   * the source stream is disposed.
-   */
-  DESTROYED
+  RESTORED
 }

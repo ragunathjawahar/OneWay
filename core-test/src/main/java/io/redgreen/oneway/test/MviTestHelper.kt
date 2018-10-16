@@ -41,9 +41,8 @@ class MviTestHelper<S>(
     sourceEventsSubject.onNext(CREATED)
   }
 
-  /** Simulates the [SourceEvent.DESTROYED] event. */
+  /** Destroys the source by disposing underlying subscriptions. */
   fun sourceIsDestroyed() {
-    sourceEventsSubject.onNext(DESTROYED)
     compositeDisposable.clear()
   }
 
