@@ -40,7 +40,7 @@ class CounterPlacardLayout :
     )
 
   private val useCases: CounterUseCases
-    get() = CounterUseCases(CounterState.ZERO, sourceCopy)
+    get() = CounterUseCases(sourceCopy)
 
   private val viewDriver: CounterViewDriver
     get() = CounterViewDriver(this)

@@ -10,7 +10,6 @@ import io.reactivex.disposables.Disposable
 import io.redgreen.oneway.SourceEvent
 import io.redgreen.oneway.android.OneWayFragment
 import io.redgreen.oneway.catalogue.R
-import io.redgreen.oneway.catalogue.counter.CounterState.Companion.ZERO
 import io.redgreen.oneway.catalogue.counter.drivers.CounterViewDriver
 import io.redgreen.oneway.catalogue.counter.usecases.CounterUseCases
 import kotlinx.android.synthetic.main.counter_fragment.*
@@ -23,7 +22,7 @@ class CounterFragment : OneWayFragment<CounterState>(), CounterView {
     )
 
   private val useCases: CounterUseCases
-    get() = CounterUseCases(ZERO, sourceCopy)
+    get() = CounterUseCases(sourceCopy)
 
   private val viewDriver: CounterViewDriver
     get() = CounterViewDriver(this)

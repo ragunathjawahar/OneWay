@@ -17,7 +17,7 @@ class CounterModelTest {
     CounterModel.createSource(
         intentions,
         sourceEvents,
-        CounterUseCases(initialState, sourceCopy)
+        CounterUseCases(sourceCopy)
     )
   }
 

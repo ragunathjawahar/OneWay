@@ -24,7 +24,7 @@ class SignUpModelTest {
         intentionsSubject,
         displayErrorEventsSubject,
         sourceEvents,
-        SignUpUseCases(UNTOUCHED, sourceCopy, validator)
+        SignUpUseCases(sourceCopy, validator)
     )
   }
 

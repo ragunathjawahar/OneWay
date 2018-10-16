@@ -10,7 +10,6 @@ import io.reactivex.disposables.Disposable
 import io.redgreen.oneway.SourceEvent
 import io.redgreen.oneway.android.OneWayFragment
 import io.redgreen.oneway.catalogue.R
-import io.redgreen.oneway.catalogue.budapest.BudapestState.Companion.STRANGER
 import io.redgreen.oneway.catalogue.budapest.drivers.BudapestViewDriver
 import io.redgreen.oneway.catalogue.budapest.usecases.BudapestUseCases
 import kotlinx.android.synthetic.main.budapest_fragment.*
@@ -22,7 +21,7 @@ class BudapestFragment : OneWayFragment<BudapestState>(), BudapestView {
     )
 
   private val useCases: BudapestUseCases
-    get() = BudapestUseCases(STRANGER, sourceCopy)
+    get() = BudapestUseCases(sourceCopy)
 
   private val viewDriver: BudapestViewDriver
     get() = BudapestViewDriver(this)

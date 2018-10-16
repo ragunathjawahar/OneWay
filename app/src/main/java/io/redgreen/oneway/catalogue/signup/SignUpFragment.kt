@@ -39,7 +39,6 @@ class SignUpFragment : OneWayFragment<SignUpState>(), SignUpView {
 
   private val useCases: SignUpUseCases
     get() = SignUpUseCases(
-        SignUpState.UNTOUCHED,
         sourceCopy,
         validator
     )

@@ -15,7 +15,7 @@ class BudapestModelTest {
     BudapestModel.createSource(
         intentions,
         sourceEvents,
-        BudapestUseCases(STRANGER, sourceCopy)
+        BudapestUseCases(sourceCopy)
     )
   }
 
