@@ -5,13 +5,15 @@ import io.reactivex.subjects.PublishSubject
 import io.redgreen.oneway.SourceEvent
 import io.redgreen.oneway.catalogue.budapest.BudapestState.Companion.STRANGER
 import io.redgreen.oneway.catalogue.budapest.usecases.BudapestUseCases
-import io.redgreen.oneway.test.MviTestDelegate
+import io.redgreen.oneway.test.MviTestHelper
 import org.junit.jupiter.api.Test
 
 class BudapestModelTest {
   private val intentions = PublishSubject.create<BudapestIntention>()
 
-  private val sourceFunction = { sourceEvents: Observable<SourceEvent>, sourceCopy: Observable<BudapestState> ->
+  private val testHelper = MviTestHelper {
+    sourceEvents: Observable<SourceEvent>, sourceCopy: Observable<BudapestState> ->
+
     BudapestModel.createSource(
         intentions,
         sourceEvents,
@@ -19,25 +21,23 @@ class BudapestModelTest {
     )
   }
 
-  private val testDelegate = MviTestDelegate(sourceFunction)
-
   @Test fun `creating a screen starts with a stranger state`() {
     // when
-    testDelegate.sourceIsCreated()
+    testHelper.sourceIsCreated()
 
     // then
-    testDelegate.assertStates(STRANGER)
+    testHelper.assertStates(STRANGER)
   }
 
   @Test fun `restoring the screen restores the last known state`() {
     // when
     val spiderManState = BudapestState("Spider-Man")
-    testDelegate.setState(spiderManState) {
-      testDelegate.sourceIsRestored()
+    testHelper.setState(spiderManState) {
+      testHelper.sourceIsRestored()
     }
 
     // then
-    testDelegate.assertStates(spiderManState)
+    testHelper.assertStates(spiderManState)
   }
 
   @Test fun `entering a name emits a greeter state`() {
@@ -45,12 +45,12 @@ class BudapestModelTest {
     val name = "Goundamani"
 
     // when
-    testDelegate.setState(STRANGER) {
+    testHelper.setState(STRANGER) {
       enterName(name)
     }
 
     // then
-    testDelegate.assertStates(BudapestState(name))
+    testHelper.assertStates(BudapestState(name))
   }
 
   private fun enterName(name: String) {

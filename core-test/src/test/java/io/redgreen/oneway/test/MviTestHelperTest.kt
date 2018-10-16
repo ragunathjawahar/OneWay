@@ -10,28 +10,28 @@ import io.redgreen.oneway.SourceEvent
 import io.redgreen.oneway.SourceEvent.*
 import org.junit.jupiter.api.*
 
-class MviTestDelegateTest {
+class MviTestHelperTest {
   @DisplayName("when source")
   @Nested inner class SourceEventTest {
-    private lateinit var testDelegate: MviTestDelegate<SomeState>
+    private lateinit var testHelper: MviTestHelper<SomeState>
     private val sourceEventsTestObserver = TestObserver<SourceEvent>()
     private lateinit var sourceEventsDisposable: Disposable
 
     @BeforeEach fun setUp() {
-      testDelegate = MviTestDelegate { sourceEvents: Observable<SourceEvent>, _: Observable<SomeState> ->
+      testHelper = MviTestHelper { sourceEvents: Observable<SourceEvent>, _: Observable<SomeState> ->
         sourceEventsDisposable = sourceEvents.subscribeWith(sourceEventsTestObserver)
-        return@MviTestDelegate Observable.never()
+        return@MviTestHelper Observable.never()
       }
     }
 
     @AfterEach fun tearDown() {
       sourceEventsDisposable.dispose()
-      testDelegate.sourceIsDestroyed()
+      testHelper.sourceIsDestroyed()
     }
 
     @Test fun `is created then emit CREATED`() {
       // when
-      testDelegate.sourceIsCreated()
+      testHelper.sourceIsCreated()
 
       // then
       assertValue(sourceEventsTestObserver, CREATED)
@@ -39,7 +39,7 @@ class MviTestDelegateTest {
 
     @Test fun `is restored then emit RESTORED`() {
       // when
-      testDelegate.sourceIsRestored()
+      testHelper.sourceIsRestored()
 
       // then
       assertValue(sourceEventsTestObserver, RESTORED)
@@ -47,14 +47,14 @@ class MviTestDelegateTest {
 
     @Test fun `is destroyed then emit DESTROYED`() {
       // when
-      testDelegate.sourceIsDestroyed()
+      testHelper.sourceIsDestroyed()
 
       // then
       assertValue(sourceEventsTestObserver, DESTROYED)
     }
   }
 
-  private val testDelegate = MviTestDelegate<SomeState> { _, _ -> Observable.never() }
+  private val testHelper = MviTestHelper<SomeState> { _, _ -> Observable.never() }
 
   @Test fun `it can setup a start state`() {
     // given
@@ -62,13 +62,13 @@ class MviTestDelegateTest {
     val sourceCopyTestObserver = TestObserver<SomeState>()
     var sourceCopyDisposable: Disposable? = null
 
-    val testDelegate = MviTestDelegate { _: Observable<SourceEvent>, sourceCopy: Observable<SomeState> ->
+    val testHelper = MviTestHelper { _: Observable<SourceEvent>, sourceCopy: Observable<SomeState> ->
       sourceCopyDisposable = sourceCopy.subscribeWith(sourceCopyTestObserver)
-      return@MviTestDelegate Observable.never()
+      return@MviTestHelper Observable.never()
     }
 
     // when
-    testDelegate.setState(startState) { /* this block is intentionally left blank */ }
+    testHelper.setState(startState) { /* this block is intentionally left blank */ }
 
     // then
     assertValue(sourceCopyTestObserver, startState)
@@ -81,7 +81,7 @@ class MviTestDelegateTest {
     val block = mock<() -> Unit>{}
 
     // when
-    testDelegate.setState(startState, block)
+    testHelper.setState(startState, block)
 
     // then
     verify(block, times(1)).invoke()
@@ -94,7 +94,7 @@ class MviTestDelegateTest {
         .thenReturn(Observable.never())
 
     // when
-    MviTestDelegate(sourceFunction).testObserver.hasSubscription()
+    MviTestHelper(sourceFunction).testObserver.hasSubscription()
 
     // then
     verify(sourceFunction).invoke(any(), any())
@@ -103,10 +103,10 @@ class MviTestDelegateTest {
 
   @Test fun `it can setup subscription with a test observer`() {
     // then
-    val activeSubscription = testDelegate.testObserver.hasSubscription()
+    val activeSubscription = testHelper.testObserver.hasSubscription()
     assertThat(activeSubscription)
         .isTrue()
-    assertThat(testDelegate.testObserver.isDisposed)
+    assertThat(testHelper.testObserver.isDisposed)
         .isFalse()
   }
 
@@ -117,7 +117,7 @@ class MviTestDelegateTest {
     val sourceFunction = { sourceEvents: Observable<SourceEvent>, _: Observable<SomeState> ->
       sourceEvents.flatMap { Observable.just(stateA, stateB) }
     }
-    val mviTestDelegate = MviTestDelegate(sourceFunction)
+    val mviTestDelegate = MviTestHelper(sourceFunction)
 
     // when
     mviTestDelegate.sourceIsCreated()
@@ -129,22 +129,22 @@ class MviTestDelegateTest {
   // TODO(rj) 24/Jun/18 - Ensure no state emission happens after the subscription is disposed.
   @Test fun `it disposes subscriptions when the source is destroyed`() {
     // when
-    testDelegate.sourceIsDestroyed()
+    testHelper.sourceIsDestroyed()
 
     // then
-    assertThat(testDelegate.testObserver.isDisposed)
+    assertThat(testHelper.testObserver.isDisposed)
         .isTrue()
   }
 
   @Test fun `it restores subscriptions when the source is restored`() {
     // given
-    testDelegate.sourceIsDestroyed()
+    testHelper.sourceIsDestroyed()
 
     // when
-    testDelegate.sourceIsRestored()
+    testHelper.sourceIsRestored()
 
     // then
-    val testObserver = testDelegate.testObserver
+    val testObserver = testHelper.testObserver
 
     assertThat(testObserver.hasSubscription())
         .isTrue()
@@ -154,13 +154,13 @@ class MviTestDelegateTest {
 
   @Test fun `it restores subscriptions when the source is created`() {
     // given
-    testDelegate.sourceIsDestroyed()
+    testHelper.sourceIsDestroyed()
 
     // when
-    testDelegate.sourceIsCreated()
+    testHelper.sourceIsCreated()
 
     // then
-    val testObserver = testDelegate.testObserver
+    val testObserver = testHelper.testObserver
 
     assertThat(testObserver.hasSubscription())
         .isTrue()
@@ -183,7 +183,7 @@ class MviTestDelegateTest {
 
       Observable.merge(sourceCreatedUseCaseStates, sourceRestoredUseCaseStates)
     }
-    val mviTestDelegate = MviTestDelegate(sourceFunction)
+    val mviTestDelegate = MviTestHelper(sourceFunction)
 
     // when
     mviTestDelegate.sourceIsCreated()
