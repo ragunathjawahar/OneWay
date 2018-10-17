@@ -68,6 +68,11 @@ class MviTestHelper<S>(
     }
   }
 
+  /** Asserts that no state was observed by the [testObserver]. */
+  fun assertNoStates() {
+    assertStates()
+  }
+
   private fun createSource(sourceFunction: (Observable<SourceLifecycleEvent>, Observable<S>) -> Observable<S>) {
     val subscriptionExists = ::internalTestObserver.isInitialized
         && !internalTestObserver.isDisposed

@@ -119,6 +119,18 @@ class MviTestHelperTest {
     mviTestDelegate.assertStates(stateA, stateB)
   }
 
+  @Test fun `it can assert no states`() {
+    val testHelper = MviTestHelper { _: Observable<SourceLifecycleEvent>, _: Observable<SomeState> ->
+      Observable.never<SomeState>()
+    }
+
+    // when
+    testHelper.sourceIsCreated()
+
+    // then
+    testHelper.assertNoStates()
+  }
+
   // TODO(rj) 24/Jun/18 - Ensure no state emission happens after the subscription is disposed.
   @Test fun `it disposes subscriptions when the source is destroyed`() {
     // when
