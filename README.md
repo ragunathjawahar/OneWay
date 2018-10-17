@@ -26,8 +26,6 @@ Then, include the dependencies in your module's build script.
       testImplementation 'io.redgreen.oneway:core-test:(latest-version)'
     }
 
-RxJava 2 and RxAndroid are not transitively resolved, hence they have to be included explicitly.
-
 License
 ---------------------
 

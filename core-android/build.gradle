@@ -30,7 +30,7 @@ dependencies {
   implementation deps.kotlin
 
   // Rx
-  implementation deps.rxJava
+  api deps.rxAndroid /* This isn't used in the library at all, its here to meet developers' expectations. */
 
   // Support
   implementation deps.appCompat

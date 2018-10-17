@@ -3,7 +3,7 @@ apply plugin: 'kotlin'
 
 dependencies {
   implementation deps.kotlin
-  implementation deps.rxJava
+  api deps.rxJava
 
   testImplementation testDeps.jUnit
   testImplementation testDeps.truth

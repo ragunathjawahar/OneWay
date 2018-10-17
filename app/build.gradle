@@ -59,7 +59,6 @@ dependencies {
 
   // Rx
   implementation deps.rxBindingKotlin
-  implementation deps.rxJava
   implementation deps.rxKotlin
 
   // Support libraries
