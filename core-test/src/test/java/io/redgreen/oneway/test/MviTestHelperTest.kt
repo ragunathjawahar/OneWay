@@ -110,13 +110,13 @@ class MviTestHelperTest {
     val sourceFunction = { sourceLifecycleEvents: Observable<SourceLifecycleEvent>, _: Observable<SomeState> ->
       sourceLifecycleEvents.flatMap { Observable.just(stateA, stateB) }
     }
-    val mviTestDelegate = MviTestHelper(sourceFunction)
+    val testHelper = MviTestHelper(sourceFunction)
 
     // when
-    mviTestDelegate.sourceIsCreated()
+    testHelper.sourceIsCreated()
 
     // then
-    mviTestDelegate.assertStates(stateA, stateB)
+    testHelper.assertStates(stateA, stateB)
   }
 
   @Test fun `it can assert no states`() {
@@ -188,19 +188,19 @@ class MviTestHelperTest {
 
       Observable.merge(sourceCreatedUseCaseStates, sourceRestoredUseCaseStates)
     }
-    val mviTestDelegate = MviTestHelper(sourceFunction)
+    val testHelper = MviTestHelper(sourceFunction)
 
     // when
-    mviTestDelegate.sourceIsCreated()
-    mviTestDelegate.assertStates(oneState)
-    val testObserverAfterCreated = mviTestDelegate.testObserver
+    testHelper.sourceIsCreated()
+    testHelper.assertStates(oneState)
+    val testObserverAfterCreated = testHelper.testObserver
 
-    mviTestDelegate.sourceIsDestroyed()
-    mviTestDelegate.sourceIsRestored()
-    val testObserverAfterRestored = mviTestDelegate.testObserver
+    testHelper.sourceIsDestroyed()
+    testHelper.sourceIsRestored()
+    val testObserverAfterRestored = testHelper.testObserver
 
     // then
-    mviTestDelegate.assertStates(oneState)
+    testHelper.assertStates(oneState)
     assertThat(testObserverAfterRestored)
         .isNotSameAs(testObserverAfterCreated)
   }
