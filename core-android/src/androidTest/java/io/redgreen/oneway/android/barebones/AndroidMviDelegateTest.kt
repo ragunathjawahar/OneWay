@@ -43,12 +43,12 @@ class AndroidMviDelegateTest {
 
   private val androidMviDelegate = AndroidMviDelegate(androidMviContract)
 
-  @Test fun bindSubscribesSinkToTheSource() {
+  @Test fun connectSubscribesSinkToTheSource() {
     // given
     val testString = "Test 1 2 3"
 
     // when
-    androidMviDelegate.bind()
+    androidMviDelegate.connect()
     sourceSubject.onNext(testString)
 
     // then
@@ -59,12 +59,12 @@ class AndroidMviDelegateTest {
     }
   }
 
-  @Test fun unbindUnsubscribesSinkFromTheSource() {
+  @Test fun disconnectUnsubscribesSinkFromTheSource() {
     // given
-    androidMviDelegate.bind()
+    androidMviDelegate.connect()
 
     // when
-    androidMviDelegate.unbind()
+    androidMviDelegate.disconnect()
     sourceSubject.onNext("Allo, can you hear me?")
 
     // then
@@ -79,7 +79,7 @@ class AndroidMviDelegateTest {
     // given
     val preciousState = "My Precious"
     val bundle = Bundle()
-    androidMviDelegate.bind()
+    androidMviDelegate.connect()
 
     // when
     sourceSubject.onNext(preciousState)
@@ -99,7 +99,7 @@ class AndroidMviDelegateTest {
     // given
     val aState = "Tamil Nadu"
     val bundle = Bundle()
-    androidMviDelegate.bind()
+    androidMviDelegate.connect()
     sourceSubject.onNext(aState)
     androidMviDelegate.saveState(bundle)
     reset(spiedPersister, spiedStateConverter)

@@ -51,7 +51,7 @@ class MviDelegate<S, P>(private val stateConverter: StateConverter<S, P>) {
    * has been established, it also dispatches either a [SourceLifecycleEvent.CREATED] or a
    * [SourceLifecycleEvent.RESTORED] event depending upon the state of the system.
    */
-  fun bind(source: Source<S>, sink: Sink<S>) {
+  fun connect(source: Source<S>, sink: Sink<S>) {
     val sharedStates = source.produce(sourceLifecycleEvents, sourceCopy).publish()
     compositeDisposable.addAll(
         sink.consume(sharedStates),
@@ -65,7 +65,7 @@ class MviDelegate<S, P>(private val stateConverter: StateConverter<S, P>) {
   /**
    * Disposes the subscription between the [Source] and the [Sink].
    */
-  fun unbind() {
+  fun disconnect() {
     if (compositeDisposable.size() > 0) {
       compositeDisposable.clear()
     }
@@ -83,7 +83,7 @@ class MviDelegate<S, P>(private val stateConverter: StateConverter<S, P>) {
   /**
    * Puts a state into the [sourceCopy]. This function is usually called before
    * re-establishing the subscription between the [Source] and the [Sink] after an
-   * [unbind].
+   * [disconnect].
    */
   fun putState(persistentState: P?) {
     persistentState?.let { sourceCopySubject.onNext(stateConverter.from(it)) }

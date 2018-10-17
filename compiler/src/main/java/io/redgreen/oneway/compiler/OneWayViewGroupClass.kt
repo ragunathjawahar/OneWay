@@ -228,7 +228,7 @@ class OneWayViewGroupClass(
         .addAnnotation(overrideAnnotationSpec)
         .addStatement("super.\u0024L()", methodName)
         .addStatement(
-            "\u0024L.bind()",
+            "\u0024L.connect()",
             FIELD_NAME_ANDROID_MVI_DELEGATE
         )
         .build()
@@ -241,7 +241,7 @@ class OneWayViewGroupClass(
         .addModifiers(PROTECTED)
         .addAnnotation(callSuperAnnotationSpec)
         .addAnnotation(overrideAnnotationSpec)
-        .addStatement("\u0024L.unbind()", FIELD_NAME_ANDROID_MVI_DELEGATE)
+        .addStatement("\u0024L.disconnect()", FIELD_NAME_ANDROID_MVI_DELEGATE)
         .addStatement("super.\u0024L()", methodName)
         .build()
   }

@@ -38,13 +38,13 @@ class AndroidMviDelegate<S, P>(
       mviDelegate.sourceCopy
 
   /** Sets up the subscription between the source and the sink. */
-  fun bind() {
-    mviDelegate.bind(createSource(), createSink())
+  fun connect() {
+    mviDelegate.connect(createSource(), createSink())
   }
 
   /** Disposes the subscription between the source and the sink. */
-  fun unbind() {
-    mviDelegate.unbind()
+  fun disconnect() {
+    mviDelegate.disconnect()
   }
 
   /** Gets the current state and stores this into the bundle. */

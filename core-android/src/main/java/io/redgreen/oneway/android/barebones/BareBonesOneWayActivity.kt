@@ -44,11 +44,11 @@ abstract class BareBonesOneWayActivity<S, P> :
 
   @CallSuper override fun onStart() {
     super.onStart()
-    androidMviDelegate.bind()
+    androidMviDelegate.connect()
   }
 
   @CallSuper override fun onStop() {
-    androidMviDelegate.unbind()
+    androidMviDelegate.disconnect()
     super.onStop()
   }
 

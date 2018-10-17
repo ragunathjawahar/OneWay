@@ -90,13 +90,13 @@ class OneWayViewGroupClassTest {
                 @Override
                 protected void onAttachedToWindow() {
                   super.onAttachedToWindow();
-                  androidMviDelegate.bind();
+                  androidMviDelegate.connect();
                 }
 
                 @CallSuper
                 @Override
                 protected void onDetachedFromWindow() {
-                  androidMviDelegate.unbind();
+                  androidMviDelegate.disconnect();
                   super.onDetachedFromWindow();
                 }
 

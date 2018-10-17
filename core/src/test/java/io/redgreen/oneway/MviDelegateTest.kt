@@ -38,7 +38,7 @@ class MviDelegateTest {
 
   private val mviDelegate = MviDelegate(stateConverter)
 
-  @Test fun `it creates a subscription on bind`() {
+  @Test fun `it creates a subscription on connect()`() {
     // given
     val theValue = "One Way!"
     val source = object : Source<String> {
@@ -50,7 +50,7 @@ class MviDelegateTest {
     }
 
     // when
-    mviDelegate.bind(source, sink)
+    mviDelegate.connect(source, sink)
 
     // then
     with(testObserver) {
@@ -62,7 +62,7 @@ class MviDelegateTest {
   @Test fun `it signals a CREATED source event when the subscription happens for the first time`() {
     // when
     mviDelegate.sourceLifecycleEvents.subscribe(sourceLifecycleEventsTestObserver)
-    mviDelegate.bind(source, sink)
+    mviDelegate.connect(source, sink)
 
     // then
     with(sourceLifecycleEventsTestObserver) {
@@ -82,7 +82,7 @@ class MviDelegateTest {
 
     // when
     mviDelegate.sourceCopy.subscribe(sourceCopyTestObserver)
-    mviDelegate.bind(source, sink)
+    mviDelegate.connect(source, sink)
     events.forEach { publisher.onNext(it) }
 
     // then
@@ -101,7 +101,7 @@ class MviDelegateTest {
 
   @Test fun `it returns null if a last known state is unavailable`() {
     // given
-    mviDelegate.bind(source, sink)
+    mviDelegate.connect(source, sink)
 
     // when
     val currentState = mviDelegate.getState()
@@ -115,7 +115,7 @@ class MviDelegateTest {
     // given
     val arrow = "Arrow"
     val persistableArrow = arrow.toByteArray()
-    mviDelegate.bind(source, sink)
+    mviDelegate.connect(source, sink)
 
     // when
     publisher.onNext(arrow)
@@ -157,7 +157,7 @@ class MviDelegateTest {
 
     // when
     mviDelegate.putState(persistentState)
-    mviDelegate.bind(source, sink)
+    mviDelegate.connect(source, sink)
 
     // then
     with(sourceLifecycleEventsTestObserver) {
@@ -172,10 +172,10 @@ class MviDelegateTest {
     mviDelegate.sourceLifecycleEvents.subscribe(sourceLifecycleEventsTestObserver)
 
     // when
-    mviDelegate.bind(source, sink)
-    mviDelegate.unbind()
+    mviDelegate.connect(source, sink)
+    mviDelegate.disconnect()
     mviDelegate.putState(null)
-    mviDelegate.bind(source, sink)
+    mviDelegate.connect(source, sink)
 
     // then
     with(sourceLifecycleEventsTestObserver) {
@@ -185,15 +185,15 @@ class MviDelegateTest {
     }
   }
 
-  @Test fun `it disposes the subscription on unbind`() {
+  @Test fun `it disposes the subscription on disconnect()`() {
     // given
-    mviDelegate.bind(source, sink)
+    mviDelegate.connect(source, sink)
 
     // when
     val firstMessage = "Hello"
     publisher.onNext(firstMessage)
 
-    mviDelegate.unbind()
+    mviDelegate.disconnect()
     publisher.onNext("Unreachable")
 
     // then
@@ -206,25 +206,25 @@ class MviDelegateTest {
         .isTrue()
   }
 
-  @Test fun `it does not blow up if unbind is called multiple times`() {
+  @Test fun `it does not blow up if disconnect() is called multiple times`() {
     // given
-    mviDelegate.bind(source, sink)
+    mviDelegate.connect(source, sink)
 
     // when
     with(mviDelegate) {
-      unbind()
-      unbind()
-      unbind()
-      unbind()
+      disconnect()
+      disconnect()
+      disconnect()
+      disconnect()
     }
   }
 
-  @Test fun `it does not blow up if unbind is called before bind`() {
+  @Test fun `it does not blow up if disconnect() is called before connect()`() {
     // given
     mviDelegate.sourceLifecycleEvents.subscribe(sourceLifecycleEventsTestObserver)
 
     // when
-    mviDelegate.unbind()
+    mviDelegate.disconnect()
 
     // then
     with(sourceLifecycleEventsTestObserver) {
