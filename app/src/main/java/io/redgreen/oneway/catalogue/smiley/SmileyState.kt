@@ -1,6 +1,9 @@
 package io.redgreen.oneway.catalogue.smiley
 
-data class SmileyState(val smiley: String) {
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize data class SmileyState(val smiley: String) : Parcelable {
   companion object {
     fun initial(smiley: String): SmileyState =
         SmileyState(smiley)

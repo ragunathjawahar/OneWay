@@ -13,6 +13,7 @@ import io.redgreen.oneway.catalogue.counter.CounterFragment
 import io.redgreen.oneway.catalogue.placards.PlacardsFragment
 import io.redgreen.oneway.catalogue.showcase.ShowpieceAdapter.ShowpieceListener
 import io.redgreen.oneway.catalogue.signup.SignUpFragment
+import io.redgreen.oneway.catalogue.smiley.SmileyFragment
 import kotlinx.android.synthetic.main.showcase_fragment.*
 
 class ShowcaseFragment : Fragment(), ShowpieceListener {
@@ -21,7 +22,8 @@ class ShowcaseFragment : Fragment(), ShowpieceListener {
       Showpiece("BMI Calculator") { BmiFragment() },
       Showpiece("Counter") { CounterFragment() },
       Showpiece("Sign Up Form") { SignUpFragment() },
-      Showpiece("Placards") { PlacardsFragment() }
+      Showpiece("Placards") { PlacardsFragment() },
+      Showpiece("Smiley") { SmileyFragment() }
   )
 
   override fun onCreateView(

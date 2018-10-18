@@ -36,4 +36,8 @@
   <string name="username">Username</string>
   <string name="phone_number">Phone Number</string>
   <string name="sign_up">Sign Up</string>
+
+  <!-- Smiley -->
+  <string name="choose_smiley">Choose Smiley</string>
+  <string name="emoji_thumbs_up">&#x1F44D;</string>
 </resources>
