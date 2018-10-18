@@ -1,21 +1,37 @@
 package io.redgreen.oneway.catalogue.smiley
 
+import io.redgreen.oneway.catalogue.smiley.usecases.SmileyUseCases
 import io.redgreen.oneway.test.MviTestHelper
-import io.redgreen.oneway.usecases.SourceCreatedUseCase
 import org.junit.jupiter.api.Test
 
 class SmileyModelTest {
-  @Test fun `when screen is created, then show the default (smiling) smiley`() {
-    // given
-    val smileSmileyState = SmileyState.initial("SMILE")
-    val testHelper = MviTestHelper<SmileyState> { sourceLifecycleEvents, _ ->
-      SmileyModel.createSource(sourceLifecycleEvents, SourceCreatedUseCase(smileSmileyState))
-    }
+  private val initialSmileyState = SmileyState.initial("SMILE")
+  private val testHelper = MviTestHelper<SmileyState> { sourceLifecycleEvents, sourceCopy ->
+    SmileyModel.createSource(sourceLifecycleEvents, SmileyUseCases(
+        initialSmileyState,
+        sourceCopy
+    ))
+  }
 
+  @Test fun `when screen is created, then show the default (smiling) smiley`() {
     // when
     testHelper.sourceIsCreated()
 
     // then
-    testHelper.assertStates(smileSmileyState)
+    testHelper.assertStates(initialSmileyState)
+  }
+
+  @Test fun `when screen is restored, then show last known state`() {
+    // given
+    val grumpySmileyState = initialSmileyState
+        .setSmiley("GRUMPY")
+    testHelper.setState(grumpySmileyState)
+
+    // when
+    testHelper.sourceIsDestroyed()
+    testHelper.sourceIsRestored()
+
+    // then
+    testHelper.assertStates(grumpySmileyState)
   }
 }

@@ -5,4 +5,7 @@ data class SmileyState(val smiley: String) {
     fun initial(smiley: String): SmileyState =
         SmileyState(smiley)
   }
+
+  fun setSmiley(smiley: String): SmileyState =
+      copy(smiley = smiley)
 }

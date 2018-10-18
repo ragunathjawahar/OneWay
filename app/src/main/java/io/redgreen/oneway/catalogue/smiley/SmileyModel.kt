@@ -2,13 +2,16 @@ package io.redgreen.oneway.catalogue.smiley
 
 import io.reactivex.Observable
 import io.redgreen.oneway.SourceLifecycleEvent
-import io.redgreen.oneway.usecases.SourceCreatedUseCase
+import io.redgreen.oneway.catalogue.smiley.usecases.SmileyUseCases
 
 object SmileyModel {
   fun createSource(
       sourceLifecycleEvents: Observable<SourceLifecycleEvent>,
-      sourceCreatedUseCase: SourceCreatedUseCase<SmileyState>
+      smileyUseCases: SmileyUseCases
   ): Observable<SmileyState> {
-    return sourceLifecycleEvents.compose(sourceCreatedUseCase)
+    return Observable.merge(
+        sourceLifecycleEvents.compose(smileyUseCases.sourceCreatedUseCase),
+        sourceLifecycleEvents.compose(smileyUseCases.sourceRestoredUseCase)
+    )
   }
 }
