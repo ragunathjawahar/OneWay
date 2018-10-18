@@ -19,9 +19,7 @@ class MviTestHelperTest {
     private lateinit var sourceLifecycleEventsDisposable: Disposable
 
     @BeforeEach fun setUp() {
-      testHelper = MviTestHelper {
-        sourceLifecycleEvents: Observable<SourceLifecycleEvent>, _: Observable<SomeState> ->
-
+      testHelper = MviTestHelper { sourceLifecycleEvents, _ ->
         sourceLifecycleEventsDisposable = sourceLifecycleEvents.subscribeWith(sourceLifecycleEventsTestObserver)
         return@MviTestHelper Observable.never()
       }
@@ -57,9 +55,7 @@ class MviTestHelperTest {
     val sourceCopyTestObserver = TestObserver<SomeState>()
     var sourceCopyDisposable: Disposable? = null
 
-    val testHelper = MviTestHelper {
-      _: Observable<SourceLifecycleEvent>, sourceCopy: Observable<SomeState> ->
-
+    val testHelper = MviTestHelper<SomeState> { _, sourceCopy ->
       sourceCopyDisposable = sourceCopy.subscribeWith(sourceCopyTestObserver)
       return@MviTestHelper Observable.never()
     }
@@ -111,8 +107,7 @@ class MviTestHelperTest {
     // given
     val stateA = SomeState("A")
     val stateB = SomeState("B")
-    val testHelper = MviTestHelper {
-      sourceLifecycleEvents: Observable<SourceLifecycleEvent>, _: Observable<SomeState> ->
+    val testHelper = MviTestHelper<SomeState> { sourceLifecycleEvents, _ ->
       return@MviTestHelper sourceLifecycleEvents.flatMap { Observable.just(stateA, stateB) }
     }
 
@@ -124,7 +119,7 @@ class MviTestHelperTest {
   }
 
   @Test fun `it can assert no states`() {
-    val testHelper = MviTestHelper { _: Observable<SourceLifecycleEvent>, _: Observable<SomeState> ->
+    val testHelper = MviTestHelper<SomeState> { _, _ ->
       Observable.never<SomeState>()
     }
 
@@ -180,9 +175,7 @@ class MviTestHelperTest {
   @Test fun `it has access to the last known state after the source is restored`() {
     // given
     val oneState = SomeState("ONE")
-    val testHelper = MviTestHelper {
-      sourceLifecycleEvents: Observable<SourceLifecycleEvent>, sourceCopy: Observable<SomeState> ->
-
+    val testHelper = MviTestHelper<SomeState> { sourceLifecycleEvents, sourceCopy ->
       val sourceCreatedUseCaseStates = sourceLifecycleEvents
           .filter { it == CREATED }
           .map { oneState }
