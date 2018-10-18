@@ -11,4 +11,5 @@ class SmileyUseCases(
 ) {
   val sourceCreatedUseCase = SourceCreatedUseCase(initialState)
   val sourceRestoredUseCase = SourceRestoredUseCase(sourceCopy)
+  val chooseSmileyUseCase = ChooseSmileyUseCase(sourceCopy)
 }
