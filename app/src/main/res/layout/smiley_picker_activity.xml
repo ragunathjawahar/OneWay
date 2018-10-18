@@ -2,41 +2,40 @@
 <android.support.constraint.ConstraintLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   >
 
-  <TextView
-    android:id="@+id/smileyTextView"
+  <Button
+    android:id="@+id/rollingEyesButton"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginStart="8dp"
     android:layout_marginLeft="8dp"
-    android:layout_marginTop="8dp"
     android:layout_marginEnd="8dp"
     android:layout_marginRight="8dp"
-    android:layout_marginBottom="8dp"
-    android:textAppearance="@style/TextAppearance.AppCompat.Display3"
-    app:layout_constraintBottom_toTopOf="@+id/pickSmileyButton"
+    android:layout_marginBottom="76dp"
+    android:text="@string/emoji_rolling_eyes"
+    android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+    app:layout_constraintBottom_toTopOf="@+id/victoryHandButton"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
-    tools:text="@string/emoji_thumbs_up"
     />
 
   <Button
-    android:id="@+id/pickSmileyButton"
-    android:layout_width="0dp"
+    android:id="@+id/victoryHandButton"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginStart="8dp"
     android:layout_marginLeft="8dp"
     android:layout_marginEnd="8dp"
     android:layout_marginRight="8dp"
-    android:layout_marginBottom="8dp"
-    android:text="@string/pick_smiley"
+    android:text="@string/emoji_victory_hand"
+    android:textAppearance="@style/TextAppearance.AppCompat.Display2"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/rollingEyesButton"
     />
 </android.support.constraint.ConstraintLayout>

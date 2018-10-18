@@ -1,5 +1,6 @@
 package io.redgreen.oneway.catalogue.smiley
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -26,6 +27,14 @@ class SmileyFragment : OneWayFragment<SmileyState>() {
       savedInstanceState: Bundle?
   ): View =
       layoutInflater.inflate(R.layout.smiley_fragment, container, false)
+
+  override fun onViewCreated(
+      view: View,
+      savedInstanceState: Bundle?
+  ) {
+    super.onViewCreated(view, savedInstanceState)
+    pickSmileyButton.setOnClickListener { SmileyPickerActivity.startForResult(activity as Activity) }
+  }
 
   override fun source(
       sourceLifecycleEvents: Observable<SourceLifecycleEvent>,

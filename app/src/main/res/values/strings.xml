@@ -38,6 +38,8 @@
   <string name="sign_up">Sign Up</string>
 
   <!-- Smiley -->
-  <string name="choose_smiley">Choose Smiley</string>
+  <string name="pick_smiley">Pick Smiley</string>
   <string name="emoji_thumbs_up">&#x1F44D;</string>
+  <string name="emoji_rolling_eyes">&#x1F644;</string>
+  <string name="emoji_victory_hand">&#x270C;</string>
 </resources>
