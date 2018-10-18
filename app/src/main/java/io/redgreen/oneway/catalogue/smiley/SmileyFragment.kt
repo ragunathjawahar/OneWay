@@ -1,6 +1,7 @@
 package io.redgreen.oneway.catalogue.smiley
 
-import android.app.Activity
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import io.reactivex.subjects.PublishSubject
 import io.redgreen.oneway.SourceLifecycleEvent
 import io.redgreen.oneway.android.OneWayFragment
 import io.redgreen.oneway.catalogue.R
+import io.redgreen.oneway.catalogue.smiley.SmileyPickerActivity.Companion.REQUEST_PICK_SMILEY
 import io.redgreen.oneway.catalogue.smiley.usecases.SmileyUseCases
 import kotlinx.android.synthetic.main.smiley_fragment.*
 
@@ -20,6 +22,8 @@ class SmileyFragment : OneWayFragment<SmileyState>() {
 
   private val initialState: SmileyState
     get() = SmileyState.initial(getString(R.string.emoji_thumbs_up))
+
+  private var pickedSmiley: String? = null
 
   override fun onCreateView(
       inflater: LayoutInflater,
@@ -33,7 +37,7 @@ class SmileyFragment : OneWayFragment<SmileyState>() {
       savedInstanceState: Bundle?
   ) {
     super.onViewCreated(view, savedInstanceState)
-    pickSmileyButton.setOnClickListener { SmileyPickerActivity.startForResult(activity as Activity) }
+    pickSmileyButton.setOnClickListener { SmileyPickerActivity.startForResult(this) }
   }
 
   override fun source(
@@ -50,4 +54,24 @@ class SmileyFragment : OneWayFragment<SmileyState>() {
       source
           .map { it.smiley }
           .subscribe(RxTextView.text(smileyTextView))
+
+  override fun onStart() {
+    super.onStart()
+    pickedSmiley?.let {
+      intentions.onNext(PickSmileyIntention(it))
+      pickedSmiley = null
+    }
+  }
+
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    super.onActivityResult(requestCode, resultCode, data)
+
+    val pickSmileySuccessful = requestCode == REQUEST_PICK_SMILEY
+        && resultCode == RESULT_OK
+        && data != null
+
+    if (pickSmileySuccessful) {
+      pickedSmiley = SmileyPickerActivity.getSmiley(data!!)
+    }
+  }
 }

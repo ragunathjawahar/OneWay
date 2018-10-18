@@ -9,6 +9,6 @@ import kotlinx.android.parcel.Parcelize
         SmileyState(smiley)
   }
 
-  fun setSmiley(smiley: String): SmileyState =
+  fun updateSmiley(smiley: String): SmileyState =
       copy(smiley = smiley)
 }

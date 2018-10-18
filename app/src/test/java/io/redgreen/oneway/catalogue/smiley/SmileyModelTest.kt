@@ -29,7 +29,7 @@ class SmileyModelTest {
   @Test fun `when screen is restored, then show last known state`() {
     // given
     val grumpySmileyState = initialSmileyState
-        .setSmiley("GRUMPY")
+        .updateSmiley("GRUMPY")
     testHelper.setState(grumpySmileyState)
 
     // when
@@ -46,10 +46,10 @@ class SmileyModelTest {
 
     // when
     val winkSmiley = "WINK"
-    intentions.onNext(ChooseSmileyIntention(winkSmiley))
+    intentions.onNext(PickSmileyIntention(winkSmiley))
 
     // then
-    val winkSmileyState = initialSmileyState.setSmiley(winkSmiley)
+    val winkSmileyState = initialSmileyState.updateSmiley(winkSmiley)
     testHelper.assertStates(winkSmileyState)
   }
 }

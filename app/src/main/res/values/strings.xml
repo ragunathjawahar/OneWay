@@ -39,7 +39,7 @@
 
   <!-- Smiley -->
   <string name="pick_smiley">Pick Smiley</string>
-  <string name="emoji_thumbs_up">&#x1F44D;</string>
+  <string name="emoji_thumbs_up">&#x1F44D;</string> <!-- Courtesy: https://www.quackit.com/character_sets/emoji/ -->
   <string name="emoji_rolling_eyes">&#x1F644;</string>
   <string name="emoji_victory_hand">&#x270C;</string>
 </resources>

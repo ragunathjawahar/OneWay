@@ -4,17 +4,17 @@ import io.reactivex.Observable
 import io.reactivex.ObservableSource
 import io.reactivex.ObservableTransformer
 import io.reactivex.rxkotlin.withLatestFrom
-import io.redgreen.oneway.catalogue.smiley.ChooseSmileyIntention
+import io.redgreen.oneway.catalogue.smiley.PickSmileyIntention
 import io.redgreen.oneway.catalogue.smiley.SmileyState
 
-class ChooseSmileyUseCase(
+class PickSmileyUseCase(
     private val sourceCopy: Observable<SmileyState>
-) : ObservableTransformer<ChooseSmileyIntention, SmileyState> {
+) : ObservableTransformer<PickSmileyIntention, SmileyState> {
   override fun apply(
-      chooseSmileyIntentions: Observable<ChooseSmileyIntention>
+      pickSmileyIntentions: Observable<PickSmileyIntention>
   ): ObservableSource<SmileyState> {
-    return chooseSmileyIntentions.withLatestFrom(sourceCopy) { intention, state ->
-      state.setSmiley(intention.smiley)
+    return pickSmileyIntentions.withLatestFrom(sourceCopy) { intention, state ->
+      state.updateSmiley(intention.smiley)
     }
   }
 }

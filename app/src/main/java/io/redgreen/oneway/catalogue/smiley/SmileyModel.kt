@@ -13,7 +13,7 @@ object SmileyModel {
     return Observable.merge(
         sourceLifecycleEvents.compose(smileyUseCases.sourceCreatedUseCase),
         sourceLifecycleEvents.compose(smileyUseCases.sourceRestoredUseCase),
-        intentions.ofType(ChooseSmileyIntention::class.java).compose(smileyUseCases.chooseSmileyUseCase)
+        intentions.ofType(PickSmileyIntention::class.java).compose(smileyUseCases.pickSmileyUseCase)
     )
   }
 }
