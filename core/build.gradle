@@ -4,6 +4,7 @@ apply plugin: 'kotlin'
 dependencies {
   implementation deps.kotlin
   api deps.rxJava
+  api deps.rxKotlin
 
   testImplementation testDeps.jUnit
   testImplementation testDeps.truth
