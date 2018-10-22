@@ -60,17 +60,21 @@ class MviTestHelper<S>(
   }
 
   /** Asserts the [states] that were observed by the [testObserver]. */
-  fun assertStates(vararg states: S) {
+  fun assertStates(state: S, vararg states: S) {
     with(testObserver) {
       assertNoErrors()
-      assertValues(*states)
+      assertValues(state, *states)
       assertNotTerminated()
     }
   }
 
   /** Asserts that no state was observed by the [testObserver]. */
   fun assertNoStates() {
-    assertStates()
+    with(testObserver) {
+      assertNoErrors()
+      assertNoValues()
+      assertNotTerminated()
+    }
   }
 
   private fun createSource(sourceFunction: (Observable<SourceLifecycleEvent>, Observable<S>) -> Observable<S>) {
