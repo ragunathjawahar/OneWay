@@ -35,6 +35,9 @@ dependencies {
   // Support
   implementation deps.appCompat
 
+  // Unit Test
+  testImplementation testDeps.jUnit5
+
   // Android Test
   androidTestImplementation testDeps.androidTestRunner
   androidTestImplementation testDeps.espresso
