@@ -1,5 +1,6 @@
 package io.redgreen.oneway.catalogue.smiley
 
+import arrow.core.Some
 import io.reactivex.subjects.PublishSubject
 import io.redgreen.oneway.catalogue.smiley.usecases.SmileyUseCases
 import io.redgreen.oneway.test.MviTestHelper
@@ -46,7 +47,7 @@ class SmileyModelTest {
 
     // when
     val winkSmiley = "WINK"
-    intentions.onNext(PickSmileyIntention(winkSmiley))
+    intentions.onNext(PickSmileyIntention(Some(winkSmiley)))
 
     // then
     val winkSmileyState = initialSmileyState.updateSmiley(winkSmiley)

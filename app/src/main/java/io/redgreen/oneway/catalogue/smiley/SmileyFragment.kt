@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import arrow.core.None
+import arrow.core.Some
 import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -21,6 +23,10 @@ import io.redgreen.oneway.catalogue.smiley.usecases.SmileyUseCases
 import kotlinx.android.synthetic.main.smiley_fragment.*
 
 class SmileyFragment : OneWayFragment<SmileyState>() {
+  companion object {
+    private const val SMILEY_NONE = ""
+  }
+
   private val intentions = PublishSubject.create<SmileyIntention>()
 
   private val initialState: SmileyState
@@ -63,7 +69,7 @@ class SmileyFragment : OneWayFragment<SmileyState>() {
     super.onStart()
     compositeDisposable += resultDispatcher
         .result<String>()
-        .map { PickSmileyIntention(it) }
+        .map { if (it != SMILEY_NONE) PickSmileyIntention(Some(it)) else PickSmileyIntention(None) }
         .subscribe { intentions.onNext(it) }
   }
 
@@ -72,14 +78,18 @@ class SmileyFragment : OneWayFragment<SmileyState>() {
     compositeDisposable.clear()
   }
 
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    val isPickSmileyResult = requestCode == REQUEST_PICK_SMILEY
-    if (isPickSmileyResult) {
-      if (resultCode == RESULT_OK) {
-        resultDispatcher.setResult(SmileyPickerActivity.getSmiley(data!!))
+  override fun onActivityResult(
+      requestCode: Int,
+      resultCode: Int,
+      data: Intent?
+  ) {
+    if (requestCode == REQUEST_PICK_SMILEY) {
+      val smileyResult = if (resultCode == RESULT_OK) {
+        SmileyPickerActivity.getSmiley(data!!)
       } else {
-        // TODO(rj) 23/Oct/18 - Handle cancelled results.
+        SMILEY_NONE
       }
+      resultDispatcher.setResult(smileyResult)
     }
   }
 }

@@ -50,6 +50,9 @@ dependencies {
   implementation project(':annotations')
   kapt project(":compiler")
 
+  // Arrow
+  implementation deps.arrowCore
+
   // Kotlin
   implementation deps.kotlin
 

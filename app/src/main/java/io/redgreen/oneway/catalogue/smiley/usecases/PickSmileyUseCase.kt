@@ -1,5 +1,7 @@
 package io.redgreen.oneway.catalogue.smiley.usecases
 
+import arrow.core.None
+import arrow.core.Some
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
 import io.reactivex.ObservableTransformer
@@ -14,7 +16,11 @@ class PickSmileyUseCase(
       pickSmileyIntentions: Observable<PickSmileyIntention>
   ): ObservableSource<SmileyState> {
     return pickSmileyIntentions.withLatestFrom(sourceCopy) { intention, state ->
-      state.updateSmiley(intention.smiley)
+      val smiley = intention.smiley
+      when (smiley) {
+        is Some -> state.updateSmiley(smiley.t)
+        is None -> TODO("Yet to handle.")
+      }
     }
   }
 }

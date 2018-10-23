@@ -8,6 +8,9 @@ ext {
       // Android Stub
       androidStub: '4.0.1.2',
 
+      // Arrow
+      arrow: '0.7.3',
+
       // Java
       java: JavaVersion.VERSION_1_8,
 
@@ -44,6 +47,9 @@ ext {
   deps = [
       // Android Stub
       androidStub: "com.google.android:android:${versions.androidStub}",
+
+      // Arrow
+      arrowCore: "io.arrow-kt:arrow-core:${versions.arrow}",
 
       // Java Poet
       javaPoet: "com.squareup:javapoet:${versions.javaPoet}",
