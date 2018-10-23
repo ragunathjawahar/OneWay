@@ -56,7 +56,7 @@ class SmileyFragment : OneWayFragment<SmileyState>() {
 
   override fun sink(source: Observable<SmileyState>): Disposable =
       source
-          .map { it.smiley }
+          .map { it.smiley.character }
           .subscribe(RxTextView.text(smileyTextView))
 
   override fun onStart() {
