@@ -4,6 +4,8 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.redgreen.oneway.catalogue.budapest.BudapestState
 import io.redgreen.oneway.catalogue.budapest.BudapestView
+import io.redgreen.oneway.catalogue.budapest.GreeterState
+import io.redgreen.oneway.catalogue.budapest.StrangerState
 import io.redgreen.oneway.drivers.ViewDriver
 
 class BudapestViewDriver(
@@ -16,10 +18,9 @@ class BudapestViewDriver(
   }
 
   private fun greet(state: BudapestState) {
-    if (state == BudapestState.STRANGER) {
-      view.greetStranger()
-    } else {
-      view.greet(state.name)
+    when (state) {
+      is StrangerState -> view.greetStranger()
+      is GreeterState  -> view.greet(state.name)
     }
   }
 }

@@ -3,7 +3,6 @@ package io.redgreen.oneway.catalogue.budapest
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.redgreen.oneway.SourceLifecycleEvent
-import io.redgreen.oneway.catalogue.budapest.BudapestState.Companion.STRANGER
 import io.redgreen.oneway.catalogue.budapest.usecases.BudapestUseCases
 import io.redgreen.oneway.test.MviTestHelper
 import org.junit.jupiter.api.Test
@@ -26,12 +25,12 @@ class BudapestModelTest {
     testHelper.sourceIsCreated()
 
     // then
-    testHelper.assertStates(STRANGER)
+    testHelper.assertStates(StrangerState)
   }
 
   @Test fun `restoring the screen restores the last known state`() {
     // when
-    val spiderManState = BudapestState("Spider-Man")
+    val spiderManState = GreeterState("Spider-Man")
     testHelper.setState(spiderManState) {
       testHelper.sourceIsRestored()
     }
@@ -45,12 +44,25 @@ class BudapestModelTest {
     val name = "Goundamani"
 
     // when
-    testHelper.setState(STRANGER) {
+    testHelper.setState(StrangerState) {
       enterName(name)
     }
 
     // then
-    testHelper.assertStates(BudapestState(name))
+    testHelper.assertStates(GreeterState(name))
+  }
+
+  @Test fun `entering a blank name emits a stranger state`() {
+    // given
+    val blankName = "   "
+
+    // when
+    testHelper.setState(StrangerState) {
+      enterName(blankName)
+    }
+
+    // then
+    testHelper.assertStates(StrangerState)
   }
 
   private fun enterName(name: String) {

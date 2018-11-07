@@ -6,6 +6,8 @@ import com.nhaarman.mockito_kotlin.verifyNoMoreInteractions
 import io.reactivex.subjects.PublishSubject
 import io.redgreen.oneway.catalogue.budapest.BudapestState
 import io.redgreen.oneway.catalogue.budapest.BudapestView
+import io.redgreen.oneway.catalogue.budapest.GreeterState
+import io.redgreen.oneway.catalogue.budapest.StrangerState
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 
@@ -21,7 +23,7 @@ class BudapestViewDriverTest {
 
   @Test fun `it renders stranger state`() {
     // when
-    statesSubject.onNext(BudapestState.STRANGER)
+    statesSubject.onNext(StrangerState)
 
     // then
     verify(view).greetStranger()
@@ -31,7 +33,7 @@ class BudapestViewDriverTest {
   @Test fun `it renders greeter state`() {
     // given
     val hulk = "Hulk"
-    val greeterState = BudapestState(hulk)
+    val greeterState = GreeterState(hulk)
 
     // when
     statesSubject.onNext(greeterState)
