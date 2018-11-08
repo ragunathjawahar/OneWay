@@ -17,7 +17,8 @@ object BudapestModel {
     return Observable.merge(
         sourceLifecycleEvents.compose(useCases.sourceCreatedUseCase),
         sourceLifecycleEvents.compose(useCases.sourceRestoredUseCase),
-        intentions.ofType(EnterNameIntention::class.java).compose(useCases.enterNameUseCase)
+        intentions.ofType(EnterNameIntention::class.java).compose(useCases.enterNameUseCase),
+        intentions.ofType(NoNameIntention::class.java).compose(useCases.noNameUseCase)
     )
   }
 }

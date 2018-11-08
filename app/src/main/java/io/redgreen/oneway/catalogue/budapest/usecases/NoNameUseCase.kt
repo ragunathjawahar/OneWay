@@ -5,21 +5,21 @@ import io.reactivex.ObservableSource
 import io.reactivex.ObservableTransformer
 import io.reactivex.rxkotlin.withLatestFrom
 import io.redgreen.oneway.catalogue.budapest.BudapestState
-import io.redgreen.oneway.catalogue.budapest.EnterNameIntention
 import io.redgreen.oneway.catalogue.budapest.GreeterState
+import io.redgreen.oneway.catalogue.budapest.NoNameIntention
 import io.redgreen.oneway.catalogue.budapest.StrangerState
 
-class EnterNameUseCase(
+class NoNameUseCase(
     private val sourceCopy: Observable<BudapestState>
-) : ObservableTransformer<EnterNameIntention, BudapestState> {
+) : ObservableTransformer<NoNameIntention, BudapestState> {
   override fun apply(
-      enterNameIntentions: Observable<EnterNameIntention>
+      noNameIntentions: Observable<NoNameIntention>
   ): ObservableSource<BudapestState> {
-    return enterNameIntentions
-        .withLatestFrom(sourceCopy) { intention, state ->
+    return noNameIntentions
+        .withLatestFrom(sourceCopy) { _, state ->
           when (state) {
-            is StrangerState -> state.enterName(intention)
-            is GreeterState -> state.enterName(intention)
+            is StrangerState -> state.noName()
+            is GreeterState -> state.noName()
           }
         }
   }

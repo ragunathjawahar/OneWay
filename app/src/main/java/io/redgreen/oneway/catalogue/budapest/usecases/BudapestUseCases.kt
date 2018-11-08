@@ -12,4 +12,5 @@ class BudapestUseCases(
   val sourceCreatedUseCase = SourceCreatedUseCase(StrangerState)
   val sourceRestoredUseCase = SourceRestoredUseCase(sourceCopy)
   val enterNameUseCase = EnterNameUseCase(sourceCopy)
+  val noNameUseCase = NoNameUseCase(sourceCopy)
 }

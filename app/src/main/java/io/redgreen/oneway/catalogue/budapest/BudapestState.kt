@@ -6,17 +6,17 @@ import kotlinx.android.parcel.Parcelize
 sealed class BudapestState : Parcelable
 
 @Parcelize object StrangerState : BudapestState() {
-  fun blankName(): StrangerState =
-      StrangerState
+  fun noName(): StrangerState =
+      this
 
-  fun onEnterName(intention: EnterNameIntention): GreeterState =
+  fun enterName(intention: EnterNameIntention): GreeterState =
       GreeterState(intention.name)
 }
 
 @Parcelize data class GreeterState(val name: String) : BudapestState() {
-  fun blankName(): StrangerState =
+  fun noName(): StrangerState =
       StrangerState
 
-  fun onEnterName(intention: EnterNameIntention): GreeterState =
+  fun enterName(intention: EnterNameIntention): GreeterState =
       copy(name = intention.name)
 }

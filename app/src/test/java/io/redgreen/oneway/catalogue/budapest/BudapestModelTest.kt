@@ -45,7 +45,7 @@ class BudapestModelTest {
 
     // when
     testHelper.setState(StrangerState) {
-      enterName(name)
+      intentions.onNext(EnterNameIntention(name))
     }
 
     // then
@@ -53,19 +53,12 @@ class BudapestModelTest {
   }
 
   @Test fun `entering a blank name emits a stranger state`() {
-    // given
-    val blankName = "   "
-
     // when
     testHelper.setState(StrangerState) {
-      enterName(blankName)
+      intentions.onNext(NoNameIntention)
     }
 
     // then
     testHelper.assertStates(StrangerState)
-  }
-
-  private fun enterName(name: String) {
-    intentions.onNext(EnterNameIntention(name))
   }
 }

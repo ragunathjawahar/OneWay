@@ -4,13 +4,26 @@ import io.reactivex.Observable
 import io.redgreen.oneway.Intentions
 
 class BudapestIntentions(
-    private val nameTextChanges: Observable<CharSequence>
+    nameTextChanges: Observable<CharSequence>
 ) : Intentions<BudapestIntention> {
+  private val sharedNameTextChanges = nameTextChanges
+      .map { it.toString() }
+      .share()
+
   override fun stream(): Observable<BudapestIntention> =
-    enterName().share().cast(BudapestIntention::class.java)
+      Observable.merge(
+          enterName().share(),
+          noName().share()
+      )
 
   private fun enterName(): Observable<EnterNameIntention> =
-      nameTextChanges
-          .map { it.toString() }
+      sharedNameTextChanges
+          .filter { it.isNotBlank() }
           .map { EnterNameIntention(it) }
+
+  private fun noName(): Observable<NoNameIntention> =
+      sharedNameTextChanges
+          .filter { it.isBlank() }
+          .map { NoNameIntention }
+
 }
