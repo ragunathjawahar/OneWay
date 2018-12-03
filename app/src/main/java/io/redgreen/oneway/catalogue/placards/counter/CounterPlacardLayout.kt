@@ -6,6 +6,7 @@ import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.redgreen.oneway.SourceLifecycleEvent
+import io.redgreen.oneway.catalogue.base.extensions.fastLazy
 import io.redgreen.oneway.catalogue.base.widget.OneWayConstraintLayout
 import io.redgreen.oneway.catalogue.counter.CounterIntentions
 import io.redgreen.oneway.catalogue.counter.CounterModel
@@ -25,25 +26,28 @@ class CounterPlacardLayout :
   constructor(
       context: Context,
       attrs: AttributeSet
-  ): super(context, attrs)
+  ) : super(context, attrs)
 
   constructor(
       context: Context,
       attrs: AttributeSet,
       defStyleAttr: Int
-  ): super(context, attrs, defStyleAttr)
+  ) : super(context, attrs, defStyleAttr)
 
-  private val intentions: CounterIntentions
-    get() = CounterIntentions(
+  private val intentions by fastLazy {
+    CounterIntentions(
         incrementButton.clicks(),
         decrementButton.clicks()
     )
+  }
 
-  private val useCases: CounterUseCases
-    get() = CounterUseCases(sourceCopy)
+  private val useCases by fastLazy {
+    CounterUseCases(sourceCopy)
+  }
 
-  private val viewDriver: CounterViewDriver
-    get() = CounterViewDriver(this)
+  private val viewDriver by fastLazy {
+    CounterViewDriver(this)
+  }
 
   override fun source(
       sourceLifecycleEvents: Observable<SourceLifecycleEvent>,

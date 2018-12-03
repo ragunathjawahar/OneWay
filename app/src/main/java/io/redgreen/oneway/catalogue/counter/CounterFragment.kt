@@ -10,22 +10,26 @@ import io.reactivex.disposables.Disposable
 import io.redgreen.oneway.SourceLifecycleEvent
 import io.redgreen.oneway.android.OneWayFragment
 import io.redgreen.oneway.catalogue.R
+import io.redgreen.oneway.catalogue.base.extensions.fastLazy
 import io.redgreen.oneway.catalogue.counter.drivers.CounterViewDriver
 import io.redgreen.oneway.catalogue.counter.usecases.CounterUseCases
 import kotlinx.android.synthetic.main.counter_fragment.*
 
 class CounterFragment : OneWayFragment<CounterState>(), CounterView {
-  private val intentions: CounterIntentions
-    get() = CounterIntentions(
+  private val intentions by fastLazy {
+    CounterIntentions(
         incrementButton.clicks(),
         decrementButton.clicks()
     )
+  }
 
-  private val useCases: CounterUseCases
-    get() = CounterUseCases(sourceCopy)
+  private val useCases by fastLazy {
+    CounterUseCases(sourceCopy)
+  }
 
-  private val viewDriver: CounterViewDriver
-    get() = CounterViewDriver(this)
+  private val viewDriver by fastLazy {
+    CounterViewDriver(this)
+  }
 
   override fun onCreateView(
       inflater: LayoutInflater,

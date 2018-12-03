@@ -25,5 +25,4 @@ class BudapestIntentions(
       sharedNameTextChanges
           .filter { it.isBlank() }
           .map { NoNameIntention }
-
 }

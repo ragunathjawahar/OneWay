@@ -17,6 +17,7 @@ import io.redgreen.oneway.SourceLifecycleEvent
 import io.redgreen.oneway.android.OneWayFragment
 import io.redgreen.oneway.android.ResultDispatcher
 import io.redgreen.oneway.catalogue.R
+import io.redgreen.oneway.catalogue.base.extensions.fastLazy
 import io.redgreen.oneway.catalogue.smiley.SmileyPickerActivity.Companion.REQUEST_PICK_SMILEY
 import io.redgreen.oneway.catalogue.smiley.drivers.SmileyTransientViewDriver
 import io.redgreen.oneway.catalogue.smiley.usecases.SmileyUseCases
@@ -29,8 +30,9 @@ class SmileyFragment : OneWayFragment<SmileyState>(), SmileyTransientViewDriver 
 
   private val intentions = PublishSubject.create<SmileyIntention>()
 
-  private val initialState: SmileyState
-    get() = SmileyState.initial(getString(R.string.emoji_thumbs_up))
+  private val initialState by fastLazy {
+    SmileyState.initial(getString(R.string.emoji_thumbs_up))
+  }
 
   private val resultDispatcher = ResultDispatcher()
   private val compositeDisposable = CompositeDisposable()

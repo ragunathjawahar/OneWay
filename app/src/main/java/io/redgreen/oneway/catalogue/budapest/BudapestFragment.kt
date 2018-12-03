@@ -10,21 +10,25 @@ import io.reactivex.disposables.Disposable
 import io.redgreen.oneway.SourceLifecycleEvent
 import io.redgreen.oneway.android.OneWayFragment
 import io.redgreen.oneway.catalogue.R
+import io.redgreen.oneway.catalogue.base.extensions.fastLazy
 import io.redgreen.oneway.catalogue.budapest.drivers.BudapestViewDriver
 import io.redgreen.oneway.catalogue.budapest.usecases.BudapestUseCases
 import kotlinx.android.synthetic.main.budapest_fragment.*
 
 class BudapestFragment : OneWayFragment<BudapestState>(), BudapestView {
-  private val intentions: BudapestIntentions
-    get() = BudapestIntentions(
+  private val intentions by fastLazy {
+    BudapestIntentions(
         nameEditText.textChanges().skipInitialValue()
     )
+  }
 
-  private val useCases: BudapestUseCases
-    get() = BudapestUseCases(sourceCopy)
+  private val useCases by fastLazy {
+    BudapestUseCases(sourceCopy)
+  }
 
-  private val viewDriver: BudapestViewDriver
-    get() = BudapestViewDriver(this)
+  private val viewDriver by fastLazy {
+    BudapestViewDriver(this)
+  }
 
   override fun onCreateView(
       inflater: LayoutInflater,

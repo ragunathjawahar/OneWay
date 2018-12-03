@@ -13,18 +13,17 @@ import io.redgreen.oneway.SourceLifecycleEvent
 import io.redgreen.oneway.android.OneWayFragment
 import io.redgreen.oneway.catalogue.R
 import io.redgreen.oneway.catalogue.base.DefaultSchedulersProvider
-import io.redgreen.oneway.catalogue.base.SchedulersProvider
+import io.redgreen.oneway.catalogue.base.extensions.fastLazy
 import io.redgreen.oneway.catalogue.signup.drivers.SignUpViewDriver
 import io.redgreen.oneway.catalogue.signup.form.PhoneNumberCondition
 import io.redgreen.oneway.catalogue.signup.form.UsernameCondition
 import io.redgreen.oneway.catalogue.signup.form.Validator
 import io.redgreen.oneway.catalogue.signup.usecases.SignUpUseCases
 import kotlinx.android.synthetic.main.sign_up_fragment.*
-import kotlin.LazyThreadSafetyMode.NONE
 
 class SignUpFragment : OneWayFragment<SignUpState>(), SignUpView {
-  private val intentions: SignUpIntentions
-    get() = SignUpIntentions(
+  private val intentions by fastLazy {
+    SignUpIntentions(
         this,
         phoneNumberEditText.textChanges().skipInitialValue(),
         phoneNumberEditText.focusChanges().skipInitialValue(),
@@ -32,27 +31,29 @@ class SignUpFragment : OneWayFragment<SignUpState>(), SignUpView {
         usernameEditText.focusChanges().skipInitialValue(),
         signUpButton.clicks()
     )
+  }
 
-  private val validator: Validator by lazy(NONE) {
+  private val validator by fastLazy {
     Validator()
   }
 
-  private val useCases: SignUpUseCases
-    get() = SignUpUseCases(
+  private val useCases by fastLazy {
+    SignUpUseCases(
         sourceCopy,
         validator
     )
+  }
 
-  private val schedulersProvider: SchedulersProvider by lazy(NONE) {
+  private val schedulersProvider by fastLazy {
     DefaultSchedulersProvider()
   }
 
-  private val viewDriver: SignUpViewDriver by lazy(NONE) {
-      val errorThresholdMillis = resources
-          .getInteger(R.integer.error_threshold_millis)
-          .toLong()
-      return@lazy SignUpViewDriver(this, schedulersProvider, errorThresholdMillis)
-    }
+  private val viewDriver by fastLazy {
+    val errorThresholdMillis = resources
+        .getInteger(R.integer.error_threshold_millis)
+        .toLong()
+    return@fastLazy SignUpViewDriver(this, schedulersProvider, errorThresholdMillis)
+  }
 
   override fun onCreateView(
       inflater: LayoutInflater,

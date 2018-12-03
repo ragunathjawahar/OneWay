@@ -10,6 +10,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.redgreen.oneway.SourceLifecycleEvent
 import io.redgreen.oneway.catalogue.R
+import io.redgreen.oneway.catalogue.base.extensions.fastLazy
 import io.redgreen.oneway.catalogue.base.widget.OneWayConstraintLayout
 import io.redgreen.oneway.catalogue.bmi.*
 import io.redgreen.oneway.catalogue.bmi.calculator.BmiCategory
@@ -21,7 +22,6 @@ import io.redgreen.oneway.catalogue.bmi.usecases.BmiUseCases
 import io.redgreen.oneway.catalogue.placards.bmi.MeasurementAdapter.Quantity.LENGTH
 import io.redgreen.oneway.catalogue.placards.bmi.MeasurementAdapter.Quantity.WEIGHT
 import kotlinx.android.synthetic.main.bmi_placard.view.*
-import kotlin.LazyThreadSafetyMode.NONE
 
 private const val UNINITIALIZED_SELECTION = -1
 private const val KEY_WEIGHT_SELECTION = "weight_selection"
@@ -37,60 +37,67 @@ class BmiPlacardLayout :
   constructor(
       context: Context,
       attrs: AttributeSet
-  ): super(context, attrs)
+  ) : super(context, attrs)
 
   constructor(
       context: Context,
       attrs: AttributeSet,
       defStyleAttr: Int
-  ): super(context, attrs, defStyleAttr)
+  ) : super(context, attrs, defStyleAttr)
 
-  private val minWeightInKg: Int
-    get() = resources.getInteger(R.integer.min_weight_kg)
+  private val minWeightInKg by fastLazy {
+    resources.getInteger(R.integer.min_weight_kg)
+  }
 
-  private val minHeightInCm: Int
-    get() = resources.getInteger(R.integer.min_height_cm)
+  private val minHeightInCm by fastLazy {
+    resources.getInteger(R.integer.min_height_cm)
+  }
 
-  private val bmiOffset
-    get() = BmiOffset(
+  private val bmiOffset by fastLazy {
+    BmiOffset(
         minWeightInKg.toDouble(),
         minHeightInCm.toDouble()
     )
+  }
 
   private var weightSelection: Int = UNINITIALIZED_SELECTION
   private var heightSelection: Int = UNINITIALIZED_SELECTION
 
-  private val weightMeasurementAdapter: MeasurementAdapter by lazy(NONE) {
+  private val weightMeasurementAdapter by fastLazy {
     MeasurementAdapter(context, minWeightInKg, WEIGHT, SI)
   }
 
-  private val heightMeasurementAdapter: MeasurementAdapter by lazy(NONE) {
+  private val heightMeasurementAdapter by fastLazy {
     MeasurementAdapter(context, minHeightInCm, LENGTH, SI)
   }
 
-  private val intentions
-    get() = BmiIntentions(
+  private val intentions by fastLazy {
+    BmiIntentions(
         weightSpinner.itemSelections().skipInitialValue(),
         heightSpinner.itemSelections().skipInitialValue(),
         measurementSystemSwitch.checkedChanges().skipInitialValue(),
         bmiOffset
     )
+  }
 
-  private val initialState
-    get() = BmiState(
+  private val initialState by fastLazy {
+    BmiState(
         resources.getInteger(R.integer.default_weight_kg).toDouble(),
         resources.getInteger(R.integer.default_height_cm).toDouble(),
         SI
     )
+  }
 
-  private val useCases
-    get() = BmiUseCases(
+  private val useCases by fastLazy {
+    BmiUseCases(
         initialState,
         sourceCopy
     )
+  }
 
-  private val viewDriver
-    get() = BmiViewDriver(this)
+  private val viewDriver by fastLazy {
+    BmiViewDriver(this)
+  }
 
   override fun source(
       sourceLifecycleEvents: Observable<SourceLifecycleEvent>,

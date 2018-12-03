@@ -11,6 +11,7 @@ import io.reactivex.disposables.Disposable
 import io.redgreen.oneway.SourceLifecycleEvent
 import io.redgreen.oneway.android.OneWayFragment
 import io.redgreen.oneway.catalogue.R
+import io.redgreen.oneway.catalogue.base.extensions.fastLazy
 import io.redgreen.oneway.catalogue.bmi.calculator.BmiCategory
 import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem
 import io.redgreen.oneway.catalogue.bmi.calculator.MeasurementSystem.SI
@@ -20,35 +21,40 @@ import io.redgreen.oneway.catalogue.bmi.usecases.BmiUseCases
 import kotlinx.android.synthetic.main.bmi_fragment.*
 
 class BmiFragment : OneWayFragment<BmiState>(), BmiView {
-  private val bmiOffset
-    get() = BmiOffset(
+  private val bmiOffset by fastLazy {
+    BmiOffset(
         resources.getInteger(R.integer.min_weight_kg).toDouble(),
         resources.getInteger(R.integer.min_height_cm).toDouble()
     )
+  }
 
-  private val intentions
-    get() = BmiIntentions(
+  private val intentions by fastLazy {
+    BmiIntentions(
         weightSeekBar.changes().skipInitialValue(),
         heightSeekBar.changes().skipInitialValue(),
         measurementSystemSwitch.checkedChanges().skipInitialValue(),
         bmiOffset
     )
+  }
 
-  private val initialState
-    get() = BmiState(
+  private val initialState by fastLazy {
+    BmiState(
         resources.getInteger(R.integer.default_weight_kg).toDouble(),
         resources.getInteger(R.integer.default_height_cm).toDouble(),
         SI
     )
+  }
 
-  private val useCases
-    get() = BmiUseCases(
+  private val useCases by fastLazy {
+    BmiUseCases(
         initialState,
         sourceCopy
     )
+  }
 
-  private val viewDriver
-    get() = BmiViewDriver(this)
+  private val viewDriver by fastLazy {
+    BmiViewDriver(this)
+  }
 
   override fun onCreateView(
       inflater: LayoutInflater,
