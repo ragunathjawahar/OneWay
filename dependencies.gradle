@@ -9,7 +9,7 @@ ext {
       androidStub: '4.0.1.2',
 
       // Arrow
-      arrow: '0.7.3',
+      arrow: '0.8.1',
 
       // Java
       java: JavaVersion.VERSION_1_8,
@@ -23,7 +23,7 @@ ext {
       // Rx
       rxAndroid: '2.1.0',
       rxBinding: '2.1.1',
-      rxJava: '2.1.16',
+      rxJava: '2.2.4',
       rxKotlin: '2.2.0',
 
       // Support
@@ -50,6 +50,8 @@ ext {
 
       // Arrow
       arrowCore: "io.arrow-kt:arrow-core:${versions.arrow}",
+      arrowOptics: "io.arrow-kt:arrow-optics:${versions.arrow}",
+      arrowAnnotationsProcessor: "io.arrow-kt:arrow-annotations-processor:${versions.arrow}",
 
       // Java Poet
       javaPoet: "com.squareup:javapoet:${versions.javaPoet}",

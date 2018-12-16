@@ -4,6 +4,10 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'de.mannodermaus.android-junit5'
 
+repositories {
+  maven { url "https://jitpack.io" }
+}
+
 android {
   compileSdkVersion versions.compileSdk
 
@@ -14,6 +18,7 @@ android {
     versionCode      1
     versionName     '0.1'
 
+    multiDexEnabled true
     testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
   }
 
@@ -52,6 +57,8 @@ dependencies {
 
   // Arrow
   implementation deps.arrowCore
+  implementation deps.arrowOptics
+  kapt deps.arrowAnnotationsProcessor
 
   // Kotlin
   implementation deps.kotlin
@@ -62,7 +69,6 @@ dependencies {
 
   // Rx
   implementation deps.rxBindingKotlin
-  implementation deps.rxKotlin
 
   // Support libraries
   implementation deps.appCompat
