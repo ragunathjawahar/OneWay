@@ -38,6 +38,7 @@ class MviTestHelper<S> {
    * @param sourceFunction provides `sourceLifecycleEvents` and `sourceCopy` for the model to create a source.
    */
   fun setSource(sourceFunction: (Observable<SourceLifecycleEvent>, Observable<S>) -> Observable<S>) {
+    checkIfSourceIsBeingSetAgain()
     this.sourceFunction = sourceFunction
     createSource(sourceFunction)
   }
@@ -92,6 +93,12 @@ class MviTestHelper<S> {
   private fun checkIfSourceIsSet() {
     if (!::sourceFunction.isInitialized) {
       throw IllegalStateException("Please set a source by calling the `setSource` function.")
+    }
+  }
+
+  private fun checkIfSourceIsBeingSetAgain() {
+    if (::sourceFunction.isInitialized) {
+      throw IllegalStateException("Source is already set, please use a different instance of `MviTestHelper`.")
     }
   }
 

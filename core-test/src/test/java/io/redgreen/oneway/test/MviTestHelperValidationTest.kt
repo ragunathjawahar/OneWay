@@ -50,10 +50,16 @@ class MviTestHelperValidationTest {
   }
 
   @Test fun `when source is set, then don't throw an exception`() {
-    mviTestHelper.setSource { _, _ ->
-      Observable.never()
-    }
+    mviTestHelper.setSource { _, _ -> Observable.never() }
 
     mviTestHelper.sourceIsCreated()
+  }
+
+  @Test fun `when attempting to set a source for the second time, then throw an exception`() {
+    mviTestHelper.setSource { _, _ -> Observable.never() }
+
+    assertThrows<IllegalStateException> {
+      mviTestHelper.setSource { _, _ -> Observable.never() }
+    }
   }
 }
