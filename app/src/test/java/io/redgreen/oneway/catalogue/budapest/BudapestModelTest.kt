@@ -5,19 +5,24 @@ import io.reactivex.subjects.PublishSubject
 import io.redgreen.oneway.SourceLifecycleEvent
 import io.redgreen.oneway.catalogue.budapest.usecases.BudapestUseCases
 import io.redgreen.oneway.test.MviTestHelper
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class BudapestModelTest {
   private val intentions = PublishSubject.create<BudapestIntention>()
 
-  private val testHelper = MviTestHelper {
-    sourceLifecycleEvents: Observable<SourceLifecycleEvent>, sourceCopy: Observable<BudapestState> ->
+  private val testHelper = MviTestHelper<BudapestState>()
 
-    BudapestModel.createSource(
-        intentions,
-        sourceLifecycleEvents,
-        BudapestUseCases(sourceCopy)
-    )
+  @BeforeEach fun setup() {
+    testHelper.setSource {
+      sourceLifecycleEvents: Observable<SourceLifecycleEvent>, sourceCopy: Observable<BudapestState> ->
+
+      BudapestModel.createSource(
+          intentions,
+          sourceLifecycleEvents,
+          BudapestUseCases(sourceCopy)
+      )
+    }
   }
 
   @Test fun `creating a screen starts with a stranger state`() {

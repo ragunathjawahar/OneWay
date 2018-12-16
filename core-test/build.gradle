@@ -17,3 +17,9 @@ targetCompatibility = versions.java
 
 apply from: '../gradle/bintray.gradle'
 apply from: '../gradle/install.gradle'
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+  kotlinOptions {
+    jvmTarget = versions.java
+  }
+}

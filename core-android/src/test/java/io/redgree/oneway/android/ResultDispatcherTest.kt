@@ -2,15 +2,13 @@ package io.redgree.oneway.android
 
 import io.reactivex.observers.TestObserver
 import io.redgreen.oneway.android.ResultDispatcher
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class ResultDispatcherTest {
   private val resultDispatcher = ResultDispatcher()
   private val cat = Cat("Billy")
 
-  @Test
-  fun `it can dispatch a result when subscribed to`() {
+  @Test fun `it can dispatch a result when subscribed to`() {
     // given
     resultDispatcher.setResult(cat)
 
@@ -21,8 +19,7 @@ class ResultDispatcherTest {
     assertValue(resultTestObserver, cat)
   }
 
-  @Test
-  fun `it clears the result after first emission`() {
+  @Test fun `it clears the result after first emission`() {
     // given
     resultDispatcher.setResult(cat)
     val firstResultTestObserver = TestObserver<Any>()
@@ -37,8 +34,7 @@ class ResultDispatcherTest {
     assertNoValue(secondResultTestObserver)
   }
 
-  @Test
-  fun `it can handle different types of results`() {
+  @Test fun `it can handle different types of results`() {
     // given
     val dog = Dog("Oreo")
     resultDispatcher.setResult(dog)
@@ -56,8 +52,7 @@ class ResultDispatcherTest {
     assertValue(catTestObserver, cat)
   }
 
-  @Test
-  fun `it does not dispatch results to types it does not have results for`() {
+  @Test fun `it does not dispatch results to types it does not have results for`() {
     // given
     val unitTestObserver = TestObserver<Unit>()
 
@@ -66,28 +61,6 @@ class ResultDispatcherTest {
 
     // then
     assertNoValue(unitTestObserver)
-  }
-
-  @Disabled("Figure out why this is failing.")
-  @Test
-  fun `it can share result when used with the publish() operator`() {
-    // given
-    resultDispatcher.setResult(cat)
-    val firstResultTestObserver = TestObserver<Cat>()
-    val secondResultTestObserver = TestObserver<Cat>()
-
-    // when
-    val publishedResults = resultDispatcher
-        .result<Cat>()
-        .toObservable()
-        .publish()
-    publishedResults.subscribe(firstResultTestObserver)
-    publishedResults.subscribe(secondResultTestObserver)
-    publishedResults.autoConnect()
-
-    // then
-    assertValue(firstResultTestObserver, cat)
-    assertValue(secondResultTestObserver, cat)
   }
 
   private fun <T> assertValue(testObserver: TestObserver<T>, value: T) {

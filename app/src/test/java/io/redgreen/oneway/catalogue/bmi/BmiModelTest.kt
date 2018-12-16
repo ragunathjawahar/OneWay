@@ -14,12 +14,16 @@ import org.junit.jupiter.api.Test
 class BmiModelTest {
   private val initialState = BmiState(48.0, 160.0, SI)
   private val intentions = PublishSubject.create<BmiIntention>()
-  private val testHelper = MviTestHelper<BmiState> { sourceLifecycleEvents, sourceCopy ->
-    BmiModel.createSource(
-        intentions,
-        sourceLifecycleEvents,
-        BmiUseCases(initialState, sourceCopy)
-    )
+  private val testHelper = MviTestHelper<BmiState>()
+
+  @BeforeEach fun setup() {
+    testHelper.setSource { sourceLifecycleEvents, sourceCopy ->
+      BmiModel.createSource(
+          intentions,
+          sourceLifecycleEvents,
+          BmiUseCases(initialState, sourceCopy)
+      )
+    }
   }
 
   @Test fun `when source is created, then show initial state`() {

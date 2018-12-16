@@ -13,12 +13,16 @@ class CounterModelTest {
   private val intentions = PublishSubject.create<CounterIntention>()
   private val initialState = ZERO
 
-  private val mviTestHelper = MviTestHelper<CounterState> { sourceLifecycleEvents, sourceCopy ->
-    CounterModel.createSource(
-        intentions,
-        sourceLifecycleEvents,
-        CounterUseCases(sourceCopy)
-    )
+  private val mviTestHelper = MviTestHelper<CounterState>()
+
+  @BeforeEach fun setup() {
+    mviTestHelper.setSource { sourceLifecycleEvents, sourceCopy ->
+      CounterModel.createSource(
+          intentions,
+          sourceLifecycleEvents,
+          CounterUseCases(sourceCopy)
+      )
+    }
   }
 
   @Test fun `creating the source starts with an initial state`() {

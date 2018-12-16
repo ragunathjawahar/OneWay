@@ -7,6 +7,7 @@ import io.reactivex.subjects.PublishSubject
 import io.redgreen.oneway.catalogue.smiley.drivers.SmileyTransientViewDriver
 import io.redgreen.oneway.catalogue.smiley.usecases.SmileyUseCases
 import io.redgreen.oneway.test.MviTestHelper
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class SmileyModelTest {
@@ -16,12 +17,16 @@ class SmileyModelTest {
 
   private val transientViewDriver = mock<SmileyTransientViewDriver>()
 
-  private val testHelper = MviTestHelper<SmileyState> { sourceLifecycleEvents, sourceCopy ->
-    SmileyModel.createSource(
-        intentions,
-        sourceLifecycleEvents,
-        SmileyUseCases(initialSmileyState, sourceCopy, transientViewDriver)
-    )
+  private val testHelper = MviTestHelper<SmileyState>()
+
+  @BeforeEach fun setup() {
+    testHelper.setSource { sourceLifecycleEvents, sourceCopy ->
+      SmileyModel.createSource(
+          intentions,
+          sourceLifecycleEvents,
+          SmileyUseCases(initialSmileyState, sourceCopy, transientViewDriver)
+      )
+    }
   }
 
   @Test fun `when screen is created, then show the default (smiling) smiley`() {

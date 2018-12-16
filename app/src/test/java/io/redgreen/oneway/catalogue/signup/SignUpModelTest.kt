@@ -12,6 +12,7 @@ import io.redgreen.oneway.catalogue.signup.form.WhichField.PHONE_NUMBER
 import io.redgreen.oneway.catalogue.signup.form.WhichField.USERNAME
 import io.redgreen.oneway.catalogue.signup.usecases.SignUpUseCases
 import io.redgreen.oneway.test.MviTestHelper
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class SignUpModelTest {
@@ -19,13 +20,17 @@ class SignUpModelTest {
   private val displayErrorEventsSubject = PublishSubject.create<DisplayErrorEvent>()
   private val validator = Validator()
 
-  private val testHelper = MviTestHelper<SignUpState> { sourceLifecycleEvents, sourceCopy ->
-    SignUpModel.createSource(
-        intentionsSubject,
-        displayErrorEventsSubject,
-        sourceLifecycleEvents,
-        SignUpUseCases(sourceCopy, validator)
-    )
+  private val testHelper = MviTestHelper<SignUpState>()
+
+  @BeforeEach fun setup() {
+    testHelper.setSource { sourceLifecycleEvents, sourceCopy ->
+      SignUpModel.createSource(
+          intentionsSubject,
+          displayErrorEventsSubject,
+          sourceLifecycleEvents,
+          SignUpUseCases(sourceCopy, validator)
+      )
+    }
   }
 
   @Test fun `when the screen is created, then the fields are untouched`() {

@@ -14,14 +14,14 @@ import org.junit.jupiter.api.*
 class MviTestHelperTest {
   @DisplayName("when source")
   @Nested inner class SourceLifecycleEventTest {
-    private lateinit var testHelper: MviTestHelper<SomeState>
+    private val testHelper = MviTestHelper<SomeState>()
     private val sourceLifecycleEventsTestObserver = TestObserver<SourceLifecycleEvent>()
     private lateinit var sourceLifecycleEventsDisposable: Disposable
 
     @BeforeEach fun setUp() {
-      testHelper = MviTestHelper { sourceLifecycleEvents, _ ->
+      testHelper.setSource { sourceLifecycleEvents, _ ->
         sourceLifecycleEventsDisposable = sourceLifecycleEvents.subscribeWith(sourceLifecycleEventsTestObserver)
-        return@MviTestHelper Observable.never()
+        Observable.never<SomeState>()
       }
     }
 
@@ -47,7 +47,9 @@ class MviTestHelperTest {
     }
   }
 
-  private val testHelper = MviTestHelper<SomeState> { _, _ -> Observable.never() }
+  private val testHelper = MviTestHelper<SomeState>().apply {
+    setSource { _, _ -> Observable.never() }
+  }
 
   @Test fun `it can setup a start state`() {
     // given
@@ -55,9 +57,11 @@ class MviTestHelperTest {
     val sourceCopyTestObserver = TestObserver<SomeState>()
     var sourceCopyDisposable: Disposable? = null
 
-    val testHelper = MviTestHelper<SomeState> { _, sourceCopy ->
-      sourceCopyDisposable = sourceCopy.subscribeWith(sourceCopyTestObserver)
-      return@MviTestHelper Observable.never()
+    val testHelper = MviTestHelper<SomeState>().apply {
+      setSource { _, sourceCopy ->
+        sourceCopyDisposable = sourceCopy.subscribeWith(sourceCopyTestObserver)
+        Observable.never<SomeState>()
+      }
     }
 
     // when
@@ -87,7 +91,9 @@ class MviTestHelperTest {
         .thenReturn(Observable.never())
 
     // when
-    MviTestHelper(sourceFunction).testObserver.hasSubscription()
+    MviTestHelper<SomeState>().apply {
+      setSource(sourceFunction)
+    }.testObserver.hasSubscription()
 
     // then
     verify(sourceFunction).invoke(any(), any())
@@ -107,8 +113,10 @@ class MviTestHelperTest {
     // given
     val stateA = SomeState("A")
     val stateB = SomeState("B")
-    val testHelper = MviTestHelper<SomeState> { sourceLifecycleEvents, _ ->
-      return@MviTestHelper sourceLifecycleEvents.flatMap { Observable.just(stateA, stateB) }
+    val testHelper = MviTestHelper<SomeState>().apply {
+      setSource { sourceLifecycleEvents, _ ->
+        sourceLifecycleEvents.flatMap { Observable.just(stateA, stateB) }
+      }
     }
 
     // when
@@ -119,8 +127,8 @@ class MviTestHelperTest {
   }
 
   @Test fun `it can assert no states`() {
-    val testHelper = MviTestHelper<SomeState> { _, _ ->
-      Observable.never<SomeState>()
+    val testHelper = MviTestHelper<SomeState>().apply {
+      setSource { _, _ -> Observable.never<SomeState>() }
     }
 
     // when
@@ -175,18 +183,20 @@ class MviTestHelperTest {
   @Test fun `it has access to the last known state after the source is restored`() {
     // given
     val oneState = SomeState("ONE")
-    val testHelper = MviTestHelper<SomeState> { sourceLifecycleEvents, sourceCopy ->
-      val sourceCreatedUseCaseStates = sourceLifecycleEvents
-          .filter { it == CREATED }
-          .map { oneState }
+    val testHelper = MviTestHelper<SomeState>().apply {
+      setSource { sourceLifecycleEvents, sourceCopy ->
+        val sourceCreatedUseCaseStates = sourceLifecycleEvents
+            .filter { it == CREATED }
+            .map { oneState }
 
-      val combiner = BiFunction<SourceLifecycleEvent, SomeState, SomeState> { _, state -> state }
-      val sourceRestoredUseCaseStates = sourceLifecycleEvents
-          .filter { it == RESTORED }
-          .withLatestFrom(sourceCopy, combiner)
+        val combiner = BiFunction<SourceLifecycleEvent, SomeState, SomeState> { _, state -> state }
+        val sourceRestoredUseCaseStates = sourceLifecycleEvents
+            .filter { it == RESTORED }
+            .withLatestFrom(sourceCopy, combiner)
 
-      return@MviTestHelper Observable
-          .merge(sourceCreatedUseCaseStates, sourceRestoredUseCaseStates)
+        Observable
+            .merge(sourceCreatedUseCaseStates, sourceRestoredUseCaseStates)
+      }
     }
 
     // when
@@ -215,5 +225,3 @@ class MviTestHelperTest {
     }
   }
 }
-
-data class SomeState(val message: String)
