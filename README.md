@@ -1,4 +1,4 @@
-One Way [![CircleCI](https://circleci.com/bb/ragunathjawahar/one-way/tree/master.svg?style=svg&circle-token=07fab84406066772be09651e4f6e9107671afab0)](https://circleci.com/bb/ragunathjawahar/one-way/tree/master)
+One Way [![CircleCI](https://circleci.com/bb/ragunathjawahar/one-way/tree/master.svg?style=svg&circle-token=07fab84406066772be09651e4f6e9107671afab0)](https://circleci.com/bb/ragunathjawahar/one-way/tree/master) [![BCH compliance](https://bettercodehub.com/edge/badge/ragunathjawahar/OneWay?branch=master)](https://bettercodehub.com/)
 ===================
 One Way is a minimalistic MVI library that helps developers build robust Android apps.
 
